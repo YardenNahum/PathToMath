@@ -47,7 +47,7 @@ function Header() {
         },
         {
             label: 'Tutorial Videos',
-            link: '#videos',
+            link: '/VideosPage',
             icon:TutorialVideosIcon,
             colorClass: "bg-red-500 hover:bg-red-600",
             submenuColor: "hover:bg-red-400",

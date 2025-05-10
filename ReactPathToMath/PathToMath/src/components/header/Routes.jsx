@@ -3,12 +3,13 @@ import MathSubjectsPage from '../pages/MathSubjectsPage';
 import ProfilePage from '../pages/ProfilePage';
 import LoginPage from '../pages/LoginPage';
 import LogoutPage from '../pages/LogoutPage';
-import VideosPage from '../pages/VideosPage';
+import VideosPage from '../pages/VideosPage/VideoMainPage';
 import AdditionPage from '../pages/subjects/AdditionPage';
 import SubtractionPage from '../pages/subjects/SubtractionPage';
 import MultiplyPage from '../pages/subjects/MultiplyPage';
 import DivisionPage from '../pages/subjects/DivisionPage';
 import PercentagePage from '../pages/subjects/PercentagePage';
+
 
 const routes = [
     {

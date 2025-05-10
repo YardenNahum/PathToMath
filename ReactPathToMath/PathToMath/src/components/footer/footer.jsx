@@ -26,7 +26,7 @@ function Footer() {
   }, []);
 
   return (
-    <footer className="w-full bg-orange-300 border-t-4 border-orange-500 text-white text-center py-6 mt-10 shadow-xl fixed bottom-0 left-0 playful-font z-50 overflow-hidden">
+    <footer className="w-full bg-orange-300 border-t-4 border-orange-500 text-white text-center py-1 mt-10 shadow-xl fixed bottom-0 left-0 playful-font z-50 overflow-hidden">
       <p className={`text-2xl px-4 flex items-center justify-center gap-3 transition-opacity duration-500 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`}>
         <span className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 text-yellow-500 shadow-md text-2xl">
           💡
