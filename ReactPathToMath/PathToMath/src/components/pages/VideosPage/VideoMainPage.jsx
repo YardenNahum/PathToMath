@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import background from '../../../assets/Images/Background/back.png';
+import background from '../../../assets/Images/Background/white_background.png';
 
 import additionIcon from '../../../assets/Images/Math_icon/addition_purple.png';
 import subtractionIcon from '../../../assets/Images/Math_icon/minus.png';
