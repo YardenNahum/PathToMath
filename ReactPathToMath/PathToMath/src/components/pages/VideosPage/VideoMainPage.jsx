@@ -22,7 +22,6 @@ const VideoMainPage = () => {
     setSelectedTopic(topic);
   };
 
-
   return (
     
     <div
