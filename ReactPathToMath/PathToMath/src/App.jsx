@@ -6,6 +6,7 @@ import { GradeProvider } from './components/Main/GradeComponent'
 import { LoginStatusProvider } from "./components/Main/LoginStatusComponent"
 import Footer from './components/footer/Footer'
 import VideoMainPage from './components/pages/VideosPage/VideoMainPage';
+import RelevantVideo from './components/pages/VideosPage/RelevantVideo '
 function App() {
 
   return (
@@ -13,7 +14,7 @@ function App() {
     <GradeProvider>
     <div className="app">
       <Header/>
-      <VideoMainPage/>
+      <RelevantVideo/>
       <Footer/>
     </div>
     </GradeProvider>
