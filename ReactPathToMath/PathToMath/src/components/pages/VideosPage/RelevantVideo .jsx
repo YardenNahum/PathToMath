@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import background from '../../../assets/Images/Background/white_background.png';
 import snail_icon from '../../../assets/Images/Loaders/snail_icon.png';
 import VideoGallery from './Gallery.jsx'; // make sure the path is correct
+import { Volume2, VolumeX, Maximize2, Minimize2, X, Star, BookOpen, ThumbsUp } from "lucide-react";
 
 const API_KEY = "AIzaSyABk2py4r0NYy5x63rfJ3bxoY3gMJKtMy8";
 
@@ -10,9 +11,16 @@ const RelevantVideo = () => {
   const topic = "Addition";
 
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showTip, setShowTip] = useState(false);
+
+  // Colors for the fun math theme
+  const colors = ["bg-pink-500", "bg-purple-500", "bg-indigo-500", "bg-blue-500", "bg-green-500"];
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -51,6 +59,39 @@ const RelevantVideo = () => {
     fetchVideos();
   }, [grade, topic]);
 
+  const handleVideoSelect = (id, title) => {
+    setSelectedVideo(id);
+    setSelectedVideoTitle(title);
+    // Show a math tip when video starts
+    setTimeout(() => setShowTip(true), 1000);
+    setTimeout(() => setShowTip(false), 8000);
+  }
+
+  const handleCloseVideo = () => {
+    setSelectedVideo(null);
+    setSelectedVideoTitle("");
+    setShowTip(false);
+  }
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  }
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  }
+
+  // Random math facts for Grade 2 addition
+  const mathTips = [
+    "Adding zero to any number gives you the same number!",
+    "You can add numbers in any order and get the same answer!",
+    "When you add 1, you get the number that comes next when counting!",
+    "Adding 10 to a number makes the tens place go up by 1!",
+    "You can break numbers apart to make adding easier!"
+  ];
+  
+  const randomTip = mathTips[Math.floor(Math.random() * mathTips.length)];
+
   return (
     <div
       className="min-h-screen w-full bg-gray-100 text-gray-800 px-6 py-10"
@@ -81,30 +122,111 @@ const RelevantVideo = () => {
       {error && <p className="text-lg text-red-500 text-center">{error}</p>}
 
       {!loading && !error && (
-        <VideoGallery videos={videos} onVideoClick={setSelectedVideo} />
+        <VideoGallery videos={videos} onVideoClick={handleVideoSelect} />
       )}
 
       {selectedVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="relative w-[90%] max-w-3xl">
-            <button
-              onClick={() => setSelectedVideo(null)}
-              className="absolute -top-12 -right-12 border-2 border-red-500 group hover:border-red-500 w-12 h-12 duration-500 overflow-hidden"
-              type="button"
-            >
-              <span className="absolute w-full h-full bg-red-500 rotate-45 group-hover:top-9 duration-500 top-12 left-0"></span>
-              <span className="absolute w-full h-full bg-red-500 rotate-45 top-0 group-hover:left-9 duration-500 left-12"></span>
-              <span className="absolute w-full h-full bg-red-500 rotate-45 top-0 group-hover:right-9 duration-500 right-12"></span>
-              <span className="absolute w-full h-full bg-red-500 rotate-45 group-hover:bottom-9 duration-500 bottom-12 right-0"></span>
-            </button>
-            <iframe
-              className="w-full h-[400px] rounded-xl"
-              src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1`}
-              title="Selected Video"
-              frameBorder="0"
-              allow="autoplay; fullscreen"
-              allowFullScreen
-            ></iframe>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-indigo-900/90 to-purple-900/90 backdrop-blur-sm">
+          <div className={`relative ${isFullscreen ? 'w-full h-full' : 'w-[90%] max-w-4xl'} rounded-3xl overflow-hidden transform transition-all duration-300`}>
+            {/* Fun decorative elements */}
+            <div className="absolute -top-8 -left-8 w-16 h-16 bg-yellow-300 rounded-full opacity-30 animate-pulse"></div>
+            <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-pink-400 rounded-full opacity-30"></div>
+            <div className="absolute top-1/3 -right-6 w-12 h-12 bg-indigo-400 rounded-full opacity-30"></div>
+            <div className="absolute bottom-1/3 -left-6 w-14 h-14 bg-green-400 rounded-full opacity-30"></div>
+            
+            {/* Card with video */}
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-8 border-indigo-100">
+              {/* Video title bar */}
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex items-center justify-between text-white">
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-3">
+                    <Star className="text-yellow-500 fill-yellow-500" size={20} />
+                  </div>
+                  <h3 className="font-bold text-lg md:text-xl truncate max-w-md">
+                    {selectedVideoTitle || "Math Video"}
+                  </h3>
+                </div>
+                
+                <div className="flex gap-2">
+                  <button 
+                    onClick={toggleMute}
+                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                  >
+                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                  </button>
+                  <button 
+                    onClick={toggleFullscreen}
+                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                  >
+                    {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                  </button>
+                  <button 
+                    onClick={handleCloseVideo}
+                    className="p-2 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+              
+              {/* Video player */}
+              <div className="relative">
+                <iframe
+                  className={`w-full ${isFullscreen ? 'h-screen' : 'h-[400px]'}`}
+                  src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&mute=${isMuted ? 1 : 0}`}
+                  title="Math Video"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                ></iframe>
+                
+                {/* Math Tip popup */}
+                {showTip && (
+                  <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:max-w-xs bg-white rounded-xl p-4 shadow-lg border-l-8 border-green-500 animate-fade-in-up">
+                    <div className="flex items-start">
+                      <div className="mr-3 mt-1">
+                        <BookOpen className="text-green-500" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-700 mb-1">Math Tip!</h4>
+                        <p className="text-sm text-gray-700">{randomTip}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setShowTip(false)}
+                      className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              {/* Fun controls bar */}
+              <div className="bg-gray-50 p-4">
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {['Addition', 'Subtraction', 'Counting', 'Place Value', 'Shapes'].map((skill, i) => (
+                    <div key={skill} className={`${colors[i % colors.length]} text-white px-3 py-1 rounded-full text-sm font-medium`}>
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="flex gap-1">
+                    {[1,2,3,4,5].map(star => (
+                      <Star key={star} className="text-yellow-400 fill-yellow-400" size={16} />
+                    ))}
+                    <span className="text-xs text-gray-500 ml-1">Great for learning!</span>
+                  </div>
+                  
+                  <button className="flex items-center gap-1 text-indigo-600 font-medium text-sm">
+                    <ThumbsUp size={16} />
+                    <span>Great Video!</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -113,3 +235,4 @@ const RelevantVideo = () => {
 };
 
 export default RelevantVideo;
+
