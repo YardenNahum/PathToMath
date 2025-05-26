@@ -37,7 +37,7 @@ function Header() {
       colorClass: "bg-orange-500 hover:bg-orange-600",
       submenuColor: "hover:bg-orange-400",
       submenu: [
-        { label: 'Addition', link: '/subjects', class: "Addition" },
+        { label: 'Addition', link: '/games', class: "Addition" },
         { label: 'Subtraction', link: '/subjects', class: "Subtraction" },
         { label: 'Multiply', link: '/subjects', class: "Multiply" },
         { label: 'Division', link: '/subjects', class: "Division" },

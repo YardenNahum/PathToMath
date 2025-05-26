@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       { path: '/signup', element: <LoginSignup action="Signup" />, },
       { path: '/subjects', element: <Subjects />, },
       { path: '/levels', element: <Levels />, },
-      { path: '/games', element: <Game />, },
+      { path: '/games', element: <Game gameSubject="Addition" gameLevel="1" />, },
       { path: '/videos', element: <VideoPage />, },
       { path: '/videos/:subject', element: <RelevantVideo />, },
       { path: '/profile', element: <Profile />, },

@@ -6,7 +6,8 @@ function ButtonComponent({
     textColor = 'text-white',
     size = 'md',
     icon = null,
-    onClick
+    onClick,
+    disabled = false
 }) {
     // Sizing Classes
     const sizeClasses = {
@@ -18,7 +19,8 @@ function ButtonComponent({
     return (
         <button
             onClick={onClick}
-            className={`flex items-center justify-center gap-2 rounded-xl cursor-pointer ${bgColor} ${textColor} ${sizeClasses[size]} focus:outline-none transition-all shadow-md hover:scale-105`}
+            disabled={disabled}
+            className={`flex items-center justify-center gap-2 rounded-xl cursor-pointer ${bgColor} ${textColor} ${sizeClasses[size]} focus:outline-none transition-all shadow-md hover:scale-105 ${disabled ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''}`}
         >
             {icon && <img src={icon} alt="icon" className="w-6 h-6" />}
             <span>{label}</span>
