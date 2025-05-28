@@ -4,30 +4,7 @@ import GameContainer from './GameContainer';
 import { useNavigate } from 'react-router-dom';
 import successImage from '../../../assets/images/success.png';
 import failureImage from '../../../assets/images/failure.png';
-
-/** Subject Map */
-const subjectMap = {
-    "Addition": {
-        "mathAction": "+",
-        "function": (a, b) => a + b
-    },
-    "Subtraction": {
-        "mathAction": "-",
-        "function": (a, b) => a - b
-    },
-    "Multiplication": {
-        "mathAction": "X",
-        "function": (a, b) => a * b
-    },
-    "Division": {
-        "mathAction": "/",
-        "function": (a, b) => a / b
-    },
-    "Percentage": {
-        "mathAction": "%",
-        "function": (a, b) => a / b * 100
-    }
-};
+import generateQuestions from './GameLogic';
 
 /**
  * Cube Game Component
@@ -65,8 +42,8 @@ export default function CubeGame({ gameSubject, gameLevel }) {
     // Selected option
     const [selectedOption, setSelectedOption] = useState(null);
 
-    // Number of questions
     const numOfQuestions = 5;
+    const numOfOptions = 4;
 
     /** Reset Game */
     const resetGame = () => {
@@ -79,70 +56,17 @@ export default function CubeGame({ gameSubject, gameLevel }) {
         setSelectedOption(null);
     };
 
-    /** Generate Variable */
-    const generateVariable = () => {
-        let mathLevel = Math.floor(gameLevel / 10) + 1;
-        let min = 1 + (mathLevel - 1) * 5;
-        let max = 10 * mathLevel;
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    /** Generate Option */
-    const generateOption = (answer) => {
-        const offset = Math.max(2, (Math.floor(gameLevel / 10) + 1) * 2);
-        const minBorder = answer - offset;
-        const maxBorder = answer + offset;
-        const option = (Math.random() * (maxBorder - minBorder) + minBorder);
-        return Math.round(option);
-    };
-
-    /** Make Question */
-    const makeQuestion = () => {
-        const mathAction = subjectMap[gameSubject].mathAction;
-        const mathFunction = subjectMap[gameSubject].function;
-
-        const var1 = generateVariable();
-        const var2 = generateVariable();
-        const answer = mathFunction(var1, var2);
-
-        let options = [];
-        let questionText;
-
-        // Generate 3 fake answers
-        while (options.length < 3) {
-            const fakeAnswer = generateOption(answer);
-            if (options.indexOf(fakeAnswer) === -1 && fakeAnswer !== answer) {
-                options.push(fakeAnswer);
-            }
-        }
-
-        // Insert the correct answer in a random position
-        const insertIndex = Math.floor(Math.random() * options.length + 1);
-        options.splice(insertIndex, 0, answer);
-
-        // Generate the question text
-        if (gameSubject === "Percentage") {
-            questionText = `What percent is ${var1} of ${var2}?`;
-        } else {
-            questionText = `What's ${var1} ${mathAction} ${var2}?`;
-        }
-
-        return {
-            question: questionText,
-            var1,
-            var2,
-            answer,
-            options
-        };
-    };
-
+    /** Option Background Color */
     const optionBgColor = (option) => {
         if (selectedOption) {
+            let answerValue = currentQuestion.answer.value;
+            let selectedValue = option.value;
+
             // Correct answer clicked or displayed when clicked on wrong answer
-            if (option === currentQuestion.answer) return "bg-green-400";
+            if (selectedValue === answerValue) return "bg-green-400";
 
             // Wrong answer selected
-            if (option === selectedOption && option !== currentQuestion.answer) return "bg-red-400";
+            if (selectedValue === selectedOption.value && selectedValue !== answerValue) return "bg-red-400";
         }
         return "bg-gray-100";
     };
@@ -154,9 +78,9 @@ export default function CubeGame({ gameSubject, gameLevel }) {
             {currentQuestion?.options.map((option, index) => (
                 <ButtonComponent
                     key={index}
-                    id={option}
-                    onClick={() => optionClicked(currentQuestion.answer, option)}
-                    label={gameSubject === "Percentage" ? `${option}%` : option}
+                    id={option.value}
+                    onClick={() => optionClicked(option)}
+                    label={gameSubject === "Percentage" ? `${option.textValue}%` : option.textValue}
                     bgColor={optionBgColor(option)}
                 textColor="text-black"
                 size="lg"
@@ -172,39 +96,16 @@ export default function CubeGame({ gameSubject, gameLevel }) {
         setQuestions([]);
         setCorrectAnswers(0);
 
-        const newQuestions = [];
-        while (newQuestions.length < numOfQuestions) {
-            // Generate a new question
-            const question = makeQuestion();
-            let isDuplicate = false;
-
-            // Check if the question is a duplicate of any existing questions
-            for (const existing of newQuestions) {
-                const isSameOrder = question.var1 === existing.var1 && question.var2 === existing.var2;
-                const isReversedOrder = question.var1 === existing.var2 && question.var2 === existing.var1;
-
-                if ((gameSubject === "Addition" || gameSubject === "Multiply") && (isSameOrder || isReversedOrder)) {
-                    isDuplicate = true;
-                    break;
-                } else if (isSameOrder) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-
-            // If the question is not a duplicate, add it to the list
-            if (!isDuplicate) newQuestions.push(question);
-        }
-
         // Set the questions for the game and the current question as the first in the array
-        setQuestions(newQuestions);
-        setCurrentQuestion(newQuestions[0]);
+        const questions = generateQuestions(gameSubject, gameLevel, numOfQuestions, numOfOptions);
+        setQuestions(questions);
+        setCurrentQuestion(questions[0]);
     };
 
     /** User Clicked Answer */
-    const optionClicked = (answer, option) => {
+    const optionClicked = (option) => {
         // Check if the answer is correct and set the clicked answer to correct
-        if (option === answer) {
+        if (option.isCorrect) {
             setClickedAnswer({ text: "Correct!", color: "green" });
             setCorrectAnswers(prev => prev + 1);
         }
@@ -229,7 +130,6 @@ export default function CubeGame({ gameSubject, gameLevel }) {
 
         // If there are remaining questions, set the current question as the first in the array
         questions.length >= 1 ? setCurrentQuestion(questions[0]) : generateEnd();
-
     };
 
     /** Generate End */
@@ -279,6 +179,11 @@ export default function CubeGame({ gameSubject, gameLevel }) {
         resetGame();
         loadGameLevel();
     }, [gameSubject, gameLevel]);
+
+    // Add effect to track currentQuestion changes
+    useEffect(() => {
+        console.log('Current Question:', currentQuestion);
+    }, [currentQuestion]);
 
     return (
         <GameContainer gameName="Cube Game" gameSubject={gameSubject} gameLevel={gameLevel}>
