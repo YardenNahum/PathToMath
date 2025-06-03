@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import GameContainer from './GameContainer';
-import { useUser } from '../../Utils/UserContext';
-import { updateUser } from '../../../services/UserService';
+import GameContainer from '../GameContainer';
+import { useUser } from '../../../Utils/UserContext';
+import { updateUser } from '../../../../services/UserService';
 
 const BalloonsGame = () => {
     const MAX_TRIES = 2;

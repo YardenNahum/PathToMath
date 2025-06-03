@@ -19,7 +19,7 @@ import Profile from './components/Main/ProfilePage/ProfilePage.jsx'
 import RelevantVideo from './components/Main/VideoPage/RelevantVideo.jsx'
 import ParentPage from './components/Main/ParentPage/ParentPage.jsx';
 import LogoutPage from './components/Main/LoginSignupPage/Logout.jsx';
-import BalloonsGame  from './components/Main/Games/BalloonsGame.jsx'
+import BalloonsGame  from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
 
 
 /**
