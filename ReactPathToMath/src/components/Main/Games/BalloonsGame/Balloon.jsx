@@ -1,0 +1,47 @@
+import React, { useState } from 'react';
+
+function Balloon({ option, onClick }) {
+    const [isPopping, setIsPopping] = useState(false);
+
+    const handleClick = () => {
+        setIsPopping(true);
+        setTimeout(() => {
+            onClick(option.value);
+        }, 200);
+    };
+
+    const balloonGradients = [
+        'bg-gradient-to-br from-red-400 via-red-500 to-red-600',
+        'bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500',
+        'bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500',
+        'bg-gradient-to-br from-green-400 via-green-500 to-green-600',
+        'bg-gradient-to-br from-pink-300 via-pink-400 to-pink-500',
+        'bg-gradient-to-br from-purple-300 via-purple-400 to-purple-500',
+        'bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500',
+        'bg-gradient-to-br from-teal-300 via-teal-400 to-teal-500'
+    ];
+    
+    const randomGradient = balloonGradients[Math.floor(Math.random() * balloonGradients.length)];
+
+    return (
+        <div className="flex flex-col items-center animate-floating">
+            <div
+                onClick={handleClick}
+                className={`
+                    relative flex justify-center items-center rounded-full shadow-2xl
+                    text-white font-black text-2xl cursor-pointer w-28 h-36
+                    ${randomGradient}
+                    ${isPopping ? 'animate-pop' : 'animate-gentle-bounce'}
+                    balloon-glow
+                `}
+            >
+                <div className="absolute top-2 left-3 w-4 h-6 bg-white opacity-30 rounded-full blur-sm"></div>
+                <span className="relative z-10 drop-shadow-lg">{option.textValue}</span>
+            </div>
+            <div className="w-0.5 h-8 bg-gray-600 animate-string-sway"></div>
+            <div className="w-2 h-1 bg-gray-700 rounded-full"></div>
+        </div>
+    );
+}
+
+export default Balloon;
