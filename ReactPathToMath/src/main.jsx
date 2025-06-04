@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-
 /**
  * Pages
  */
@@ -19,6 +18,7 @@ import Profile from './components/Main/ProfilePage/ProfilePage.jsx'
 import RelevantVideo from './components/Main/VideoPage/RelevantVideo.jsx'
 import ParentPage from './components/Main/ParentPage/ParentPage.jsx';
 import LogoutPage from './components/Main/LoginSignupPage/Logout.jsx';
+import RewardsPage from './components/Main/BadgesPage/RewardsPage';
 
 /**
  * Router for the app
@@ -40,7 +40,8 @@ const router = createBrowserRouter([
       { path: '/videos/:subject', element: <RelevantVideo />, },
       { path: '/profile', element: <Profile />, },
       { path: '/ParentPage', element: <ParentPage />, },
-      { path: '/logout', element: <LogoutPage /> }
+      { path: '/logout', element: <LogoutPage /> },
+      { path: '/badges', element: <RewardsPage />}
     ],
   },
 ])
