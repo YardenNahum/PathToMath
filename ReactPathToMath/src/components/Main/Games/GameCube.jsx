@@ -134,7 +134,19 @@ const GameCube = () => {
             setFeedbackMessage(`🎉 You answered ${correct}/${MAX_QUESTIONS} questions correct!`);
         }
     }
-
+    const restartGame = () => {
+        setFeedbackMessage("");
+        setSelected([]);
+        setSolution([]);
+        setNext("");
+        setTries(MAX_TRIES);
+        setIsDisabled(false);
+        setQuestion(0);
+        setCorrect(0);
+        setGame(generate_question());
+        setGameFinished(false);
+        setGameFinished(false);
+    }
     const toggleCube = (index) => {
         if (isDisabled) return;
         setSelected(prev =>
@@ -155,12 +167,13 @@ const GameCube = () => {
     const [selected, setSelected] = useState([]);
     const { cubes, sum } = game;
     const [gameFinished, setGameFinished] = useState(false);
-
+    const success = correct >= 3;
     // Handle finished game
     const { user } = useUser();
     const handleFinishedGame = () => {
         const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-        if (currentFinished && gameLevel > currentFinished) {
+        if (currentFinished && gameLevel > currentFinished && success) {
+            // Update user's grade level for the subject if they passed the game
             let newUser = user;
             newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
             updateUser(user.email, newUser);
@@ -171,6 +184,9 @@ const GameCube = () => {
     return (
         <GameContainer gameName="Cubes Game" gameSubject={gameSubject} gameLevel={{grade}}>
             <div className="border-8 border-white bg-blue-100 rounded-lg p-4 shadow-lg relative">
+                <div className='top-4 right-4 text-lg absolute'>
+                    Game Level : {gameLevel}
+                </div>
                 <div className='text-sm group inline-block absolute top-4 left-4'>
                     {/* How to play button */}
                     <button className="group items-center flex gap-2 bg-purple-200 px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
@@ -183,16 +199,31 @@ const GameCube = () => {
                     </div>
                 </div>
                 {gameFinished ? (
-                    <div className="flex flex-col items-center justify-center min-h-screen text-center">
+                    <div className="text-2xl flex flex-col items-center justify-center min-h-screen text-center">
                         <h2 className="text-3xl font-semibold text-green-600 mb-4">
                             {feedbackMessage}
                         </h2>
+                        {success ? "Level up!":" Try again next time!"}
+                        <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
+                          onClick={() => {
+                             if (success) {
+                                handleFinishedGame();  // updates user level
+                                restartGame();         // navigates to next level
+                                } else {
+                                restartGame();         // replay same level
+                                }
+                            }}
+                        >  
+                            {success ? "Next level": "Try again"}
+                        </button>
                         <button
-                            className="bg-blue-500 text-white mt-10 px-6 py-3 rounded-lg text-xl hover:cursor-pointer"
+                            className="bg-blue-500 text-white mt-4 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
                             onClick={handleFinishedGame}
                         >
                             back to {gameSubject} levels
                         </button>
+
+
                     </div>
                 ) : (
                     <div className="flex flex-col items-center">
@@ -200,9 +231,12 @@ const GameCube = () => {
                             Tries: {'❤️'.repeat(tries)}{'🤍'.repeat(MAX_TRIES - tries)}
                         </div>
 
-                        <h1 className="text-4xl font-bold text-center mb-5">
+                        <h1 className="text-4xl font-bold text-center mb-3">
                             Sum: {sum}
                         </h1>
+                        <h2 className='mb-5 text-1xl font-semibold text-gray-800'>
+                            Question: {question + 1} / {MAX_QUESTIONS}
+                        </h2>
 
                         <div className="grid grid-cols-4 grid-rows-2 gap-4 mt-0">
                             {cubes.map((value, index) => (

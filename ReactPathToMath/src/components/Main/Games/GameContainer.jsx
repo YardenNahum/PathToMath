@@ -17,7 +17,7 @@ function GameContainer({ gameName, gameSubject, children, icon }) {
     const navigate = useNavigate();
     const { level } = useParams();
     const gameLevel = Number(level);
-
+    
     /**
      * Handles the return button click event
      */
