@@ -8,22 +8,40 @@ function ButtonComponent({
     icon = null,
     onClick,
     disabled = false
-}) {
-    // Sizing Classes
+}) 
+    {
     const sizeClasses = {
-        sm: 'px-3 py-1 text-sm w-32',
-        md: 'px-4 py-2 text-md w-40',
-        lg: 'px-6 py-3 text-lg w-48',
+        sm: 'px-3 text-sm w-32 h-10',
+        md: 'px-4 text-md w-40 h-14',
+        lg: 'px-6 text-lg w-48 h-16',
+        xl: 'px-8 text-xl w-56 h-20',
     };
+
+    const isImageBg = bgColor?.startsWith('http') || bgColor?.startsWith('/');
+
+    const style = isImageBg
+        ? {
+              backgroundImage: `url(${bgColor})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+          }
+        : {};
 
     return (
         <button
             onClick={onClick}
-            className={`flex items-center justify-center gap-2 rounded-xl ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${bgColor} ${textColor} ${sizeClasses[size]} focus:outline-none transition-all shadow-md hover:scale-105`}
+            className={`flex items-center justify-center gap-2 rounded-xl
+                ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}
+                ${!isImageBg ? `${bgColor}` : ''}
+                ${textColor}
+                ${sizeClasses[size]}
+                focus:outline-none transition-all shadow-md hover:scale-105`}
+            style={style}
             disabled={disabled}
         >
             {icon && <img src={icon} alt="icon" className="w-6 h-6" />}
-            <span>{label}</span>
+            <span className="font-bold drop-shadow-md">{label}</span>
         </button>
     );
 }

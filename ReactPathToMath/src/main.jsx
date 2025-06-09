@@ -24,6 +24,7 @@ import RocketGame from './components/Main/Games/RocketGame/RocketGame.jsx';
 import PopQuiz from './components/Main/PopQuizPage/PopQuiz.jsx';
 import BalloonsGame  from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
 import RewardsPage from './components/Main/BadgesPage/RewardsPage';
+import GameSelection from './components/Main/Games/GameSelection.jsx'
 /**
  * Router for the app
  */
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: '/signup', element: <LoginSignup action="Signup" />, },
       { path: '/subjects', element: <SubjectsPage />, },
       { path: '/subjects/:subjectGame', element: <LevelsPage />, },
+      { path: '/game-selection/:subjectGame/:level', element: <GameSelection /> },
       { path: '/OptionsGame/:subjectGame/:grade/:level', element: <OptionsGame />, },
       { path: '/GameCube/:subjectGame/:grade/:level', element: <GameCube />, },
       { path: '/RaceGame/:subjectGame/:grade/:level', element: <RaceGame />, },

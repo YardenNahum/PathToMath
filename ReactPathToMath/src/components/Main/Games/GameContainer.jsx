@@ -55,7 +55,7 @@ function GameContainer({ gameName, gameSubject, children, icon, backgroundImage 
             {/* Game Header */}
             <div className="text-center mt-5">
 
-                {/* Main game name with race flag */}
+                {/* Main game name with title icon */}
                 <h1 className="text-6xl font-bold text-black flex justify-center items-center space-x-3 select-none">
                     <ShadowedTitle text={gameName}/>
                     {icon && <img src={icon} alt="Game Icon" className="w-25 h-auto" />}
