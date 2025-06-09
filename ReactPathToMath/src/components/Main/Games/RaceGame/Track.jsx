@@ -50,7 +50,7 @@ function Track({ position, length, color = '#0000000000', startLabel = '', endLa
     case 'climb':
       if (direction === 'vertical') {
         // Map position 0 to 0% and max position (length - 1) to 90%
-        const maxPercent = 75; // max height rocket can climb before finish icon
+        const maxPercent = 70; // max height rocket can climb before finish icon
         const percent = (position / (length - 1)) * maxPercent;
 
         return (
