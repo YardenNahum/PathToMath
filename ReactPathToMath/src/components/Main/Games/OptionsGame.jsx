@@ -92,7 +92,7 @@ export default function OptionsGame() {
     /** Generate Options */
     const generateOptions = () => {
         return (
-            <div className="grid grid-cols-2 gap-10 mb-10">
+            <div className="grid grid-cols-2 gap-10 mb-10 gap-x-30 gap-y-10">
                 {currentQuestion?.options.map((option, index) => (
                     <ButtonComponent
                         key={index}
@@ -215,15 +215,19 @@ export default function OptionsGame() {
 
     return (
         <GameContainer gameName="Quest for the Golden Answer" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={OptionsBg}>
+        <div className="flex justify-center">
+
             {/* Cube Game Container */}
             <div className={`mb-5 border-8 border-amber-400 rounded-lg p-9 inline-block shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-gray-700'}`}>
                 {/* Question Text */}
-                <div className="text-5xl text-white font-semibold mb-6 p-6">
+                <div className="text-5xl text-white font-semibold mb-6 p-6 text-center">
                     {!endGame ? currentQuestion?.question : endGameObject?.text}
                 </div>
 
                 {/* Options */}
-                {!endGame ? generateOptions() : endGameComponent()}
+                <div className="flex justify-center">
+                    {!endGame ? generateOptions() : endGameComponent()}
+                </div>
 
                 {/* Answer Visible */}
                 {isAnswerVisible && !endGame && (
@@ -237,6 +241,7 @@ export default function OptionsGame() {
                         />
                     </div>
                 )}
+            </div>
             </div>
         </GameContainer>
     );
