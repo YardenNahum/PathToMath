@@ -13,13 +13,12 @@ import TitleIcon from '../../../assets/Images/GameSelectionIcon.png'
 
 function GameSelection({ subjectGame, level, grade, onGameSelected }) {
     const navigate = useNavigate();
-    const gameLevel = Number(level);
 
     const gameButtons = [
         { label: 'Race Track', path: 'RaceGame', background: RaceBtnBg, textColor: 'text-gray-200' },
         { label: 'Pirates Cove', path: 'OptionsGame', background: OptionsBtnBg, textColor: 'text-gray-900' },
         { label: 'Cubes Horizon', path: 'GameCube', background: DiceBtnBg, textColor: 'text-blue-800' },
-        { label: 'Legends Realm', path: 'WordGame', background: TalesBtnBg, textColor: 'text-gray-900' },
+        { label: 'Legends Realm', path: 'WordGame', background: TalesBtnBg, textColor: 'text-pink-900' },
         { label: 'Balloons Park', path: 'BalloonsGame', background: BalloonsBtnBg, textColor: 'text-purple-900' },
         { label: 'Outer Space', path: 'RocketGame', background: SpaceBtnBg, textColor: 'text-pink-100' },
     ];
