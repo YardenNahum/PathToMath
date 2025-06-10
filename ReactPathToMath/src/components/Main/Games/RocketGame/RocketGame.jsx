@@ -12,6 +12,7 @@ import Moon from '../../../../assets/Images/SpaceGame/moon.gif';
 import TitleIcom from '../../../../assets/Images/SpaceGame/astronaut.png';
 import spaceBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
 import { useUser } from '../../../Utils/UserContext';
+import useBotInterval from '../useBotInterval';
 
 const NUM_QUESTIONS = 10;
 
@@ -39,7 +40,6 @@ function RocketGame() {
     'text-white'
     ]
 
-  const botTimer = useRef(null);
   const TRACK_STEPS = NUM_QUESTIONS + 1;
 
   useEffect(() => {
@@ -47,23 +47,25 @@ function RocketGame() {
     setQuestions(generated);
   }, [subjectName, grade, gameLevel]);
 
-  useEffect(() => {
-    if (started) {
-      botTimer.current = setInterval(() => {
-        setBotProgress((prev) => {
-          const next = prev + 1;
-          if (next >= TRACK_STEPS - 1) {
-            clearInterval(botTimer.current);
-            setStarted(false);
-            setMessage('Opponent wins! Try Again?');
-            return TRACK_STEPS - 1;
-          }
-          return next;
-        });
-      }, 8000);
-    }
-    return () => clearInterval(botTimer.current);
-  }, [started]);
+    const handleBotMove = () => {
+    setBotProgress((prev) => {
+      const next = prev + 1;
+      if (next >= TRACK_STEPS - 1) {
+        setStarted(false);
+        setMessage('Opponent wins! Try Again?');
+        return TRACK_STEPS - 1;
+      }
+      return next;
+    });
+  };
+
+  const botTimer = useBotInterval({
+    started,
+    trackLength: TRACK_STEPS,
+    onMove: handleBotMove,
+    grade,
+    level: gameLevel,
+  });
 
   const handleFinishedGame = () => {
     const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];

@@ -12,6 +12,8 @@ import LogoutIcon from '../../assets/Images/logout.png'
 import TutorialVideosIcon from '../../assets/Images/helpVideos.png'
 import ParentOverviewIcon from '../../assets/Images/ParentOverview.png'
 import SignupIcon from '../../assets/Images/SignupIcon.png'
+import BadgesIcon from '../../assets/Images/BadgesHeaderIcon.png'
+import PopQuizIcon from '../../assets/Images/PopQuizHeaderIcon.png'
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -64,13 +66,29 @@ function Header() {
       ],
       class: "TutorialVideos"
     },
+        {
+      label: 'Pop Quiz',
+      link: '/pop-quiz',
+      icon: PopQuizIcon,
+      colorClass: "bg-pink-600 hover:bg-pink-700",
+      submenuColor: "hover:bg-red-400",
+      class: "PopQuiz"
+    },
+        {
+      label: 'Badges',
+      link: '/badges',
+      icon: BadgesIcon,
+      colorClass: "bg-yellow-800 hover:bg-yellow-700",
+      submenuColor: "hover:bg-red-400",
+      class: "Badges"
+    }
   ];
 
-  //  User is a parent, remove the math problems and tutorial videos
+  //  User is a parent, add Parent Overview to menu
   if (isParent) {
     menuData = [];
-        menuData.push({
-      //Home page
+
+    menuData.push({
       label: 'Home',
       link: '/',
       icon: starIcon,
@@ -83,10 +101,12 @@ function Header() {
       label: 'Parent Overview',
       link: '/ParentPage',
       icon: ParentOverviewIcon,
-      colorClass: "bg-orange-500 hover:bg-orange-400",
+      colorClass: "bg-orange-500 hover:bg-orange-600",
       submenuColor: "hover:bg-orange-500",
       className: "ParentView"
     });
+
+    
   }
 
   // Add Login or Logout dynamically

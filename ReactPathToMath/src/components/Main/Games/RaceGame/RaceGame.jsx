@@ -13,6 +13,8 @@ import TitleIcon from '../../../../assets/Images/RaceGame/RaceGameTitle.png'
 import RaceBg from '../../../../assets/Images/RaceGame/RaceBg.jpg'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
+import useBotInterval from '../useBotInterval.jsx';
+
 const NUM_QUESTIONS = 10; // Number of questions in the race
 
 function RaceGame() {
@@ -33,7 +35,6 @@ function RaceGame() {
   const [message, setMessage] = useState(''); // Message shown to the user (win/loss, correct/incorrect)
   const [userAnswer, setUserAnswer] = useState(''); // User's answer input
   const [questions, setQuestions] = useState([]); // Array of generated math questions for the race
-  const botTimer = useRef(null); // Opponent bot's interval timer
   const [countdown, setCountdown] = useState(null); // Countdown before game starts
 
   const colorMap = [
@@ -51,31 +52,27 @@ function RaceGame() {
 
   // The total length of the track is number of questions + a "Finish" block
   // Show full length (NUM_QUESTIONS + 1) even if questions haven't loaded yet
-  const TRACK_LENGTH = questions.length > 0 ? questions.length + 1 : NUM_QUESTIONS + 1;
+  const TRACK_LENGTH = questions.length > 0 ? questions.length + 2 : NUM_QUESTIONS + 2;
 
-  // Effect that controls the bot's automatic movement during the race
-  useEffect(() => {
-    if (started && TRACK_LENGTH > 1) {
-      // Set bot to move forward every 5 seconds
-      botTimer.current = setInterval(() => {
-        setBotPos((prev) => {
-          const next = prev + 1;
+  const handleBotMove = () => {
+    setBotPos((prev) => {
+      const next = prev + 1;
+      if (next >= TRACK_LENGTH - 1) {
+        setStarted(false);
+        setMessage('Opponent wins! Try Again?');
+        return TRACK_LENGTH - 1;
+      }
+      return next;
+    });
+  };
 
-          // If bot reaches the finish line, end the game and declare bot winner
-          if (next >= TRACK_LENGTH - 1) {
-            clearInterval(botTimer.current);
-            setStarted(false);
-            setMessage('Opponent wins! Try Again?');
-            return TRACK_LENGTH - 1;
-          }
-          return next;
-        });
-      }, 8000);
-    }
-
-    // Clear the interval when component unmounts or dependencies change
-    return () => clearInterval(botTimer.current);
-  }, [started, TRACK_LENGTH]);
+  const botTimer = useBotInterval({
+    started,
+    trackLength: TRACK_LENGTH,
+    onMove: handleBotMove,
+    grade,
+    level: gameLevel,
+  });
 
   // Updating levels progress on levels page after finishing a level successfully
   const handleFinishedGame = () => {

@@ -1,6 +1,5 @@
 import { React } from 'react';
 import help_icon from '../../../assets/Images/cube_game/how_to_play.png';
-import gameIcon from '../../../assets/Images/cube_game/diceIcon.png'
 import Cubes from './Cubes.jsx';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
@@ -203,7 +202,7 @@ const GameCube = () => {
             navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
     }
     return (
-        <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={{grade}} icon={TitleIcon} backgroundImage={CubesBg}>
+        <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={CubesBg}>
             <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
 
                 <div className='text-sm group inline-block absolute top-4 left-4'>

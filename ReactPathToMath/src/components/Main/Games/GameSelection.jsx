@@ -1,7 +1,6 @@
 import React from 'react';
 import ButtonComponent from '../../Utils/Button';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGrade } from '../../Utils/GradeComponent';
 import GameContainer from '../Games/GameContainer';
 import backgroundImage from '../../../assets/Images/GameSelectionBg.jpg'
 import RaceBtnBg from '../../../assets/Images/RaceGame/RaceBg.jpg'
@@ -12,11 +11,9 @@ import DiceBtnBg from '../../../assets/Images/cube_game/cubesBg.jpg'
 import BalloonsBtnBg from '../../../assets/Images/BalloonGame/BalloonsBg.jpg'
 import TitleIcon from '../../../assets/Images/GameSelectionIcon.png'
 
-function GameSelection() {
+function GameSelection({ subjectGame, level, grade, onGameSelected }) {
     const navigate = useNavigate();
-    const { subjectGame, level } = useParams();
     const gameLevel = Number(level);
-    const { grade } = useGrade();
 
     const gameButtons = [
         { label: 'Race Track', path: 'RaceGame', background: RaceBtnBg, textColor: 'text-gray-200' },
@@ -28,14 +25,18 @@ function GameSelection() {
     ];
 
     const handleSelectGame = (gamePath) => {
-        navigate(`/${gamePath}/${subjectGame}/${grade}/${level}`);
+        if (onGameSelected) {
+            onGameSelected(gamePath);
+        } else {
+            navigate(`/${gamePath}/${subjectGame}/${grade}/${level}`);
+        }
     };
 
     return (
         <GameContainer
             gameName="Choose Your Math Path!"
             gameSubject={subjectGame}
-            gameLevel={gameLevel}
+            gameLevel={level}
             icon={TitleIcon}
             backgroundImage={backgroundImage}
         >

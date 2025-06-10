@@ -13,13 +13,16 @@ import { useLocation } from 'react-router-dom';
  * @param {React.ReactNode} props.children - The children of the component
  * @returns {React.ReactNode} The rendered component
  */
-function GameContainer({ gameName, gameSubject, children, icon, backgroundImage }) {
+function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, children, icon, backgroundImage }) {
     const navigate = useNavigate();
     const location = useLocation();
 
     const { level } = useParams();
-    const gameLevel = Number(level);
+
+    // Use propGameLevel if passed; otherwise fallback to level param
+    const gameLevel = propGameLevel !== undefined ? Number(propGameLevel) : Number(level);    
     let popQuiz = false;
+
     if (location.state?.fromQuiz) {
         popQuiz = true;
     }

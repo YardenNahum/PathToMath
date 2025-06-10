@@ -36,7 +36,8 @@ function Track({ position, length, color = '#0000000000', startLabel = '', endLa
                 ) : label === 'Finish' ? (
                   <span className="text-2xl">{finishIcon}</span>
                 ) : (
-                  i + 1
+                  // Numeric labels for numbered blocks
+                  i > 0 && i < length - 1 ? i : ''
                 )}
               </span>
             </div>
