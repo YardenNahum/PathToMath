@@ -146,18 +146,11 @@ function Header() {
   return (
     <header className="flex flex-col xl:flex-row items-start xl:items-center z-30 justify-between w-full py-6 px-6 md:px-20 bg-blue-400 drop-shadow-md playful-font relative">
       <div className="flex justify-between items-center w-full xl:w-auto">
-        {/* Logo */}
-        {!isParent && (
-          <Link to="/" className="hover:scale-105 transition-all">
-            <img src={logo} alt="Logo" className="  w-60" />
-          </Link>
-        )}
-        {isParent && (
-          <Link to="/ParentPage" className="hover:scale-105 transition-all">
-            <img src={logo} alt="Logo" className="  w-60" />
-          </Link>
-        )}
-
+        {/* Logo link to Home */}
+        <Link to="/" className="hover:scale-105 transition-all">
+          <img src={logo} alt="Logo" className="  w-60" />
+        </Link>
+        
         <button className="xl:hidden text-3xl text-white cursor-pointer" onClick={toggleMobileMenu}>
           {/* simple hamburger menu for mobile view */}
           {isMobileOpen ? '✖' : '☰'}
