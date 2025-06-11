@@ -27,17 +27,19 @@ function BattleRocketGame() {
   const [opponentStarted, setOpponentStarted] = useState(false);
   const [userProgress, setUserProgress] = useState(0);
   const [opponentProgress, setOpponentProgress] = useState(0);
-  const [userIndex, setUserIndex] = useState(0);
   const [message, setMessage] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [countdown, setCountdown] = useState(null);
-
+  const [gameStart, setGameStart] = useState(false);
+  const [gameFinished, setGameFinished] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
   // PeerJS state
   const [peer, setPeer] = useState(null)
   const [connection, setConnection] = useState(null)
-  const [recipient, setRecipient] = useState('')
+  const [myPeerId, setMyPeerId] = useState('');
+  const [opponentPeerId, setOpponentPeerId] = useState('');
 
   useEffect(() => {
     // init peer on component mount
@@ -47,66 +49,87 @@ function BattleRocketGame() {
       pr.destroy()
     }
   }, [])
+
   useEffect(() => {
     if (!peer) return
-    // get my address (peer id)
+
+    // Handle peer connection events
     peer.on('open', id => {
-      console.log('Peer ID', id)
+      console.log('My Peer ID:', id)
+      setMyPeerId(id)
     })
-    // listen for incoming connections
+
+    // Listen for incoming connections
     peer.on('connection', con => {
-      console.log('Connection received')
+      console.log('Connection received from opponent')
       con.on('open', () => {
-        console.log('Connected')
-        setRecipient(con.peer)
+        console.log('Connected to opponent')
+        setOpponentPeerId(con.peer)
         setConnection(con)
-        const cn = peer.call(con.peer, localStream)
-        setCall(cn)
       })
     })
+
+    // Handle connection errors
+    peer.on('error', (err) => {
+      setOpponentPeerId('')
+      setConnection(null)
+      setConnectionError('Connection Error: Please Try Again')
+    })
   }, [peer])
+
   useEffect(() => {
     if (!connection) return
+
     connection.on('data', function (data) {
       handleData(data)
     })
+
     connection.on('close', () => {
-      disconnect()
+      setConnection(null)
+      setOpponentStarted(false)
     })
+
     connection.on('error', err => {
       console.error('Connection error:', err)
     })
   }, [connection])
-  const connectRecipient = e => {
-    e.preventDefault()
-    if (connection) {
-      disconnect()
-    } else {
-      connect(recipient)
+
+  const connectToOpponent = (opponentId) => {
+    setConnectionError('')
+    if (!peer || !opponentId) return
+
+    try {
+      const con = peer.connect(opponentId)
+      setConnection(con)
+
+      con.on('open', () => {
+        console.log('Connected to opponent')
+        setOpponentPeerId(opponentId)
+      })
+
+      con.on('error', (err) => {
+        console.error('Connection error:', err)
+      })
+    } catch (err) {
+      console.error('Failed to connect:', err)
     }
   }
 
-  const connect = recId => {
-    const con = peer.connect(recId)
-    setConnection(con)
-    console.log('Connection established - sender')
-  }
-
-  const disconnect = () => {
-    if (connection) {
-      connection.close()
-      setConnection(null) // sender side
-    }
-    setRecipient('')
-  }
   const handleData = d => {
     console.log(d)
-    setOpponentProgress(parseInt(d))
+    if (d == 'start') {
+      setOpponentStarted(true)
+    }
+    else if (d == 'finished') {
+      handleFinishedGame(false)
+    }
+    else {
+      setOpponentProgress(parseInt(d))
+    }
   }
   const handleSend = e => {
-    e.preventDefault()
     if (connection) {
-      connection.send(userProgress)
+      connection.send(e)
     }
   }
   const colorMap = [
@@ -120,63 +143,127 @@ function BattleRocketGame() {
   useEffect(() => {
     const loadedQuestions = generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(loadedQuestions);
-    setCurrentQuestion(loadedQuestions[0]);
+    setCurrentQuestion(loadedQuestions[userProgress]);
   }, [subjectGame, grade, gameLevel]);
 
+  useEffect(() => {
+    if (started && opponentStarted) {
+      startCountdown()
+    }
+  }, [started, opponentStarted])
 
-
-  const handleFinishedGame = () => {
-
+  const handleFinishedGame = (isWin) => {
+    setGameFinished(true);
+    if (isWin) {
+      handleSend('finished');
+      setMessage('You Win! Continue To The Next Race?');
+    }
+    else {
+      setMessage('You Lose! Continue To The Next Race?');
+    }
+    setGameStart(false);
   };
 
-
+  const handleNextRace = () => {
+    setGameFinished(false);
+    setGameStart(false);
+    setStarted(false);
+    setOpponentStarted(false);
+    setUserProgress(0);
+    setOpponentProgress(0);
+    setCountdown(null);
+    setQuestions(generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1));
+    setCurrentQuestion(questions[userProgress]);
+    setUserAnswer('');
+    setMessage('');
+    setConnection(null);
+    setOpponentPeerId('');
+  }
 
   const handleAnswerSubmit = () => {
-    if (!started || !currentQuestion) return;
+    if (!gameStart || !currentQuestion) return;
+
     if (userAnswer.trim() === String(currentQuestion.answer.value)) {
       const newProgress = userProgress + 1;
       setUserAnswer('');
       setMessage('Correct!');
       handleSend(newProgress)
-      if (newProgress === TRACK_STEPS - 1) {
-        setUserProgress(newProgress);
-        setMessage('You Win! Continue To The Next Race?');
-        setStarted(false);
+      setUserProgress(newProgress);
+
+      if (userProgress == NUM_QUESTIONS - 1) {
+        handleFinishedGame(true)
       } else {
-        setUserProgress(newProgress);
-        setUserIndex(userIndex + 1);
+        setCurrentQuestion(questions[userProgress])
       }
     } else {
       setMessage('Incorrect, Try again!');
       setUserAnswer('');
     }
   };
-  const interval = setInterval(() => {
-    setCountdown((prev) => {
-      if (prev === 1) {
-        clearInterval(interval);
-        setCountdown('🔥 Takeoff!');
-        setTimeout(() => {
-          setCountdown(null);
-          setStarted(true);
-        }, 1000);
-        return '🔥 Takeoff!';
-      }
-      return typeof prev === 'number' ? prev - 1 : prev;
-    });
-  }, 1000);
 
+  const startCountdown = () => {
+    setUserProgress(0);
+    setOpponentProgress(0);
+    setCountdown(3);
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          setCountdown('🔥 Takeoff!');
+          setTimeout(() => {
+            setCountdown(null);
+            setGameStart(true);
+          }, 1000);
+          return '🔥 Takeoff!';
+        }
+        return typeof prev === 'number' ? prev - 1 : prev;
+      });
+    }, 1000);
+  };
+
+  const startGame = () => {
+    setStarted(true)
+    handleSend('start')
+  }
 
   return (
     <GameContainer gameName="Battle Rocket" gameSubject={subjectGame} gameLevel={gameLevel} icon={TitleIcom} backgroundImage={spaceBg}>
       <div className="rounded-lg p-4">
-        {/* Start button or try again */}
-        {!started && (
+        {/* Connection UI */}
+        {!connection && (
+          <div className="shadow-2xl mb-4 p-4 bg-gradient-to-br from-pink-500 via-purple-500 to-blue-300 rounded-xl text-white flex flex-col">
+            <h2 className="text-3xl mb-2">Connect to Opponent!</h2>
+            <p className="mb-2 text-xl">Your Peer ID: <span className="ml-5 text-xl tracking-widest">{myPeerId}</span></p>
+            <p className="mb-2 text-xl">Share this ID with your opponent</p>
+            <div className="flex gap-5 items-center justify-center">
+              <input
+                type="text"
+                value={opponentPeerId}
+                onChange={(e) => setOpponentPeerId(e.target.value)}
+                placeholder="Enter opponent's Peer ID"
+                className="text-lg bg-white text-black px-3 py-2 rounded bg-purple-700 placeholder-gray-400 w-100 text-center  "
+              />
+              <button
+                onClick={() => connectToOpponent(opponentPeerId)}
+                className="px-4 py-2 bg-pink-700 rounded hover:bg-pink-500"
+              >
+                Connect
+              </button>
+              {connectionError && (
+                <p className="text-white text-lg font-bold">{connectionError}</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Start button */}
+        {!started && connection && (
           <div className="flex justify-center">
             <StartButton
-              onClick={connectRecipient}
-              message={message} startMessage={'🚀 Ready To Launch?'}
-              // Glow effect on StartButton
+              onClick={startGame}
+              message={message}
+              startMessage={'🚀 Ready To Launch?'}
               startGameColor="bg-purple-600 relative shadow-lg
                 before:absolute before:inset-0 before:rounded-xl
                 before:animate-pulse
@@ -187,8 +274,8 @@ function BattleRocketGame() {
         )}
 
         {started && !opponentStarted && (
-          <div className="flex justify-center">
-            <h1>Waiting for opponent...</h1>
+          <div className="flex justify-center text-white text-2xl font-bold">
+            <h1>Waiting for opponent to start...</h1>
           </div>
         )}
 
@@ -222,7 +309,7 @@ function BattleRocketGame() {
               color: 'white'  // <- Force all text inside to be white
             }}
           >
-            {started && opponentStarted && (
+            {gameStart && (
               <QuestionBox
                 question={currentQuestion?.question}
                 userAnswer={userAnswer}
@@ -230,6 +317,15 @@ function BattleRocketGame() {
                 onSubmit={handleAnswerSubmit}
                 feedback={<FeedbackMessage message={message} />}
               />
+            )}
+
+            {gameFinished && (
+              <div className="flex flex-col items-center justify-center text-white text-2xl font-bold">
+                <h1>{message}</h1>
+                <button onClick={handleNextRace} className="px-4 py-2 bg-purple-600 rounded hover:bg-purple-500">
+                  Continue To Next Race
+                </button>
+              </div>
             )}
           </div>
 
