@@ -9,14 +9,13 @@ import { useUser } from '../../Utils/UserContext';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
-import { useGrade } from '../../Utils/GradeComponent';
-const { grade } = useGrade();
+
 const circleData = [
   {
     title: 'Battle Rocket',
     description: 'Battle your friends in a rocket race!',
     imageSrc: mathCircle,
-    link: `/BattleRocketGame/Addition/${grade}/20`,
+    link: `/BattleRocketGame/Addition/1/20`,
   },
   {
     title: 'Math Problems',
