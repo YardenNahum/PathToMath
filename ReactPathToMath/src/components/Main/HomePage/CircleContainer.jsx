@@ -10,8 +10,14 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
 import { useGrade } from '../../Utils/GradeComponent';
-
+const { grade } = useGrade();
 const circleData = [
+  {
+    title: 'Battle Rocket',
+    description: 'Battle your friends in a rocket race!',
+    imageSrc: mathCircle,
+    link: `/BattleRocketGame/Addition/${grade}/20`,
+  },
   {
     title: 'Math Problems',
     description: 'Solve fun puzzles to improve your skills!',
@@ -39,20 +45,8 @@ const circleData = [
 ];
 function CirclesContainer() {
   const { user,update } = useUser();
-  const { grade } = useGrade();
   useEffect(() => {
       if (!user?.pop_quiz_last_date) return;
-      if (user && !circleData.find(circle => circle.title === 'Battle Rocket')) {
-        circleData.push({
-          title: 'Battle Rocket',
-          description: 'Battle your friends in a rocket race!',
-          imageSrc: mathCircle,
-          link: `/BattleRocketGame/Addition/${grade}/20`,
-        });
-      }
-      if (!user && circleData.find(circle => circle.title === 'Battle Rocket')) {
-        circleData.pop();
-      }
       const lastDate = new Date(user.pop_quiz_last_date);
       const today = new Date();
       lastDate.setHours(0, 0, 0, 0);
