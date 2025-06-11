@@ -88,9 +88,11 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 break;
             case "Percentage":
                 /** 1st grade: null, 2nd grade: null, 3rd grade: null, 4th grade: null
-                 *  5th grade: null, 6th grade: 1-10 
+                 *  5th grade: 1-5, 6th grade: 1-10 
                  */
-                variable = Math.floor(Math.random() * 10) + 1;
+                variable = grade === 5
+                    ? Math.floor(Math.random() * 5) + 1
+                    : Math.floor(Math.random() * 10) + 1;
                 break;
         }
 
@@ -172,7 +174,7 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 var2.value = Math.max(1, var2.value); // prevent division by 0
 
                 const rawNumerator = Math.floor(Math.random() * (var2.value - 1)) + 1; // 1 ≤ rawNumerator < var2.value
-                const cappedNumerator = Math.min(rawNumerator, Math.floor(var2.value * 0.75));
+                const cappedNumerator = Math.min(rawNumerator, Math.floor(var2.value * 0.90));
 
                 var1 = {
                     value: cappedNumerator,
@@ -263,8 +265,8 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
             return false;
         }
 
-        if (gameSubject === "Percentage" && grade != 6) {
-            console.log("Percentage is only allowed at level 6");
+        if (gameSubject === "Percentage" && grade < 5) {
+            console.log("Percentage is allowed at grade 5 and above");
             return false;
         }
 
