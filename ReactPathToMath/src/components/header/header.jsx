@@ -149,7 +149,7 @@ function Header() {
       {/* Mobile Menu */}
       {isMobileOpen && (
         <div className="w-full mt-4 xl:hidden">
-          <DynamicMenu items={menuData} isMobile={true} />
+          <DynamicMenu items={menuData} isMobile={true} closeMenu={() => setIsMobileOpen(false)}/>
         </div>
       )}
     </header>

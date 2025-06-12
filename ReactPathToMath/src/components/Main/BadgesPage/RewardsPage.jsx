@@ -6,38 +6,41 @@ import GuestPrompt from './GuestPrompt';
 import BadgesBg from '../../../assets/Images/Background/badgesBg.jpg';
 import SubjectBadgesPopup from './SubjectBadgesPopup';
 import Badge from './Badge';
+import topicGrade from '../../Utils/GradeSubjects';
+
+const badgeColor = "from-amber-300 to-amber-500"
 
 // Subject badges map unchanged
 const subjectBadgesMap = {
   Addition: [
-    { title: "Addition Novice", description: "Complete 5 levels", icon: "🎖️", color: "from-green-400 to-emerald-500", level: 5 },
-    { title: "Addition Pro", description: "Complete 15 levels", icon: "🏅", color: "from-blue-400 to-cyan-500", level: 15 },
-    { title: "Addition Expert", description: "Complete 25 levels", icon: "🏆", color: "from-purple-400 to-pink-500", level: 25 },
-    { title: "Addition Master", description: "Complete 30 levels", icon: "👑", color: "from-yellow-400 to-orange-500", level: 30 },
+    { title: "Addition Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
+    { title: "Addition Pro", description: "Complete 15 levels", icon: "🏅", color: badgeColor, level: 15 },
+    { title: "Addition Expert", description: "Complete 25 levels", icon: "🏆", color: badgeColor, level: 25 },
+    { title: "Addition Master", description: "Complete 30 levels", icon: "👑", color: badgeColor, level: 30 },
   ],
   Subtraction: [
-    { title: "Subtraction Novice", description: "Complete 5 levels", icon: "🎖️", color: "from-green-400 to-emerald-500", level: 5 },
-    { title: "Subtraction Pro", description: "Complete 15 levels", icon: "🏅", color: "from-blue-400 to-cyan-500", level: 15 },
-    { title: "Subtraction Expert", description: "Complete 25 levels", icon: "🏆", color: "from-purple-400 to-pink-500", level: 25 },
-    { title: "Subtraction Master", description: "Complete 30 levels", icon: "👑", color: "from-yellow-400 to-orange-500", level: 30 },
+    { title: "Subtraction Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
+    { title: "Subtraction Pro", description: "Complete 15 levels", icon: "🏅", color: badgeColor, level: 15 },
+    { title: "Subtraction Expert", description: "Complete 25 levels", icon: "🏆", color: badgeColor, level: 25 },
+    { title: "Subtraction Master", description: "Complete 30 levels", icon: "👑", color: badgeColor, level: 30 },
   ],
   Multiplication: [
-    { title: "Multiplication Novice", description: "Complete 5 levels", icon: "🎖️", color: "from-green-400 to-emerald-500", level: 5 },
-    { title: "Multiplication Pro", description: "Complete 15 levels", icon: "🏅", color: "from-blue-400 to-cyan-500", level: 15 },
-    { title: "Multiplication Expert", description: "Complete 25 levels", icon: "🏆", color: "from-purple-400 to-pink-500", level: 25 },
-    { title: "Multiplication Master", description: "Complete 30 levels", icon: "👑", color: "from-yellow-400 to-orange-500", level: 30 },
+    { title: "Multiplication Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
+    { title: "Multiplication Pro", description: "Complete 15 levels", icon: "🏅", color: badgeColor, level: 15 },
+    { title: "Multiplication Expert", description: "Complete 25 levels", icon: "🏆", color: badgeColor, level: 25 },
+    { title: "Multiplication Master", description: "Complete 30 levels", icon: "👑", color: badgeColor, level: 30 },
   ],
   Division: [
-    { title: "Division Novice", description: "Complete 5 levels", icon: "🎖️", color: "from-green-400 to-emerald-500", level: 5 },
-    { title: "Division Pro", description: "Complete 15 levels", icon: "🏅", color: "from-blue-400 to-cyan-500", level: 15 },
-    { title: "Division Expert", description: "Complete 25 levels", icon: "🏆", color: "from-purple-400 to-pink-500", level: 25 },
-    { title: "Division Master", description: "Complete 30 levels", icon: "👑", color: "from-yellow-400 to-orange-500", level: 30 },
+    { title: "Division Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
+    { title: "Division Pro", description: "Complete 15 levels", icon: "🏅", color: badgeColor, level: 15 },
+    { title: "Division Expert", description: "Complete 25 levels", icon: "🏆", color: badgeColor, level: 25 },
+    { title: "Division Master", description: "Complete 30 levels", icon: "👑", color: badgeColor, level: 30 },
   ],
   Percentage: [
-    { title: "Percentage Novice", description: "Complete 5 levels", icon: "🎖️", color: "from-green-400 to-emerald-500", level: 5 },
-    { title: "Percentage Pro", description: "Complete 15 levels", icon: "🏅", color: "from-blue-400 to-cyan-500", level: 15 },
-    { title: "Percentage Expert", description: "Complete 25 levels", icon: "🏆", color: "from-purple-400 to-pink-500", level: 25 },
-    { title: "Percentage Master", description: "Complete 30 levels", icon: "👑", color: "from-yellow-400 to-orange-500", level: 30 },
+    { title: "Percentage Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
+    { title: "Percentage Pro", description: "Complete 15 levels", icon: "🏅", color: badgeColor, level: 15 },
+    { title: "Percentage Expert", description: "Complete 25 levels", icon: "🏆", color: badgeColor, level: 25 },
+    { title: "Percentage Master", description: "Complete 30 levels", icon: "👑", color: badgeColor, level: 30 },
   ],
 };
 
@@ -143,10 +146,13 @@ const RewardsPage = () => {
 
             {Object.entries(subjectBreakdown).length > 0 && (
               <div className="mb-8 w-full max-w-6xl">
-                <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-green-200">
-                  <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">📊 Your Subject Progress</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
-                    {Object.entries(subjectBreakdown).map(([subject, levels]) => {
+                <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-green-200 ">
+                  <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">📊 Your Subjects Progress</h3>
+                  <h3 className="text-xl font-bold text-center mb-4 text-gray-600">Click a Subject to View Badges</h3>
+                  <div className="flex flex-wrap flex-row justify-center gap-10">
+                    {Object.entries(subjectBreakdown)
+                      .filter(([subject]) => topicGrade[subject] <= grade)
+                      .map(([subject, levels]) => {
                       const style = subjectStyleMap[subject] || {
                         icon: "❓",
                         color: "from-gray-400 to-gray-500",

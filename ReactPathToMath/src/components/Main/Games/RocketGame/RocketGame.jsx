@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import generateQuestions from '../GameLogic';
 import QuestionBox from '../RaceGame/QuestionBox';
@@ -47,7 +47,7 @@ function RocketGame() {
     setQuestions(generated);
   }, [subjectName, grade, gameLevel]);
 
-    const handleBotMove = () => {
+  const handleBotMove = useCallback(() => {
     setBotProgress((prev) => {
       const next = prev + 1;
       if (next >= TRACK_STEPS - 1) {
@@ -57,11 +57,10 @@ function RocketGame() {
       }
       return next;
     });
-  };
+  }, [TRACK_STEPS]);
 
   const botTimer = useBotInterval({
     started,
-    trackLength: TRACK_STEPS,
     onMove: handleBotMove,
     grade,
     level: gameLevel,

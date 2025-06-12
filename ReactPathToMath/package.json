@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "lucide-react": "^0.511.0",
     "mongoose": "^8.15.1",
+    "peerjs": "^1.5.5",
     "postcss": "^8.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

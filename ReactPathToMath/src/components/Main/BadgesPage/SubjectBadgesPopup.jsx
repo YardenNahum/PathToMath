@@ -4,7 +4,7 @@ import Badge from './Badge';
 const SubjectBadgesPopup = ({ subject, badges, onClose }) => {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+      className="fixed inset-0 mt-20 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
