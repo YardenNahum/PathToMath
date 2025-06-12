@@ -1,16 +1,16 @@
 import { React } from 'react';
-import help_icon from '../../../assets/Images/cube_game/how_to_play.png';
+import help_icon from '../../../../assets/Images/cube_game/how_to_play.png';
 import Cubes from './Cubes.jsx';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../Utils/UserContext';
-import { updateUser } from '../../../services/UserService';
-import GameContainer from './GameContainer.jsx';
-import CubesBg from '../../../assets/Images/cube_game/cubesBg.jpg';
-import TitleIcon from '../../../assets/Images/cube_game/CubesIcon.png';
+import { useUser } from '../../../Utils/UserContext.jsx';
+import { updateUser } from '../../../../services/UserService.jsx';
+import GameContainer from '../GamesUtils/GameContainer.jsx';
+import CubesBg from '../../../../assets/Images/cube_game/cubesBg.jpg';
+import TitleIcon from '../../../../assets/Images/cube_game/CubesIcon.png';
 import { useLocation } from 'react-router-dom';
-import { useUpdateQuiz } from '../PopQuizPage/UpdateQuiz.jsx';
+import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 
 
 const GameCube = () => {

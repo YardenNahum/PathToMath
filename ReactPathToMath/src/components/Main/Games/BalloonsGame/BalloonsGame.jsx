@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import GameContainer from '../GameContainer';
-import generateQuestions from '../GameLogic';
+import GameContainer from '../GamesUtils/GameContainer.jsx';
+import generateQuestions from '../GamesUtils/GameLogic';
 import BalloonField from './BalloonField';
 import QuestionBox from './QuestionBox';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import EndGameScreen from './EndGameScreen';
 import { useUser } from '../../../Utils/UserContext';
 import { updateUser } from '../../../../services/UserService';
-import TitleIcon from '../../../../assets/Images/BalloonGame/balloon_icon.png';
-import TitleIcon2 from '../../../../assets/Images/BalloonGame/balloon_icon2.png';
-import TitleIcon3 from '../../../../assets/Images/BalloonGame/balloon_icon3.png';
+import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.png';
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
 
 // Constants

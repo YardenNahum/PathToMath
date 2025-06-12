@@ -12,7 +12,7 @@ import { useGrade } from '../../Utils/GradeComponent';
 import { useUser } from "../../Utils/UserContext";
 import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
 import ButtonComponent from '../../Utils/Button.jsx'
-import GameSelection from '../Games/GameSelection.jsx'
+import GameSelection from '../Games/GamesUtils/GameSelection.jsx'
 
 // Subject icons and colors used in the SubjectCircle
 const subjectsData = {

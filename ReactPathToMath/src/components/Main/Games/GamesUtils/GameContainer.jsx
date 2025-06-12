@@ -1,8 +1,8 @@
 import React from 'react';
-import ButtonComponent from '../../Utils/Button';
+import ButtonComponent from '../../../Utils/Button';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import ShadowedTitle from '../../Utils/ShadowedTitle';
+import ShadowedTitle from '../../../Utils/ShadowedTitle';
 import { useLocation } from 'react-router-dom';
 /**
  * Game Container Component

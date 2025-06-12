@@ -11,8 +11,8 @@ import HomePage from './components/Main/HomePage/HomePage.jsx'
 import LoginSignup from './components/Main/LoginSignupPage/LoginSignup.jsx'
 import SubjectsPage from './components/Main/SubjectsPage/SubjectsPage.jsx'
 import LevelsPage from './components/Main/LevelsPage/LevelsPage.jsx'
-import OptionsGame from './components/Main/Games/OptionsGame.jsx'
-import GameCube from './components/Main/Games/GameCube.jsx'
+import OptionsGame from './components/Main/Games/OptionsGame/OptionsGame.jsx'
+import GameCube from './components/Main/Games/DiceGame/GameCube.jsx'
 import RaceGame from './components/Main/Games/RaceGame/RaceGame.jsx'
 import VideoPage from './components/Main/VideoPage/VideoPage.jsx'
 import Profile from './components/Main/ProfilePage/ProfilePage.jsx'
@@ -24,7 +24,7 @@ import RocketGame from './components/Main/Games/RocketGame/RocketGame.jsx';
 import PopQuiz from './components/Main/PopQuizPage/PopQuiz.jsx';
 import BalloonsGame  from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
 import RewardsPage from './components/Main/BadgesPage/RewardsPage';
-import GameSelection from './components/Main/Games/GameSelection.jsx'
+import GameSelection from './components/Main/Games/GamesUtils/GameSelection.jsx'
 /**
  * Router for the app
  */
