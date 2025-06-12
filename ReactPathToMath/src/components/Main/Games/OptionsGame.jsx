@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import ButtonComponent from '../../Utils/Button';
 import GameContainer from './GameContainer';
 import { useNavigate } from 'react-router-dom';
-import successImage from '../../../assets/images/success.png';
-import failureImage from '../../../assets/images/failure.png';
+import successImage from '../../../assets/images/Games/success.png';
+import failureImage from '../../../assets/images/Games/failure.png';
 import generateQuestions from './GameLogic';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../../Utils/UserContext';
-import TitleIcon from '../../../assets/Images/OptionsIcon.png'
+import TitleIcon from '../../../assets/Images/Games/OptionsIcon.png'
 import OptionsBg from '../../../assets/Images/Background/optionsBg.jpg'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../PopQuizPage/UpdateQuiz.jsx';

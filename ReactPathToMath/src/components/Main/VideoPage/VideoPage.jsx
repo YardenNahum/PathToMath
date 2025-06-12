@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SubjectCircle from "../HomePage/SubjectCircle";
-import background from '../../../assets/Images/nature2.png'
+import background from '../../../assets/Images/Background/HomeBg.png'
 import additionIcon from '../../../assets/Images/Math_icon/addition_purple.png';
 import subtractionIcon from '../../../assets/Images/Math_icon/minus.png';
 import multiplicationIcon from '../../../assets/Images/Math_icon/multi.png';

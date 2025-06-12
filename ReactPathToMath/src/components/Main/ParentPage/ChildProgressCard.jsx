@@ -1,5 +1,5 @@
 import React from 'react';
-import CardBckgr from '../../../assets/Images/clouds.jpg'
+import CardBckgr from '../../../assets/Images/Background/StudentCardBg.jpg'
 
 function ChildProgressCard({ child }) {
   const subjects = ['Addition', 'Subtraction', 'Multiply', 'Division', 'Percentage'];
