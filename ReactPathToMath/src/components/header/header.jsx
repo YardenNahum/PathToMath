@@ -65,22 +65,6 @@ function Header() {
         { label: 'Percentage', link: '/videos/Percentage' }
       ],
       class: "TutorialVideos"
-    },
-        {
-      label: 'Pop Quiz',
-      link: '/pop-quiz',
-      icon: PopQuizIcon,
-      colorClass: "bg-pink-600 hover:bg-pink-700",
-      submenuColor: "hover:bg-red-400",
-      class: "PopQuiz"
-    },
-        {
-      label: 'Badges',
-      link: '/badges',
-      icon: BadgesIcon,
-      colorClass: "bg-yellow-800 hover:bg-yellow-700",
-      submenuColor: "hover:bg-red-400",
-      class: "Badges"
     }
   ];
 
@@ -165,7 +149,7 @@ function Header() {
       {/* Mobile Menu */}
       {isMobileOpen && (
         <div className="w-full mt-4 xl:hidden">
-          <DynamicMenu items={menuData} isMobile={true} />
+          <DynamicMenu items={menuData} isMobile={true} closeMenu={() => setIsMobileOpen(false)}/>
         </div>
       )}
     </header>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { useParams } from 'react-router-dom';
 import GameContainer from '../GameContainer';
 import QuestionBox from './QuestionBox';
@@ -52,9 +52,9 @@ function RaceGame() {
 
   // The total length of the track is number of questions + a "Finish" block
   // Show full length (NUM_QUESTIONS + 1) even if questions haven't loaded yet
-  const TRACK_LENGTH = questions.length > 0 ? questions.length + 2 : NUM_QUESTIONS + 2;
+  const TRACK_LENGTH = 11; // Total blocks on the track (including start and finish)
 
-  const handleBotMove = () => {
+  const handleBotMove = useCallback(() => {
     setBotPos((prev) => {
       const next = prev + 1;
       if (next >= TRACK_LENGTH - 1) {
@@ -64,11 +64,10 @@ function RaceGame() {
       }
       return next;
     });
-  };
+  }, [TRACK_LENGTH]);
 
   const botTimer = useBotInterval({
     started,
-    trackLength: TRACK_LENGTH,
     onMove: handleBotMove,
     grade,
     level: gameLevel,
@@ -167,7 +166,7 @@ function RaceGame() {
         <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🏁 Race!'} />
 
         {/* Show the question box only when the game has started */}
-        {started && (
+        {started && questionIndex < questions.length && (
           <QuestionBox
             question={currentQuestion?.question}
             userAnswer={userAnswer}

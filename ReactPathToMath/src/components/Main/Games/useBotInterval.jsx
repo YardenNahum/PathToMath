@@ -1,20 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-function useBotInterval({ started, trackLength, onMove, grade, level }) {
+function useBotInterval({ started, onMove, grade, level }) {
   const botTimer = useRef(null);
+  const intervalTime = useRef(null);
 
-  const getIntervalTime = () => {
-    // Define base times per grade (1st to 6th)
+  const computeIntervalTime = () => {
     const gradeBaseTimes = {
       1: 10000,
-      2: 9000,
-      3: 8000,
-      4: 7000,
-      5: 6000,
-      6: 5000,
+      2: 10000,
+      3: 15000,
+      4: 15000,
+      5: 20000,
+      6: 20000,
     };
 
-    // Determine reduction based on level range
     let levelReduction = 0;
     if (level >= 11 && level <= 20) {
       levelReduction = 500;
@@ -27,14 +26,21 @@ function useBotInterval({ started, trackLength, onMove, grade, level }) {
   };
 
   useEffect(() => {
-    if (started && trackLength > 1) {
+    if (started) {
+      if (intervalTime.current === null) {
+        intervalTime.current = computeIntervalTime();
+      }
+
       botTimer.current = setInterval(() => {
         onMove();
-      }, getIntervalTime());
+      }, intervalTime.current);
     }
 
-    return () => clearInterval(botTimer.current);
-  }, [started, trackLength, grade, level, onMove]);
+    return () => {
+      clearInterval(botTimer.current);
+      intervalTime.current = null;
+    };
+  }, [started, onMove]);
 
   return botTimer;
 }

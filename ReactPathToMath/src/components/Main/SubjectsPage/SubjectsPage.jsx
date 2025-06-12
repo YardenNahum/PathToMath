@@ -43,10 +43,11 @@ const SubjectsPage = () => {
         zIndex: 0,
       }}
     >
-      <ShadowedTitle text="Choose Your Math Topic and Begin Practicing!" />
       <div className="flex flex-col items-center mt-5 gap-10 z-10">
+        <ShadowedTitle text="Choose Your Math Topic and Begin Practicing!" />
+
         {rows.map((_, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center gap-10">
+          <div key={rowIndex} className="flex justify-center gap-10 flex-wrap">
             {buttons.slice(rowIndex * 3, rowIndex * 3 + 3).map((subject, index) => (
               <div key={index} className="p-10 w-70 h-70 flex flex-col items-center justify-center transition-transform duration-200 hover:scale-105">
                 <Link to={`/Subjects/${subject.name}`}>

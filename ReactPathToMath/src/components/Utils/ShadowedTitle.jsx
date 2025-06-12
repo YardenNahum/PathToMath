@@ -16,14 +16,13 @@ const ShadowedTitle = ({ text, shadowColor = "#000000" }) => {
     const darkerColor = darkenHexColor(shadowColor);
 
     return (
-        <div className="relative w-fit leading-none z-0">
-            <h1
-                className="text-3xl md:text-5xl font-bold absolute top-[3px] left-[4px] whitespace-nowrap"
-                style={{ color: darkerColor}}
-            >
-                {text}
-            </h1>
-            <h1 className="text-3xl md:text-5xl font-bold text-white whitespace-nowrap relative">
+        <div className="relative w-fit leading-none z-0 text-wrap">
+
+            <h1 className="text-3xl md:text-5xl font-bold text-white relative text-center"
+                style={{
+                    textShadow: `2px 2px 0 ${darkerColor}, 4px 4px 0 ${darkerColor}, 6px 6px 0 ${darkerColor}`,
+                    color: 'white',
+                }}>
                 {text}
             </h1>
         </div>

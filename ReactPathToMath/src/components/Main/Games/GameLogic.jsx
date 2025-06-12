@@ -88,9 +88,11 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 break;
             case "Percentage":
                 /** 1st grade: null, 2nd grade: null, 3rd grade: null, 4th grade: null
-                 *  5th grade: null, 6th grade: 1-10 
+                 *  5th grade: 1-5, 6th grade: 1-10 
                  */
-                variable = Math.floor(Math.random() * 10) + 1;
+                variable = grade === 5
+                    ? Math.floor(Math.random() * 5) + 1
+                    : Math.floor(Math.random() * 10) + 1;
                 break;
         }
 
@@ -166,23 +168,22 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
 
                 answer = mathFunction(var1.value, var2.value);
                 break;
+                
             case "Percentage":
-                let divisior = divisior_array[Math.floor(Math.random() * divisior_array.length)];
-                let offsetMultiplier = [2, 4, 6, 8, 10];
-                let offset = offsetMultiplier[Math.floor(Math.random() * offsetMultiplier.length)];
+                var2 = generateVariable(grade); // denominator
+                var2.value = Math.max(1, var2.value); // prevent division by 0
 
-                var1 = generateVariable(grade);
+                const rawNumerator = Math.floor(Math.random() * (var2.value - 1)) + 1; // 1 ≤ rawNumerator < var2.value
+                const cappedNumerator = Math.min(rawNumerator, Math.floor(var2.value * 0.90));
 
-                var2 = {
-                    value: var1.value,
-                    textValue: numberToString(var1.value)
-                }
-
-                var1.value = var1.value * divisior / 100 * offset;
-                var1.textValue = numberToString(var1.value);
-
-                answer = divisior * offset;
+                var1 = {
+                    value: cappedNumerator,
+                    textValue: numberToString(cappedNumerator)
+                };
+                var2.textValue = numberToString(var2.value);
+                answer = Math.round((var1.value / var2.value) * 100);
                 break;
+
         }
 
         let options = [];
@@ -207,7 +208,7 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
 
         // Generate the question text
         if (gameSubject === "Percentage") {
-            questionText = `What is ${var1.textValue} / ${var2.textValue} Perctage?`;
+            questionText = `What is ${var1.textValue} out of ${var2.textValue} as a percentage?`;
         } else {
             questionText = `What's ${var1.textValue} ${mathAction} ${var2.textValue}?`;
         }
@@ -264,8 +265,8 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
             return false;
         }
 
-        if (gameSubject === "Percentage" && grade != 6) {
-            console.log("Percentage is only allowed at level 6");
+        if (gameSubject === "Percentage" && grade < 5) {
+            console.log("Percentage is allowed at grade 5 and above");
             return false;
         }
 

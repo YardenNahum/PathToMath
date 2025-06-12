@@ -1,15 +1,7 @@
 import React from 'react';
 import { useGrade } from '../Utils/GradeComponent';
 import { Link } from 'react-router-dom';
-
-// Topic's Grade Limit
-const topicGrade = {
-  "Addition": 1,
-  "Subtraction": 1,
-  "Multiplication": 3,
-  "Division": 4,
-  "Percentage": 5
-};
+import topicGrade from '../Utils/GradeSubjects'; 
 
 function subMenu({ items }) {
   const { grade } = useGrade();

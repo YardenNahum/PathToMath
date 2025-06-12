@@ -14,7 +14,8 @@ function ButtonComponent({
         sm: 'px-3 text-sm w-32 h-10',
         md: 'px-4 text-md w-40 h-14',
         lg: 'px-6 text-lg w-48 h-16',
-        xl: 'px-8 text-xl w-56 h-20',
+        xl: 'px-8 text-xl w-65 h-20',
+        '2xl': 'px-10 text-xl w-68 h-24',
     };
 
     const isImageBg = bgColor?.startsWith('http') || bgColor?.startsWith('/');
