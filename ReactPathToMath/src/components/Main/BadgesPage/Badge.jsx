@@ -13,8 +13,8 @@ const Badge = ({ reward, isEarned, showProgress = false, currentProgress = 0 }) 
       >
         {isEarned && (
           <>
-            <div className="absolute bottom-2 right-2 text-xl animate-bounce">✨</div>
-            <div className="absolute bottom-4 left-2 text-xl animate-bounce delay-200">💫</div>
+            <div className="absolute top-2 right-2 text-xl animate-bounce">✨</div>
+            <div className="absolute top-4 left-2 text-xl animate-bounce delay-200">💫</div>
           </>
         )}
         <div className={`text-6xl mb-3 transition-transform duration-300 ${isEarned ? 'hover:scale-125 hover:rotate-12' : 'grayscale'}`}>
