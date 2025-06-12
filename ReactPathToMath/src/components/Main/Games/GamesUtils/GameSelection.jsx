@@ -1,15 +1,15 @@
 import React from 'react';
-import ButtonComponent from '../../Utils/Button';
-import { useNavigate, useParams } from 'react-router-dom';
-import GameContainer from '../Games/GameContainer';
-import backgroundImage from '../../../assets/Images/Background/GameSelectionBg.jpg'
-import RaceBtnBg from '../../../assets/Images/RaceGame/RaceBg.jpg'
-import SpaceBtnBg from '../../../assets/Images/SpaceGame/spaceBg.jpg'
-import TalesBtnBg from '../../../assets/Images/wordGame/StoriesBg.png'
-import OptionsBtnBg from '../../../assets/Images/Background/optionsBg.jpg'
-import DiceBtnBg from '../../../assets/Images/cube_game/cubesBg.jpg'
-import BalloonsBtnBg from '../../../assets/Images/BalloonGame/BalloonsBg.jpg'
-import TitleIcon from '../../../assets/Images/Games/GameSelectionIcon.png'
+import ButtonComponent from '../../../Utils/Button';
+import { useNavigate } from 'react-router-dom';
+import GameContainer from './GameContainer';
+import backgroundImage from '../../../../assets/Images/Background/GameSelectionBg.jpg'
+import RaceBtnBg from '../../../../assets/Images/RaceGame/RaceBg.jpg'
+import SpaceBtnBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
+import TalesBtnBg from '../../../../assets/Images/wordGame/StoriesBg.png'
+import OptionsBtnBg from '../../../../assets/Images/Background/optionsBg.jpg'
+import DiceBtnBg from '../../../../assets/Images/cube_game/cubesBg.jpg'
+import BalloonsBtnBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg'
+import TitleIcon from '../../../../assets/Images/Games/GameSelectionIcon.png'
 
 function GameSelection({ subjectGame, level, grade, onGameSelected }) {
     const navigate = useNavigate();

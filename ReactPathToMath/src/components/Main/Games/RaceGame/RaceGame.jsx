@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback  } from 'react';
 import { useParams } from 'react-router-dom';
-import GameContainer from '../GameContainer';
+import GameContainer from '../GamesUtils/GameContainer';
 import QuestionBox from './QuestionBox';
-import generateQuestions from '../GameLogic';
+import generateQuestions from '../GamesUtils/GameLogic';
 import FeedbackMessage from './FeedbackMessage';
 import CountdownDisplay from './CountdownDisplay';
 import StartButton from './StartButton';
@@ -13,7 +13,7 @@ import TitleIcon from '../../../../assets/Images/RaceGame/RaceGameTitle.png'
 import RaceBg from '../../../../assets/Images/RaceGame/RaceBg.jpg'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
-import useBotInterval from '../useBotInterval.jsx';
+import useBotInterval from '../GamesUtils/useBotInterval.jsx';
 
 const NUM_QUESTIONS = 10; // Number of questions in the race
 

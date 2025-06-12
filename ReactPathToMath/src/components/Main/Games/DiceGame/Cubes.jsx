@@ -1,16 +1,11 @@
-import GameCube from "./GameCube.jsx";
 import React from "react";
-import GameContainer from "./GameContainer.jsx";
-import dice_1 from '../../../assets/Images/cube_game/1.png';
-import dice_2 from '../../../assets/Images/cube_game/2.png';
-import dice_3 from '../../../assets/Images/cube_game/3.png';
-import dice_4 from '../../../assets/Images/cube_game/4.png';
-import dice_5 from '../../../assets/Images/cube_game/5.png';
-import dice_6 from '../../../assets/Images/cube_game/6.png';
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useGrade } from "../../Utils/GradeComponent.jsx";
-import { useState } from "react";
+import dice_1 from '../../../../assets/Images/cube_game/1.png';
+import dice_2 from '../../../../assets/Images/cube_game/2.png';
+import dice_3 from '../../../../assets/Images/cube_game/3.png';
+import dice_4 from '../../../../assets/Images/cube_game/4.png';
+import dice_5 from '../../../../assets/Images/cube_game/5.png';
+import dice_6 from '../../../../assets/Images/cube_game/6.png';
+
 // Genarate cubes game grid
 const Cubes = ({value,onClick,className}) => {
     const dice_images = {

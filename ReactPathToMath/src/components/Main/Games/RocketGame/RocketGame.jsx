@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import generateQuestions from '../GameLogic';
+import generateQuestions from '../GamesUtils/GameLogic';
 import QuestionBox from '../RaceGame/QuestionBox';
 import FeedbackMessage from '../RaceGame/FeedbackMessage';
 import CountdownDisplay from '../RaceGame/CountdownDisplay';
 import StartButton from '../RaceGame/StartButton';
-import GameContainer from '../GameContainer';
+import GameContainer from '../GamesUtils/GameContainer';
 import Track from '../RaceGame/Track';
 import Planet from '../../../../assets/Images/SpaceGame/uranus.gif';
 import Moon from '../../../../assets/Images/SpaceGame/moon.gif';
 import TitleIcom from '../../../../assets/Images/SpaceGame/astronaut.png';
 import spaceBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
 import { useUser } from '../../../Utils/UserContext';
-import useBotInterval from '../useBotInterval';
+import useBotInterval from '../GamesUtils/useBotInterval';
 
 const NUM_QUESTIONS = 10;
 
