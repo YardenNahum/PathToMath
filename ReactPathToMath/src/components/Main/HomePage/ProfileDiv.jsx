@@ -2,7 +2,7 @@ import React from 'react';
 import { useLoginStatus } from '../../Utils/LoginStatusComponent';
 import ProfileCard from './ProfileCard';
 import ChooseGrade from './ChooseGradeComponent';
-import profile from "../../../assets/Images/profile.png"; 
+import profile from "../../../assets/Images/NavbarIcons/profile.png"; 
 import {useUser} from '../../Utils/UserContext'
 import { useNavigate } from 'react-router-dom';
 

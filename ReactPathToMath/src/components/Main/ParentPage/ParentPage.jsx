@@ -1,7 +1,7 @@
 import React from 'react';
 import ChildProgressCard from './ChildProgressCard';
 import {useUser} from '../../Utils/UserContext';
-import Background from '../../../assets/Images/nature2.png'
+import Background from '../../../assets/Images/Background/HomeBg.png'
 
 function ParentPage() {
   const { user } = useUser();

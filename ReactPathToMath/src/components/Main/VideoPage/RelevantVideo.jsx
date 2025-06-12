@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import background from '../../../assets/Images/nature2.png'
+import background from '../../../assets/Images/Background/HomeBg.png'
 import snail_icon from '../../../assets/Images/Loaders/snail_icon.png';
 import VideoGallery from './Gallery.jsx'; // make sure the path is correct
 import { Volume2, VolumeX, Maximize2, Minimize2, X, Star, BookOpen, ThumbsUp } from "lucide-react";

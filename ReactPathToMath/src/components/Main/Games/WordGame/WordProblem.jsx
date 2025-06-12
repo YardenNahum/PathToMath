@@ -7,8 +7,8 @@ import WordProblemsCreator from "./WordProblemsCreator";
 import QuestionBox from "../RaceGame/QuestionBox";
 import GameContainer from "../GameContainer";
 import TitleIcon from "../../../../assets/Images/wordGame/StoriesIcon.png";
-import successImage from "../../../../assets/Images/success.png";
-import failureImage from "../../../../assets/Images/failure.png";
+import successImage from "../../../../assets/Images/Games/success.png";
+import failureImage from "../../../../assets/Images/Games/failure.png";
 import ButtonComponent from "../../../Utils/Button";
 import StoriesBg from '../../../../assets/Images/wordGame/StoriesBg.png'
 import { useLocation } from 'react-router-dom';

@@ -7,7 +7,7 @@ body{
   filter: drop-shadow(0 0 6px grey);
 }
 .background-image {
-  background-image: url("./assets/Images/nature2.png");
+  background-image: url("./assets/Images/Background/HomeBg.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

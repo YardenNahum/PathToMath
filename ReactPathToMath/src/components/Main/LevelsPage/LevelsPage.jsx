@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import background from '../../../assets/Images/nature2.png'
+import background from '../../../assets/Images/Background/HomeBg.png'
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LevelCircle from "./LevelCircle.jsx";
 import addition from '../../../assets/Images/Math_icon/addition_purple.png';
