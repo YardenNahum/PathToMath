@@ -13,6 +13,9 @@ import TitleIcom from '../../../../assets/Images/SpaceGame/astronaut.png';
 import spaceBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
 import Peer from 'peerjs'
 import { peerConfig } from '../../../Utils/config'
+import ConnectionP2P from './ConnectionP2P';
+import { connectToOpponent, handleData, handleSend } from './ConnectionHandler';
+import { use } from 'react';
 
 const NUM_QUESTIONS = 10;
 
@@ -24,16 +27,23 @@ function BattleRocketGame() {
 
   // Game state
   const [started, setStarted] = useState(false);
+  // Opponent state
   const [opponentStarted, setOpponentStarted] = useState(false);
   const [userProgress, setUserProgress] = useState(0);
   const [opponentProgress, setOpponentProgress] = useState(0);
+  // Message state
   const [message, setMessage] = useState('');
+  // Answer state
   const [userAnswer, setUserAnswer] = useState('');
+  // Question state
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+  // Countdown state
   const [countdown, setCountdown] = useState(null);
+  // Game state
   const [gameStart, setGameStart] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
+  // Connection state
   const [connectionError, setConnectionError] = useState(false);
   // PeerJS state
   const [peer, setPeer] = useState(null)
@@ -41,6 +51,7 @@ function BattleRocketGame() {
   const [myPeerId, setMyPeerId] = useState('');
   const [opponentPeerId, setOpponentPeerId] = useState('');
 
+  // Initialize PeerJS
   useEffect(() => {
     // init peer on component mount
     const pr = new Peer(peerConfig)
@@ -50,6 +61,7 @@ function BattleRocketGame() {
     }
   }, [])
 
+  // Handle peer connection events
   useEffect(() => {
     if (!peer) return
 
@@ -77,61 +89,40 @@ function BattleRocketGame() {
     })
   }, [peer])
 
+  // Handle connection events
   useEffect(() => {
-    if (!connection) return
+    if (!connection) return;
 
     connection.on('data', function (data) {
-      handleData(data)
-    })
+      handleData(data, setOpponentStarted, setOpponentProgress, handleFinishedGame);
+    });
 
     connection.on('close', () => {
-      setConnection(null)
-      setOpponentStarted(false)
-    })
+      setConnection(null);
+      setOpponentStarted(false);
+    });
 
     connection.on('error', err => {
-      console.error('Connection error:', err)
-    })
-  }, [connection])
+      console.error('Connection error:', err);
+      setConnectionError('Connection lost. Please try again.');
+    });
+  }, [connection]);
 
-  const connectToOpponent = (opponentId) => {
-    setConnectionError('')
-    if (!peer || !opponentId) return
-
-    try {
-      const con = peer.connect(opponentId)
-      setConnection(con)
-
-      con.on('open', () => {
-        console.log('Connected to opponent')
-        setOpponentPeerId(opponentId)
-      })
-
-      con.on('error', (err) => {
-        console.error('Connection error:', err)
-      })
-    } catch (err) {
-      console.error('Failed to connect:', err)
-    }
-  }
-
-  const handleData = d => {
-    console.log(d)
-    if (d == 'start') {
-      setOpponentStarted(true)
-    }
-    else if (d == 'finished') {
-      handleFinishedGame(false)
+  // Handle game finished
+  const handleFinishedGame = (isWin) => {
+    setGameFinished(true);
+    if (isWin) {
+      handleSend(connection, 'finished');
+      setMessage('You Win! Continue To The Next Race?');
     }
     else {
-      setOpponentProgress(parseInt(d))
+      setMessage('You Lose! Continue To The Next Race?');
     }
-  }
-  const handleSend = e => {
-    if (connection) {
-      connection.send(e)
-    }
-  }
+    setGameStart(false);
+
+  };
+
+
   const colorMap = [
     'text-white',
     'text-white',
@@ -143,27 +134,17 @@ function BattleRocketGame() {
   useEffect(() => {
     const loadedQuestions = generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(loadedQuestions);
-    setCurrentQuestion(loadedQuestions[userProgress]);
+    setCurrentQuestion(loadedQuestions[0]);
   }, [subjectGame, grade, gameLevel]);
 
+  // Handle countdown
   useEffect(() => {
     if (started && opponentStarted) {
       startCountdown()
     }
   }, [started, opponentStarted])
 
-  const handleFinishedGame = (isWin) => {
-    setGameFinished(true);
-    if (isWin) {
-      handleSend('finished');
-      setMessage('You Win! Continue To The Next Race?');
-    }
-    else {
-      setMessage('You Lose! Continue To The Next Race?');
-    }
-    setGameStart(false);
-  };
-
+  // Handle next race
   const handleNextRace = () => {
     setGameFinished(false);
     setGameStart(false);
@@ -172,14 +153,17 @@ function BattleRocketGame() {
     setUserProgress(0);
     setOpponentProgress(0);
     setCountdown(null);
-    setQuestions(generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1));
-    setCurrentQuestion(questions[userProgress]);
+    setConnectionError('');
+    setOpponentPeerId('');
+    setConnection(null);
     setUserAnswer('');
     setMessage('');
-    setConnection(null);
-    setOpponentPeerId('');
+    const newQuestions = generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1);
+    setQuestions(newQuestions);
+    setCurrentQuestion(newQuestions[0]);
   }
 
+  // Handle answer submit
   const handleAnswerSubmit = () => {
     if (!gameStart || !currentQuestion) return;
 
@@ -187,13 +171,13 @@ function BattleRocketGame() {
       const newProgress = userProgress + 1;
       setUserAnswer('');
       setMessage('Correct!');
-      handleSend(newProgress)
+      handleSend(connection, newProgress);
       setUserProgress(newProgress);
 
-      if (userProgress == NUM_QUESTIONS - 1) {
-        handleFinishedGame(true)
+      if (newProgress == NUM_QUESTIONS - 1) {
+        handleFinishedGame(true);
       } else {
-        setCurrentQuestion(questions[userProgress])
+        setCurrentQuestion(questions[newProgress]);
       }
     } else {
       setMessage('Incorrect, Try again!');
@@ -201,6 +185,7 @@ function BattleRocketGame() {
     }
   };
 
+  // Handle countdown
   const startCountdown = () => {
     setUserProgress(0);
     setOpponentProgress(0);
@@ -222,131 +207,123 @@ function BattleRocketGame() {
     }, 1000);
   };
 
+  // Handle game start
   const startGame = () => {
-    setStarted(true)
-    handleSend('start')
-  }
+    setStarted(true);
+    handleSend(connection, 'start');
+  };
 
   return (
     <GameContainer gameName="Battle Rocket" gameSubject={subjectGame} gameLevel={gameLevel} icon={TitleIcom} backgroundImage={spaceBg}>
-      <div className="rounded-lg p-4">
-        {/* Connection UI */}
-        {!connection && (
-          <div className="shadow-2xl mb-4 p-4 bg-gradient-to-br from-pink-500 via-purple-500 to-blue-300 rounded-xl text-white flex flex-col">
-            <h2 className="text-3xl mb-2">Connect to Opponent!</h2>
-            <p className="mb-2 text-xl">Your Peer ID: <span className="ml-5 text-xl tracking-widest">{myPeerId}</span></p>
-            <p className="mb-2 text-xl">Share this ID with your opponent</p>
-            <div className="flex gap-5 items-center justify-center">
-              <input
-                type="text"
-                value={opponentPeerId}
-                onChange={(e) => setOpponentPeerId(e.target.value)}
-                placeholder="Enter opponent's Peer ID"
-                className="text-lg bg-white text-black px-3 py-2 rounded bg-purple-700 placeholder-gray-400 w-100 text-center  "
-              />
-              <button
-                onClick={() => connectToOpponent(opponentPeerId)}
-                className="px-4 py-2 bg-pink-700 rounded hover:bg-pink-500"
-              >
-                Connect
-              </button>
-              {connectionError && (
-                <p className="text-white text-lg font-bold">{connectionError}</p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Start button */}
-        {!started && connection && (
-          <div className="flex justify-center">
-            <StartButton
-              onClick={startGame}
-              message={message}
-              startMessage={'🚀 Ready To Launch?'}
-              startGameColor="bg-purple-600 relative shadow-lg
+      {/* Connection P2P */}
+      <ConnectionP2P
+        connection={connection}
+        myPeerId={myPeerId}
+        opponentPeerId={opponentPeerId}
+        setOpponentPeerId={setOpponentPeerId}
+        connectToOpponent={(id) => connectToOpponent(peer, id, setConnection, setOpponentPeerId, setConnectionError)}
+        connectionError={connectionError}
+      />
+      {/* Start Game Button */}
+      {!started && connection && (
+        <div className="flex justify-center">
+          <StartButton
+            onClick={startGame}
+            message={message}
+            startMessage={'🚀 Ready To Launch?'}
+            startGameColor="bg-purple-600 relative shadow-lg
                 before:absolute before:inset-0 before:rounded-xl
                 before:animate-pulse
                 before:shadow-[0_0_15px_5px_rgba(138,43,226,0.8)]
                 before:pointer-events-none"
-            />
-          </div>
-        )}
-
-        {started && !opponentStarted && (
-          <div className="flex justify-center text-white text-2xl font-bold">
-            <h1>Waiting for opponent to start...</h1>
-          </div>
-        )}
-
-        {/* Countdown */}
-        <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🔥 Takeoff!'} />
-
-        <div className="flex flex-row items-center justify-center gap-8">
-          <Track
-            position={userProgress}
-            length={NUM_QUESTIONS}
-            startLabel="Your Rocket"
-            endLabel=""
-            startIcon=""
-            finishIcon={
-              <img
-                src={Planet}
-                alt="Planet"
-                className="h-15 w-15 rounded-full object-cover"
-              />
-            }
-            direction="vertical"
-            type="climb"
-          />
-
-          {/* Question Box container */}
-          <div
-            className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-150 min-h-[200px]"
-            style={{
-              animation: 'glowPulse 2s infinite',
-              boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.8)',
-              color: 'white'  // <- Force all text inside to be white
-            }}
-          >
-            {gameStart && (
-              <QuestionBox
-                question={currentQuestion?.question}
-                userAnswer={userAnswer}
-                setUserAnswer={setUserAnswer}
-                onSubmit={handleAnswerSubmit}
-                feedback={<FeedbackMessage message={message} />}
-              />
-            )}
-
-            {gameFinished && (
-              <div className="flex flex-col items-center justify-center text-white text-2xl font-bold">
-                <h1>{message}</h1>
-                <button onClick={handleNextRace} className="px-4 py-2 bg-purple-600 rounded hover:bg-purple-500">
-                  Continue To Next Race
-                </button>
-              </div>
-            )}
-          </div>
-
-          <Track
-            position={opponentProgress}
-            length={NUM_QUESTIONS}
-            startLabel="Opponent's Rocket"
-            endLabel=""
-            startIcon=""
-            finishIcon={
-              <img
-                src={Moon}
-                alt="Moon"
-                className="h-15 w-15 rounded-full object-cover"
-              />
-            }
-            direction="vertical"
-            type="climb"
           />
         </div>
+      )}
+
+      {/* Waiting for opponent to start */}
+      {started && !opponentStarted && (
+        <div className="flex justify-center text-white text-2xl font-bold">
+          <h1>Waiting for opponent to start...</h1>
+        </div>
+      )}
+
+      {/* Countdown Display */}
+      <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🔥 Takeoff!'} />
+
+      <div className="flex flex-row items-center justify-center gap-8">
+        {/* User Progress Track */}
+        <Track
+          position={userProgress}
+          length={NUM_QUESTIONS}
+          startLabel="Your Rocket"
+          endLabel=""
+          startIcon=""
+          finishIcon={
+            <img
+              src={Planet}
+              alt="Planet"
+              className="h-15 w-15 rounded-full object-cover"
+            />
+          }
+          direction="vertical"
+          type="climb"
+        />
+
+        {/* Question Box container */}
+        <div
+          className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-150 min-h-[200px]"
+          style={{
+            animation: 'glowPulse 2s infinite',
+            boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.8)',
+            color: 'white'  // <- Force all text inside to be white
+          }}
+        >
+          {/* Question Box */}
+          {gameStart && connection && (
+            <QuestionBox
+              question={currentQuestion?.question}
+              userAnswer={userAnswer}
+              setUserAnswer={setUserAnswer}
+              onSubmit={handleAnswerSubmit}
+              feedback={<FeedbackMessage message={message} />}
+            />
+          )}
+          {/* Opponent Disconnected */}
+          {gameStart && !connection && (
+            <div className="flex flex-col items-center justify-center text-white text-3xl font-bold">
+              <h1> Opponent Disconnected 🤔</h1>
+            </div>
+          )}
+
+          {gameFinished && (
+            <div className="flex flex-col items-center justify-center text-white text-2xl font-bold">
+              <h1>{message}</h1>
+              <button onClick={handleNextRace} className="hover:scale-105 transition-all duration-300 cursor-pointer px-4 py-2 bg-purple-600 rounded hover:bg-purple-500">
+                Continue To Next Race
+              </button>
+            </div>
+          )}
+        </div>
+
+        <Track
+          position={opponentProgress}
+          length={NUM_QUESTIONS}
+          startLabel="Opponent's Rocket"
+          endLabel=""
+          startIcon=""
+          finishIcon={
+            <img
+              src={Moon}
+              alt="Moon"
+              className="h-15 w-15 rounded-full object-cover"
+            />
+          }
+          direction="vertical"
+          type="climb"
+        />
       </div>
+
+
     </GameContainer>
   );
 }
