@@ -11,6 +11,7 @@ import CubesBg from '../../../../assets/Images/cube_game/cubesBg.jpg';
 import TitleIcon from '../../../../assets/Images/cube_game/CubesIcon.png';
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
+import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
 
 const GameCube = () => {
@@ -23,6 +24,9 @@ const GameCube = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const updateQuiz = useUpdateQuiz();
+    const { user, update } = useUser();
+    const [correct, setCorrect] = useState(0);
+
 
     const generate_question = () => {
         const numericGrade = parseInt(grade); // ensure number
@@ -146,158 +150,159 @@ const GameCube = () => {
         else {
             setGameFinished(true);
             setFeedbackMessage(`🎉 You answered ${correct}/${MAX_QUESTIONS} questions correct!`);
+            //update user progress based on success
+            updateUserProgress({
+                isSuccess: correct >= 3,
+                location,
+                user,
+                update,
+                updateQuiz,
+                gameLevel: parseInt(level),
+                gameSubject: subjectGame
+
+            });
         }
     }
-    const restartGame = () => {
-        setFeedbackMessage("");
-        setSelected([]);
-        setSolution([]);
-        setNext("");
-        setTries(MAX_TRIES);
-        setIsDisabled(false);
-        setQuestion(0);
-        setCorrect(0);
-        setGame(generate_question());
-        setGameFinished(false);
-        setGameFinished(false);
-    }
-    const toggleCube = (index) => {
-        if (isDisabled) return;
-        setSelected(prev =>
-            prev.includes(index)
-                ? prev.filter(i => i !== index)
-                : [...prev, index]
-        );
-    };
+        const restartGame = () => {
+            setFeedbackMessage("");
+            setSelected([]);
+            setSolution([]);
+            setNext("");
+            setTries(MAX_TRIES);
+            setIsDisabled(false);
+            setQuestion(0);
+            setCorrect(0);
+            setGame(generate_question());
+            setGameFinished(false);
+            setGameFinished(false);
+        }
+        const toggleCube = (index) => {
+            if (isDisabled) return;
+            setSelected(prev =>
+                prev.includes(index)
+                    ? prev.filter(i => i !== index)
+                    : [...prev, index]
+            );
+        };
 
-    const [isDisabled, setIsDisabled] = useState(false);
-    const [correct, setCorrect] = useState(0);
-    const [next, setNext] = useState("");
-    const [tries, setTries] = useState(MAX_TRIES);
-    const [question, setQuestion] = useState(0);
-    const [solution, setSolution] = useState([]);
-    const [feedbackMessage, setFeedbackMessage] = useState("");
-    const [game, setGame] = useState(generate_question);
-    const [selected, setSelected] = useState([]);
-    const { cubes, sum } = game;
-    const [gameFinished, setGameFinished] = useState(false);
-    const success = correct >= 3;
-    // Handle finished game
-    const { user } = useUser();
+        const [isDisabled, setIsDisabled] = useState(false);
+        const [next, setNext] = useState("");
+        const [tries, setTries] = useState(MAX_TRIES);
+        const [question, setQuestion] = useState(0);
+        const [solution, setSolution] = useState([]);
+        const [feedbackMessage, setFeedbackMessage] = useState("");
+        const [game, setGame] = useState(generate_question);
+        const [selected, setSelected] = useState([]);
+        const { cubes, sum } = game;
+        const [gameFinished, setGameFinished] = useState(false);
+        const success = correct >= 3;
+        // Handle finished game
 
-    const handleFinishedGame = () => {
-        if (location.state?.fromQuiz) {
-            if (success) {
-                updateQuiz();
+
+        const handleFinishedGame = () => {
+            if (location.state?.fromQuiz) {
+                navigate("/");
             }
-            navigate("/");
-        }
-        else {
-            const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-            if (gameLevel > currentFinished) {
-                // Update user's grade level for the subject if they passed the game
-                let newUser = user;
-                newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-                updateUser(user.email, newUser);
+            else {
+                navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
             }
         }
-    }
-    return (
-        <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={CubesBg}>
-            <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
+        return (
+            <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={CubesBg}>
+                <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
 
-                <div className='text-sm group flex align-left justify-start items-center gap-2 mb-4'>
-                    {/* How to play button */}
-                    <button className="group items-center flex gap-2 bg-purple-200 shadow-2xl px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
-                        <img src={help_icon} alt="How to play" className="h-5 w-5" />
-                        How to play
-                    </button>
-                    {/* Dropdown text */}
-                    <div className="p-2 mt-2 rounded shadow-md bg-white  group-hover,group-selected:opacity-100 invisible group-hover:visible transition-all duration-300 ">
-                        Choose cubes that sum up to the given number. You have {MAX_TRIES} tries per question.
-                    </div>
-                </div>
-                {gameFinished ? (
-                    <div className="text-2xl flex flex-col items-center justify-center min-h-screen text-center">
-                        <h2 className="text-3xl font-semibold text-green-600 mb-4">
-                            {feedbackMessage}
-                        </h2>
-                        {success ? "Level up!" : " Try again next time!"}
-                        <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
-                            onClick={() => {
-                                if (success) {
-
-                                    handleFinishedGame();         // navigates to next level
-                                } else {
-                                    restartGame();         // replay same level
-                                }
-                            }}
-                        >
-                            {success ? "Next level" : "Try again"}
+                    <div className='text-sm group flex align-left justify-start items-center gap-2 mb-4'>
+                        {/* How to play button */}
+                        <button className="group items-center flex gap-2 bg-purple-200 shadow-2xl px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
+                            <img src={help_icon} alt="How to play" className="h-5 w-5" />
+                            How to play
                         </button>
-
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center">
-                        <div className='text-gray-700 text-lg mb-4'>
-                            Tries: {'❤️'.repeat(tries)}{'🤍'.repeat(MAX_TRIES - tries)}
+                        {/* Dropdown text */}
+                        <div className="p-2 mt-2 rounded shadow-md bg-white  group-hover,group-selected:opacity-100 invisible group-hover:visible transition-all duration-300 ">
+                            Choose cubes that sum up to the given number. You have {MAX_TRIES} tries per question.
                         </div>
+                    </div>
+                    {gameFinished ? (
+                        <div className="text-2xl flex flex-col items-center justify-center min-h-screen text-center">
+                            <h2 className="text-3xl font-semibold text-green-600 mb-4">
+                                {feedbackMessage}
+                            </h2>
+                            {success ? "Level up!" : " Try again next time!"}
+                            <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
+                                onClick={() => {
+                                    if (success) {
 
-                        <h1 className="text-4xl font-bold text-center mb-3">
-                            Sum: {sum}
-                        </h1>
-                        <h2 className='mb-5 text-1xl font-semibold text-gray-800'>
-                            Question: {question + 1} / {MAX_QUESTIONS}
-                        </h2>
-
-                        <div className="grid grid-cols-4 grid-rows-2 gap-4 mt-0">
-                            {cubes.map((value, index) => (
-                                <Cubes
-                                    key={index}
-                                    value={value}
-                                    onClick={() => toggleCube(index)}
-                                    className={
-                                        selected.includes(index)
-                                            ? "outline-4 outline-green-400"
-                                            : solution.includes(index)
-                                                ? "outline-4 outline-red-400"
-                                                : "bg-gray-100"
+                                        handleFinishedGame();         // navigates to next level
+                                    } else {
+                                        restartGame();         // replay same level
                                     }
-                                />
-                            ))}
-                        </div>
-
-                        <div
-                            className={`mt-6 text-xl text-center transition-opacity duration-300 ${feedbackMessage ? "opacity-100 text-purple-700" : "opacity-0"
-                                }`}
-                        >
-                            {feedbackMessage}
-                        </div>
-
-                        <div className="flex justify-center items-center gap-4 mt-6">
-                            <button
-                                className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded-lg"
-                                onClick={() => check_answer(selected)}
+                                }}
                             >
-                                Check
+                                {success ? "Next level" : "Try again"}
                             </button>
 
-                            <button
-                                className={`bg-orange-400 text-white hover:cursor-pointer px-4 py-2 rounded-lg transition-opacity duration-300 ${next ? "opacity-100" : "opacity-0"}`}
-                                onClick={() => renderGame()}
-                            >
-                                {next}
-                            </button>
                         </div>
+                    ) : (
+                        <div className="flex flex-col items-center">
+                            <div className='text-gray-700 text-lg mb-4'>
+                                Tries: {'❤️'.repeat(tries)}{'🤍'.repeat(MAX_TRIES - tries)}
+                            </div>
 
-                    </div>
-                )}
-            </div>
-        </GameContainer>
-    );
-}
+                            <h1 className="text-4xl font-bold text-center mb-3">
+                                Sum: {sum}
+                            </h1>
+                            <h2 className='mb-5 text-1xl font-semibold text-gray-800'>
+                                Question: {question + 1} / {MAX_QUESTIONS}
+                            </h2>
+
+                            <div className="grid grid-cols-4 grid-rows-2 gap-4 mt-0">
+                                {cubes.map((value, index) => (
+                                    <Cubes
+                                        key={index}
+                                        value={value}
+                                        onClick={() => toggleCube(index)}
+                                        className={
+                                            selected.includes(index)
+                                                ? "outline-4 outline-green-400"
+                                                : solution.includes(index)
+                                                    ? "outline-4 outline-red-400"
+                                                    : "bg-gray-100"
+                                        }
+                                    />
+                                ))}
+                            </div>
+
+                            <div
+                                className={`mt-6 text-xl text-center transition-opacity duration-300 ${feedbackMessage ? "opacity-100 text-purple-700" : "opacity-0"
+                                    }`}
+                            >
+                                {feedbackMessage}
+                            </div>
+
+                            <div className="flex justify-center items-center gap-4 mt-6">
+                                <button
+                                    className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded-lg"
+                                    onClick={() => check_answer(selected)}
+                                >
+                                    Check
+                                </button>
+
+                                <button
+                                    className={`bg-orange-400 text-white hover:cursor-pointer px-4 py-2 rounded-lg transition-opacity duration-300 ${next ? "opacity-100" : "opacity-0"}`}
+                                    onClick={() => renderGame()}
+                                >
+                                    {next}
+                                </button>
+                            </div>
+
+                        </div>
+                    )}
+                </div>
+            </GameContainer>
+        );
+    }
 
 
 
 
-export default GameCube;
+    export default GameCube;

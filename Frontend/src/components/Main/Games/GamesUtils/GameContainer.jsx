@@ -20,7 +20,7 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
     const { level } = useParams();
 
     // Use propGameLevel if passed; otherwise fallback to level param
-    const gameLevel = propGameLevel !== undefined ? Number(propGameLevel) : Number(level);    
+    const gameLevel = propGameLevel !== undefined ? Number(propGameLevel) : Number(level);
     let popQuiz = false;
 
     if (location.state?.fromQuiz) {
@@ -30,11 +30,11 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
      * Handles the return button click event
      */
     const handleReturn = () => {
-    if (location.state?.fromQuiz) {
-        navigate("/"); // go to homepage
-    } else {
-        navigate(-1); // go back to previous page
-    }
+        if (location.state?.fromQuiz) {
+            navigate("/"); // go to homepage
+        } else {
+            navigate(-1); // go back to previous page
+        }
     };
 
     return (
@@ -60,7 +60,7 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
 
                 {/* Main game name with title icon */}
                 <h1 className="text-6xl font-bold text-black flex justify-center items-center space-x-3 select-none">
-                    <ShadowedTitle text={gameName}/>
+                    <ShadowedTitle text={gameName} />
                     {icon && <img src={icon} alt="Game Icon" className="w-25 h-auto" />}
                 </h1>
 
@@ -84,15 +84,15 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
             </div>
 
             <div className=" flex justify-center mb-10">
-                {!popQuiz && (
-                <ButtonComponent
-                    label="Return"
-                    onClick={handleReturn}
-                    bgColor="bg-blue-400 hover:bg-blue-700"
-                    textColor="text-white"
-                    size="md"
-                />
-                )}
+                
+                    <ButtonComponent
+                        label="Return"
+                        onClick={handleReturn}
+                        bgColor="bg-blue-400 hover:bg-blue-700"
+                        textColor="text-white"
+                        size="md"
+                    />
+                
             </div>
         </div>
     );

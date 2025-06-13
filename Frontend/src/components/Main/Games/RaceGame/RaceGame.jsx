@@ -14,6 +14,7 @@ import RaceBg from '../../../../assets/Images/RaceGame/RaceBg.jpg'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import useBotInterval from '../GamesUtils/useBotInterval.jsx';
+import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
 const NUM_QUESTIONS = 10; // Number of questions in the race
 
@@ -72,6 +73,8 @@ function RaceGame() {
     grade,
     level: gameLevel,
   });
+
+  
 
   // Updating levels progress on levels page after finishing a level successfully
   const handleFinishedGame = () => {

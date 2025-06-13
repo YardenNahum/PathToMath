@@ -10,7 +10,7 @@ import TitleIcon from '../../../../assets/Images/Games/OptionsIcon.png';
 import OptionsBg from '../../../../assets/Images/Background/optionsBg.jpg';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import MultipleChoiceCard from './MultipleChoiceCard.jsx';
-
+import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 /**
  * OptionsGame component represents a multiple-choice quiz game with progression logic.
  * It loads questions based on subject, grade, and level, tracks correct answers,
@@ -102,9 +102,19 @@ export default function OptionsGame() {
      * If success, updates user progress and navigates accordingly.
      * If failure, offers retry.
      */
+
     const generateEnd = () => {
         const isSuccess = correctAnswers >= 4;
-        setEndGameObject({
+        //update user progress based on success
+        updateUserProgress({
+            isSuccess: isSuccess,
+            location,
+            user,
+            update,
+            updateQuiz,
+            gameLevel: parseInt(level),
+            gameSubject: subjectGame
+        }); setEndGameObject({
             bgColor: isSuccess ? "bg-green-200" : "bg-red-200",
             text: `${isSuccess ? 'Great!' : 'Oh no!'} You answered ${correctAnswers} / ${numOfQuestions} Correct Answers.`,
             color: isSuccess ? "green" : "red",
@@ -113,17 +123,9 @@ export default function OptionsGame() {
             handleClick: () => {
                 if (isSuccess) {
                     if (location.state?.fromQuiz) {
-                        updateQuiz();
                         navigate("/");
                     } else {
-                    // Update user's grade level progress if this level is higher than recorded
-                    const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-                    if (gameLevel > currentFinished) {
-                        let newUser = { ...user };
-                        newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-                        update(user.email, newUser);
-                    }
-                    navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
+                        navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
                     }
                 } else {
                     // Retry current level
@@ -172,7 +174,7 @@ export default function OptionsGame() {
         >
             <div className="flex justify-center">
                 <div className={`mb-5 border-8 border-amber-400 rounded-lg p-9 inline-block shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-gray-700'}`}>
-                    <div className="text-5xl text-white font-semibold mb-6 p-6 text-center">
+                    <div className={`text-5xl ${endGame ? 'text-black' : 'text-white'} mb-6 p-6 text-center`}>
                         {!endGame ? currentQuestion?.question : endGameObject?.text}
                     </div>
 

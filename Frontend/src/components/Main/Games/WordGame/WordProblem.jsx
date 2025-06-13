@@ -13,6 +13,8 @@ import ButtonComponent from "../../../Utils/Button";
 import StoriesBg from '../../../../assets/Images/wordGame/StoriesBg.png'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
+import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+
 
 const WordProblem = () => {
   // Get the subject and level from the URL parameters
@@ -22,11 +24,11 @@ const WordProblem = () => {
   const gameLevel = parseInt(level);
   const navigate = useNavigate();
   const updateQuiz = useUpdateQuiz();
-  
+
   // State to handle return from pop quiz
   const location = useLocation();
   // Get the user from the UserContext
-  const { user ,update} = useUser();
+  const { user, update } = useUser();
   // Get the current grade from the GradeContext
   const { grade } = useGrade();
   // State to track correct answers
@@ -117,12 +119,18 @@ const WordProblem = () => {
 
   };
 
-  //generate end game function
   const generateEnd = () => {
-    // Check if the user answered 3 or more questions correctly
     const isSuccess = correctAnswers >= 2;
-    console.log(correctAnswers);
-    // Set the end game object with details
+    //update user progress based on success
+    updateUserProgress({
+      isSuccess: isSuccess,
+      location,
+      user,
+      update,
+      updateQuiz,
+      gameLevel: parseInt(level),
+      gameSubject: subjectGame
+    });
     setEndGameObject({
       bgColor: isSuccess ? "bg-green-200" : "bg-red-200",
       text: `${isSuccess ? 'Great!' : 'Oh no!'} You answered ${correctAnswers} / ${numOfQuestions} Correct Answers.`,
@@ -131,30 +139,23 @@ const WordProblem = () => {
       headerText: isSuccess ? "Continue to the next level!" : "Try Again?",
       handleClick: () => {
         if (isSuccess) {
-          const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-          if (gameLevel > currentFinished) {
-            let newUser = { ...user };
-            newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-            update(user.email, newUser);
-          }
-          if (location.state?.fromQuiz){
-            updateQuiz();
+          if (location.state?.fromQuiz) {
             navigate("/");
-          }
-          else {
+          } else {
             navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
           }
         } else {
+          // Retry current level
           resetGame();
           loadGameLevel();
         }
       },
-      buttonText: isSuccess ? "Next Level" : "Try Again!",
-      containerColor: isSuccess ? "bg-green-100" : "bg-red-100",
+      buttonText: isSuccess ? (location.state?.fromQuiz ? "Finish quiz" : "Next Level") : "Try Again!",
+      containerColor: isSuccess ? "bg-green-100" : "bg-red-100"
     });
-
     setEndGame(true);
   };
+
 
   /** End Game Component */
   const endGameComponent = () => {
@@ -184,53 +185,53 @@ const WordProblem = () => {
       icon={TitleIcon}
       backgroundImage={StoriesBg}
     >
-    <div className={`inline-block max-w-[800px] mb-5 align-middle justify-center border-5 border-red-300 rounded-3xl shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-white'}`}>
-      <div >
+      <div className={`inline-block max-w-[800px] mb-5 align-middle justify-center border-5 border-red-300 rounded-3xl shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-white'}`}>
+        <div >
 
-        {isLoading ? (
-          <div className="text-center max-w-3xl text-xl font-semibold mt-8">Loading your question...</div>
-        ) : (
-          currentQuestion && !endGame && (
-            <div className="w-full max-w-sm md:max-w-2xl align-middle mx-auto p-6 ">
-              <WordProblemsCreator
-                var1={currentQuestion.var1.value}
-                var2={currentQuestion.var2.value}
-                answer={currentQuestion.answer.value}
-                subject={gameSubject}
-              />
-              <QuestionBox 
-                question={"What is the answer?"}
-                userAnswer={userAnswer}
-                setUserAnswer={setUserAnswer}
-                onSubmit={handleSubmit}
-                feedback={feedback}
-                disabled={isAnswerVisible}
+          {isLoading ? (
+            <div className="text-center max-w-3xl text-xl font-semibold mt-8">Loading your question...</div>
+          ) : (
+            currentQuestion && !endGame && (
+              <div className="w-full max-w-sm md:max-w-2xl align-middle mx-auto p-6 ">
+                <WordProblemsCreator
+                  var1={currentQuestion.var1.value}
+                  var2={currentQuestion.var2.value}
+                  answer={currentQuestion.answer.value}
+                  subject={gameSubject}
+                />
+                <QuestionBox
+                  question={"What is the answer?"}
+                  userAnswer={userAnswer}
+                  setUserAnswer={setUserAnswer}
+                  onSubmit={handleSubmit}
+                  feedback={feedback}
+                  disabled={isAnswerVisible}
+                />
+              </div>
+            )
+          )}
+          {endGame && (
+            <>
+              <div className="m-5">{endGameObject?.text}
+
+                {endGameComponent()}
+              </div>
+            </>
+          )}
+
+
+          {!endGame && isAnswerVisible && (
+            <div className="flex justify-center gap-10 mb-4">
+              <ButtonComponent
+                label="Next Question"
+                onClick={nextQuestionClicked}
+                bgColor="bg-yellow-400"
+                textColor="text-black"
+                size="lg"
               />
             </div>
-          )
-        )}
-        {endGame && (
-          <>
-            <div className="m-5">{endGameObject?.text}
-
-            {endGameComponent()}
-            </div>
-          </>
-        )}
-
-
-        {!endGame && isAnswerVisible && (
-          <div className="flex justify-center gap-10 mb-4">
-            <ButtonComponent
-              label="Next Question"
-              onClick={nextQuestionClicked}
-              bgColor="bg-yellow-400"
-              textColor="text-black"
-              size="lg"
-            />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </GameContainer>
 

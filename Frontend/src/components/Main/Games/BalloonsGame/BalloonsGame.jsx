@@ -10,6 +10,7 @@ import { useUser } from '../../../Utils/UserContext';
 import { updateUser } from '../../../../services/UserService';
 import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.png';
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
+import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
 // Constants
 const NUM_QUESTIONS = 5;
@@ -23,7 +24,7 @@ function BalloonsGame() {
     const location = useLocation();
     const updateQuiz = useUpdateQuiz();
 
-    const { user } = useUser();
+    const { user,update } = useUser();
     // State variables
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -67,21 +68,25 @@ function BalloonsGame() {
             setCurrentQuestionIndex((prev) => prev + 1);
         } else {
             setGameOver(true);
+            //update user progress based on success
+            updateUserProgress({
+                isSuccess: score >= 4,
+                location,
+                user,
+                update,
+                updateQuiz,
+                gameLevel: parseInt(level),
+                gameSubject: subjectGame
+            });
+
         }
     };
     // Handle game finish
     const handleFinish = () => {
         if (location.state?.fromQuiz) {
-            updateQuiz();
             navigate("/");
         }
         else {
-            const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
-            if (score >= 4 && gameLevel > currentFinished) {
-                let newUser = user;
-                newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
-                updateUser(user.email, newUser);
-            }
             navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
         }
     };
