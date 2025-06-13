@@ -7,7 +7,7 @@ const ProfilePage = () => {
   const [isAlert, setIsAlert] = useState(false);
   const [message, setMessage] = useState({ message: "", isSuccess: false });
   const [showAvatarSection, setShowAvatarSection] = useState(false);
-  const [avatar, setAvatar] = useState(user?.avatar || "./src/assets/Images/Avatars/avatar1.png");
+  const [avatar, setAvatar] = useState(user?.avatar || "../../../assets/Images/Avatars/avatar1.png");
   const showPassword = useRef(false);
 
   /**
