@@ -12,6 +12,12 @@ import { updateUser } from '../../../services/UserService';
 
 const circleData = [
   {
+    title: 'Battle Rocket',
+    description: 'Battle your friends in a rocket race!',
+    imageSrc: mathCircle,
+    link: `/BattleRocketGame/Addition/1/20`,
+  },
+  {
     title: 'Math Problems',
     description: 'Solve fun puzzles to improve your skills!',
     imageSrc: mathCircle,
@@ -40,7 +46,6 @@ function CirclesContainer() {
   const { user,update } = useUser();
   useEffect(() => {
       if (!user?.pop_quiz_last_date) return;
-
       const lastDate = new Date(user.pop_quiz_last_date);
       const today = new Date();
       lastDate.setHours(0, 0, 0, 0);

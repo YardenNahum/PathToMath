@@ -24,7 +24,9 @@ import RocketGame from './components/Main/Games/RocketGame/RocketGame.jsx';
 import PopQuiz from './components/Main/PopQuizPage/PopQuiz.jsx';
 import BalloonsGame  from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
 import RewardsPage from './components/Main/BadgesPage/RewardsPage';
+import BattleRocketGame from './components/Main/Games/BattleRocketGame/BattleRocketGame.jsx'
 import GameSelection from './components/Main/Games/GamesUtils/GameSelection.jsx'
+
 /**
  * Router for the app
  */
@@ -43,6 +45,7 @@ const router = createBrowserRouter([
       { path: '/GameCube/:subjectGame/:grade/:level', element: <GameCube />, },
       { path: '/RaceGame/:subjectGame/:grade/:level', element: <RaceGame />, },
       { path: '/RocketGame/:subjectGame/:grade/:level', element: <RocketGame />, },
+      { path: '/BattleRocketGame/:subjectGame/:grade/:level', element: <BattleRocketGame />, },
       { path: '/WordGame/:subjectGame/:grade/:level', element: <WordGame />, },
       { path: '/BalloonsGame/:subjectGame/:grade/:level', element: <BalloonsGame />, },
       { path: '/videos', element: <VideoPage />, },
