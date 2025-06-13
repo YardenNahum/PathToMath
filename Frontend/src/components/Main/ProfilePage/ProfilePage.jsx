@@ -145,7 +145,7 @@ const ProfilePage = () => {
           ? "border-blue-200"
           : "border-transparent";
 
-      const avatarSrc = `../../../assets/Images/Avatars/${avatarEndSrc}.png`;
+      const avatarSrc = `./Frontend/src/assets/Images/Avatars/${avatarEndSrc}.png`;
 
       const handleAvatarClick = () => {
         setAvatar(avatarSrc);
