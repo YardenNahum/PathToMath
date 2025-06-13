@@ -178,7 +178,7 @@ const LevelsPage = () => {
                     onClick={() => setShowGameSelection(false)}
                 >
                     <div
-                        className="bg-white rounded-lg p-6 max-w-3xl w-full shadow-lg relative mt-22"
+                        className="bg-white rounded-lg p-6 max-h-[80vh] max-w-3xl h-full w-full shadow-lg relative mt-22"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button
