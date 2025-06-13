@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import background from '../../../assets/Images/Background/profileBg.jpg';
 import { useUser } from '../../Utils/UserContext';
+import avatar1 from '../../../assets/Images/Avatars/avatar1.png';
+import avatar2 from '../../../assets/Images/Avatars/avatar2.png';
+import avatar3 from '../../../assets/Images/Avatars/avatar3.png';
+import avatar4 from '../../../assets/Images/Avatars/avatar4.png';
+import avatar5 from '../../../assets/Images/Avatars/avatar5.png';
+import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
+import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
+import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
 
 const ProfilePage = () => {
   const { user, update } = useUser();
   const [isAlert, setIsAlert] = useState(false);
   const [message, setMessage] = useState({ message: "", isSuccess: false });
   const [showAvatarSection, setShowAvatarSection] = useState(false);
-  const [avatar, setAvatar] = useState(user?.avatar || "../../../assets/Images/Avatars/avatar1.png");
+  const [avatar, setAvatar] = useState(user?.avatar || avatar1);
   const showPassword = useRef(false);
 
   /**
@@ -110,24 +118,15 @@ const ProfilePage = () => {
    */
   const AvatarOptions = () => {
     const avatars = [
-      "avatar1",
-      "avatar2",
-      "avatar3",
-      "avatar4",
-      "avatar5",
-      "avatar6",
-      "avatar7",
+      avatar1,
+      avatar2,
+      avatar3,
+      avatar4,
+      avatar5,
+      avatar6,
+      avatar7,
+      avatar8,
     ];
-
-    /**
-     * Extracts filename without extension from path.
-     * @param {string} path - Full path of the file.
-     * @returns {string} Filename without extension.
-     */
-    const fileWithoutExtenstion = (path) => {
-      const fileName = path.split("/").pop();
-      return fileName.split(".")[0];
-    };
 
     /**
      * Single avatar image component.
@@ -135,29 +134,27 @@ const ProfilePage = () => {
      * @param {string} props.avatarEndSrc - Avatar image file name without extension.
      * @returns {JSX.Element} JSX for avatar image.
      */
-    const Avatar = ({ avatarEndSrc }) => {
-      const currentAvatar = fileWithoutExtenstion(user.avatar);
-      const selectedAvatar = fileWithoutExtenstion(avatar);
+    const Avatar = ({av}) => {
+      const currentAvatar = user.avatar;
+      const selectedAvatar = avatar;
       const borderColor =
-        selectedAvatar === avatarEndSrc
+        selectedAvatar === av
           ? "border-blue-500"
-          : currentAvatar === avatarEndSrc
+          : currentAvatar === av
           ? "border-blue-200"
           : "border-transparent";
 
-      const avatarSrc = `../../../assets/Images/Avatars/avatar1.png`;
 
       const handleAvatarClick = () => {
-        setAvatar(avatarSrc);
+        setAvatar(av);
         setShowAvatarSection(false);
       };
 
       return (
         <img
-          src={avatarSrc}
+          src={av}
           className={`md:w-40 md:h-40 h-30 w-30 rounded-xl cursor-pointer border-5 transition hover:scale-105 ${borderColor}`}
           onClick={handleAvatarClick}
-          alt={`Avatar ${avatarEndSrc}`}
         />
       );
     };
@@ -170,7 +167,9 @@ const ProfilePage = () => {
           </h1>
           <div className="flex flex-wrap gap-7 justify-center">
             {avatars.map((av) => (
-              <Avatar key={av} avatarEndSrc={av} />
+              <Avatar key={av} 
+                av={av}
+              />
             ))}
           </div>
         </div>
