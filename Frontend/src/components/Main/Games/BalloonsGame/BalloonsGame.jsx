@@ -71,77 +71,77 @@ function BalloonsGame() {
     };
     // Handle game finish
     const handleFinish = () => {
-        const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
-        if (score >= 4 && gameLevel > currentFinished) {
-            let newUser = user;
-            newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
-            updateUser(user.email, newUser);
-        }
-        if (location.state?.fromQuiz && score >= 4){
+        if (location.state?.fromQuiz) {
             updateQuiz();
-        }
-        if (location.state?.fromQuiz)
             navigate("/");
-        else
+        }
+        else {
+            const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
+            if (score >= 4 && gameLevel > currentFinished) {
+                let newUser = user;
+                newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
+                updateUser(user.email, newUser);
+            }
             navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
+        }
     };
 
 
     return (
-            <GameContainer
-                gameName="Poppin' Problems"
-                gameSubject={subjectName}
-                gameLevel={gameLevel}
-                icon={TitleIcon3}
-                backgroundImage={BalloonsBg}
-            >
-                <div className="bg-pink-100 rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto">
-                    {!gameOver ? (
-                        <div className="relative mb-10">
-                            {/* Progress Bar */}
-                            <div className="mb-8 mt-5 w-full max-w-md mx-auto">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-semibold text-gray-600">Progress</span>
-                                    <span className="text-sm font-semibold text-gray-600">
-                                        {currentQuestionIndex + 1}/{NUM_QUESTIONS}
-                                    </span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
-                                    <div
-                                        className="bg-gradient-to-r from-yellow-200 to-pink-500 h-3 rounded-full transition-all duration-500 ease-out"
-                                        style={{ width: `${((currentQuestionIndex + 1) / NUM_QUESTIONS) * 100}%` }}
-                                    />
+        <GameContainer
+            gameName="Poppin' Problems"
+            gameSubject={subjectName}
+            gameLevel={gameLevel}
+            icon={TitleIcon3}
+            backgroundImage={BalloonsBg}
+        >
+            <div className="bg-pink-100 rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto">
+                {!gameOver ? (
+                    <div className="relative mb-10">
+                        {/* Progress Bar */}
+                        <div className="mb-8 mt-5 w-full max-w-md mx-auto">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-gray-600">Progress</span>
+                                <span className="text-sm font-semibold text-gray-600">
+                                    {currentQuestionIndex + 1}/{NUM_QUESTIONS}
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
+                                <div
+                                    className="bg-gradient-to-r from-yellow-200 to-pink-500 h-3 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${((currentQuestionIndex + 1) / NUM_QUESTIONS) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Game Field */}
+                        <div className="flex flex-col items-center">
+                            <QuestionBox question={currentQuestion?.question} />
+                            <BalloonField options={currentQuestion?.options} onBalloonClick={handleBalloonClick} />
+                        </div>
+
+                        {/* Feedback Overlays */}
+                        {showCorrectFeedback && (
+                            <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                                <div className="bg-green-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
+                                    🎉 Correct! 🎉
                                 </div>
                             </div>
+                        )}
 
-                            {/* Game Field */}
-                            <div className="flex flex-col items-center">
-                                <QuestionBox question={currentQuestion?.question} />
-                                <BalloonField options={currentQuestion?.options} onBalloonClick={handleBalloonClick} />
-                            </div>
-
-                            {/* Feedback Overlays */}
-                            {showCorrectFeedback && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-                                    <div className="bg-green-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
-                                        🎉 Correct! 🎉
-                                    </div>
+                        {showIncorrectFeedback && (
+                            <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                                <div className="bg-orange-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
+                                    💪 Try Again! 💪
                                 </div>
-                            )}
-
-                            {showIncorrectFeedback && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-                                    <div className="bg-orange-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
-                                        💪 Try Again! 💪
-                                    </div>
-                                </div>
-                            )}
                             </div>
-                    ) : (
-                        <EndGameScreen score={score} total={NUM_QUESTIONS} onFinish={handleFinish} />
-                    )}
-                </div>
-            </GameContainer>
+                        )}
+                    </div>
+                ) : (
+                    <EndGameScreen score={score} total={NUM_QUESTIONS} onFinish={handleFinish} />
+                )}
+            </div>
+        </GameContainer>
     );
 }
 

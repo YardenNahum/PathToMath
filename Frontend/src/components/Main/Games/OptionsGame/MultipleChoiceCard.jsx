@@ -69,7 +69,7 @@ export default function MultipleChoiceCard({
     };
 
     return (
-        <div className="grid grid-cols-2 gap-10 mb-10 gap-x-30 gap-y-10">
+        <div className="flex flex-col flex-wrap md:grid md:grid-cols-2 gap-10 mb-10 gap-x-30 gap-y-10">
             {question.options.map((option, index) => (
                 <OptionButton
                     key={index}

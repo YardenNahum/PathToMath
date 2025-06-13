@@ -15,7 +15,7 @@ const ProfilePage = () => {
   const [isAlert, setIsAlert] = useState(false);
   const [message, setMessage] = useState({ message: "", isSuccess: false });
   const [showAvatarSection, setShowAvatarSection] = useState(false);
-  const [avatar, setAvatar] = useState(user?.avatar || avatar1);
+  const [avatar, setAvatar] = useState(user?.avatar);
   const showPassword = useRef(false);
 
   /**
@@ -183,11 +183,11 @@ const ProfilePage = () => {
    */
   const AvatarSection = () => {
     return (
-      <div className="flex flex-col items-center justify-center md:w-1/3 w-full mr-5 p-6">
+      <div className="flex flex-col items-center justify-center md:w-1/3 w-full mr-5 md:p-6 p-2">
         <img
           id="AvatarImg"
-          src={avatar}
-          className="bg-white border-5 border-blue-500 w-48 h-48 object-cover rounded-xl p-3 mb-4"
+          src={avatar? avatar : user.avatar}
+          className="bg-white border-5 border-blue-500 md:w-48 md:h-48 w-30 h-30 object-cover rounded-xl p-3 mb-4"
           alt="User Avatar"
         />
         <button

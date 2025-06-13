@@ -68,7 +68,7 @@ function CirclesContainer() {
       }
     }, [user]);
   return (
-    <div className="flex flex-wrap justify-center gap-6 mb-8 w-full h-1/2">
+    <div className="flex flex-wrap justify-center mb-8 md: flex w-3/4">
       {circleData.map(({ imageSrc, title, description, link }, index) => {
         const isPopQuiz = title === "Pop Quiz";
 

@@ -112,6 +112,10 @@ export default function OptionsGame() {
             headerText: isSuccess ? "Continue to the next level!" : "Try Again?",
             handleClick: () => {
                 if (isSuccess) {
+                    if (location.state?.fromQuiz) {
+                        updateQuiz();
+                        navigate("/");
+                    } else {
                     // Update user's grade level progress if this level is higher than recorded
                     const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
                     if (gameLevel > currentFinished) {
@@ -119,12 +123,7 @@ export default function OptionsGame() {
                         newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
                         update(user.email, newUser);
                     }
-                    // Navigate after success based on source
-                    if (location.state?.fromQuiz) {
-                        updateQuiz();
-                        navigate("/");
-                    } else {
-                        navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
+                    navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
                     }
                 } else {
                     // Retry current level

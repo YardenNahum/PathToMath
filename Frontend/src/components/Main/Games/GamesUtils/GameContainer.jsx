@@ -84,7 +84,7 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
             </div>
 
             <div className=" flex justify-center mb-10">
-
+                {!popQuiz && (
                 <ButtonComponent
                     label="Return"
                     onClick={handleReturn}
@@ -92,6 +92,7 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
                     textColor="text-white"
                     size="md"
                 />
+                )}
             </div>
         </div>
     );

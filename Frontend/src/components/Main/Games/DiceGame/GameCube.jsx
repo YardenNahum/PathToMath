@@ -16,7 +16,7 @@ import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 const GameCube = () => {
     const MAX_TRIES = 2;
     const MAX_QUESTIONS = 5;
-    
+
     const { subjectGame, grade, level } = useParams();
     const gameSubject = subjectGame;
     const gameLevel = parseInt(level);
@@ -43,7 +43,7 @@ const GameCube = () => {
         let cubes = [];
         while (!validCubes) {
             cubes = []
-            for (let i = 0; i < cubeCount ; i++) {
+            for (let i = 0; i < cubeCount; i++) {
                 // Generate a random cube value between 1 and 6
                 cubes.push(Math.floor(Math.random() * 6) + 1);
                 validCubes = isValidCubes(cubes, sum);
@@ -186,33 +186,34 @@ const GameCube = () => {
     const { user } = useUser();
 
     const handleFinishedGame = () => {
-        const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-        if (gameLevel > currentFinished) {
-            // Update user's grade level for the subject if they passed the game
-            let newUser = user;
-            newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-            updateUser(user.email, newUser);
-        }
-        if (location.state?.fromQuiz && success){
-            updateQuiz();
-        }
-        if (location.state?.fromQuiz)
+        if (location.state?.fromQuiz) {
+            if (success) {
+                updateQuiz();
+            }
             navigate("/");
-        else
-            navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
+        }
+        else {
+            const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
+            if (gameLevel > currentFinished) {
+                // Update user's grade level for the subject if they passed the game
+                let newUser = user;
+                newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
+                updateUser(user.email, newUser);
+            }
+        }
     }
     return (
         <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={CubesBg}>
             <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
 
-                <div className='text-sm group inline-block absolute top-4 left-4'>
+                <div className='text-sm group flex align-left justify-start items-center gap-2 mb-4'>
                     {/* How to play button */}
                     <button className="group items-center flex gap-2 bg-purple-200 shadow-2xl px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
-                        <img src={help_icon} alt="How to play" className="h-5 w-5"/>
+                        <img src={help_icon} alt="How to play" className="h-5 w-5" />
                         How to play
                     </button>
                     {/* Dropdown text */}
-                    <div className="p-2 mt-2 rounded shadow-md bg-white absolute left-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 ">
+                    <div className="p-2 mt-2 rounded shadow-md bg-white  group-hover,group-selected:opacity-100 invisible group-hover:visible transition-all duration-300 ">
                         Choose cubes that sum up to the given number. You have {MAX_TRIES} tries per question.
                     </div>
                 </div>
@@ -221,26 +222,19 @@ const GameCube = () => {
                         <h2 className="text-3xl font-semibold text-green-600 mb-4">
                             {feedbackMessage}
                         </h2>
-                        {success ? "Level up!":" Try again next time!"}
+                        {success ? "Level up!" : " Try again next time!"}
                         <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
-                          onClick={() => {
-                             if (success) {
+                            onClick={() => {
+                                if (success) {
 
                                     handleFinishedGame();         // navigates to next level
                                 } else {
                                     restartGame();         // replay same level
                                 }
                             }}
-                        >  
-                            {success ? "Next level": "Try again"}
-                        </button>
-                        <button
-                            className="bg-blue-500 text-white mt-4 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
-                            onClick={handleFinishedGame}
                         >
-                            back to {gameSubject} levels
+                            {success ? "Next level" : "Try again"}
                         </button>
-
 
                     </div>
                 ) : (
