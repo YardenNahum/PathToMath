@@ -132,7 +132,7 @@ export default function OptionsGame() {
                     loadGameLevel();
                 }
             },
-            buttonText: isSuccess ? "Next Level" : "Try Again!",
+            buttonText: isSuccess ? (location.state?.fromQuiz ? "Finish quiz" : "Next Level") : "Try Again!",
             containerColor: isSuccess ? "bg-green-100" : "bg-red-100"
         });
         setEndGame(true);

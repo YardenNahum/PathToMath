@@ -6,6 +6,9 @@ export const generateRandomGame = (subjectGame) => {
         'RocketGame',
         'BalloonsGame' 
     ];
+    if (subjectGame === "Addition") {
+        gameArray.push("GameCube");  
+    }
     //remove word game if the subject is percentage
     if (subjectGame === "Percentage") {
         const index = gameArray.indexOf("WordGame");

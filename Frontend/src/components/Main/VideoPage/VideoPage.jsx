@@ -1,75 +1,70 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import background from "../../../assets/Images/Background/HomeBg.png";
-
-import additionIcon       from "../../../assets/Images/Math_icon/addition_purple.png";
-import subtractionIcon    from "../../../assets/Images/Math_icon/minus.png";
-import multiplicationIcon from "../../../assets/Images/Math_icon/multi.png";
-import divisionIcon       from "../../../assets/Images/Math_icon/division1.png";
-import percentageIcon     from "../../../assets/Images/Math_icon/percentage.png";
-
-import SubjectCircle from "../HomePage/SubjectCircle.jsx";
+import SubjectCircle  from "../HomePage/SubjectCircle.jsx";
+import background from '../../../assets/Images/Background/HomeBg.png';
+import additionIcon from '../../../assets/Images/Math_icon/addition_purple.png';
+import subtractionIcon from '../../../assets/Images/Math_icon/minus.png';
+import multiplicationIcon from '../../../assets/Images/Math_icon/multi.png';
+import divisionIcon from '../../../assets/Images/Math_icon/division1.png';
+import percentageIcon from '../../../assets/Images/Math_icon/percentage.png';
 import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
-import { useGrade }   from "../../Utils/GradeComponent.jsx";
+import { Link, useNavigate } from 'react-router-dom';
+import { useGrade } from '../../Utils/GradeComponent.jsx'; // Custom hook that provides the current grade
 
-const VideoPage = () => {
+
+const SubjectsPage = () => {
   const navigate = useNavigate();
-  const { grade } = useGrade();
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const { grade } = useGrade();
 
-  // ---- subject definitions --------------------------------------------------
-  const subjects = [
-    { name: "Addition",       icon: additionIcon,       sign: "+", color: "#E0BBE4" },
-    { name: "Subtraction",    icon: subtractionIcon,    sign: "-", color: "#FFABAB" },
-    { name: "Multiplication", icon: multiplicationIcon, sign: "×", color: "#B5EAD7" },
-    { name: "Division",       icon: divisionIcon,       sign: "÷", color: "#C7CEEA" },
-    { name: "Percentage",     icon: percentageIcon,     sign: "%", color: "#FFDAC1" },
+  const subjectsButtonConfigs = [
+    { name: "Addition", icon: additionIcon, signSymbol: "+", color: '#E0BBE4' },
+    { name: "Subtraction", icon: subtractionIcon, signSymbol: "-", color: '#FFABAB' },
+    { name: "Multiplication", icon: multiplicationIcon, signSymbol: "x", color: '#B5EAD7' },
+    { name: "Division", icon: divisionIcon, signSymbol: "/", color: '#C7CEEA' },
+    { name: "Percentage", icon: percentageIcon, signSymbol: "%", color: '#FFDAC1' }
   ];
 
-  // ---- filter by grade ------------------------------------------------------
-  const buttons =
-    grade === 1 ? subjects.slice(0, grade + 1) : subjects.slice(0, grade);
-
-  // ---- handlers -------------------------------------------------------------
   const handleTopicClick = (topic) => {
     setSelectedTopic(topic);
-    navigate(`/videos/${topic}`);
+    navigate(`/subject/${topic}`);
   };
 
-  // ---- render ---------------------------------------------------------------
+  let buttons = grade === 1 ? subjectsButtonConfigs.slice(0, grade + 1) : subjectsButtonConfigs.slice(0, grade);
+  const rows = Array.from({ length: Math.ceil(buttons.length / 3) });
+
   return (
     <div
-      className="relative min-h-screen w-full flex flex-col items-center pt-12 pb-24 px-4 overflow-hidden"
+      className="relative playful-font min-h-[100vh] w-full flex flex-col items-center justify-start pt-12 pb-24 px-4 overflow-hidden"
       style={{
         backgroundImage: `url(${background})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        zIndex: 0,
       }}
     >
+      <div className="flex flex-col items-center mt-5 gap-10 z-10">
+        <ShadowedTitle text="Choose Your Math Topic and Begin Practicing!" />
 
-      <ShadowedTitle text="Choose a Math Topic to Watch Video Tutorials!" />
-
-    
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10 w-full max-w-4xl">
-        {buttons.map((subject) => (
-          <button
-            key={subject.name}
-            onClick={() => handleTopicClick(subject.name)}
-            className="flex justify-center transition-transform duration-200 hover:scale-105 focus:outline-none"
-          >
-            <SubjectCircle
-              imageSrc={subject.icon}
-              title={subject.name}
-              variant="circle"
-              circleColor={subject.color}
-              size={140}             
-            />
-          </button>
+        {rows.map((_, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center gap-10 flex-wrap">
+            {buttons.slice(rowIndex * 3, rowIndex * 3 + 3).map((subject, index) => (
+              <div key={index} className="p-10 w-70 h-70 flex flex-col items-center justify-center transition-transform duration-200 hover:scale-105">
+                <Link to={`/Videos/${subject.name}`}>
+                  <SubjectCircle
+                    imageSrc={subject.icon}
+                    title={subject.name}
+                    variant="circle"
+                    circleColor={subject.color}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
         ))}
       </div>
     </div>
   );
 };
 
-export default VideoPage;
+export default SubjectsPage;
