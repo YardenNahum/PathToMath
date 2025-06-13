@@ -87,7 +87,7 @@ const RelevantVideo = () => {
     setIsFullscreen(!isFullscreen);
   }
 
-  // Random math facts for Grade 2 addition
+
   const mathTips = [
     "Adding zero to any number gives you the same number!",
     "You can add numbers in any order and get the same answer!",
