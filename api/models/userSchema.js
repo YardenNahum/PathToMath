@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     grade: { type: Number, required: true },
     avatar: {
       type: String,
-      default: "/src/assets/Images/Avatars/avatar1.png"
+      default: "/assets/avatar2-Ckl0_2IZ.png"
     },
     streak: { type: Number, default: 0 },
     pop_quiz_last_date: { type: Date, default: null },
