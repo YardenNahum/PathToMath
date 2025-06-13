@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useUser } from '../../Utils/UserContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { generateRandomGame } from "../Games/generateRandomGame.jsx";
+import { generateRandomGame } from "../Games/GamesUtils/generateRandomGame.jsx";
 
 const PopQuiz = () => {
     const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import React from 'react';
 import SubjectCircle from './SubjectCircle';
-import mathCircle from '../../../assets/Images/math_circle.png';
-import vidsCircle from '../../../assets/Images/vids_circle.png';
-import badgeCircle from '../../../assets/Images/badge_circle.png';
-import popquiz_circle from '../../../assets/Images/popquiz_circle.png';
-import streak_icon from '../../../assets/Images/star.png';
+import mathCircle from '../../../assets/Images/HomePage/math_circle.png';
+import vidsCircle from '../../../assets/Images/HomePage/vids_circle.png';
+import badgeCircle from '../../../assets/Images/HomePage/badge_circle.png';
+import popquiz_circle from '../../../assets/Images/HomePage/popquiz_circle.png';
+import streak_icon from '../../../assets/Images/NavbarIcons/star.png';
 import { useUser } from '../../Utils/UserContext';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../../Utils/UserContext";
 import { useGrade } from "../../../Utils/GradeComponent";
-import generateQuestions from "../GameLogic";
+import generateQuestions from "../GamesUtils/GameLogic.jsx";
 import WordProblemsCreator from "./WordProblemsCreator";
 import QuestionBox from "../RaceGame/QuestionBox";
-import GameContainer from "../GameContainer";
+import GameContainer from "../GamesUtils/GameContainer";
 import TitleIcon from "../../../../assets/Images/wordGame/StoriesIcon.png";
-import successImage from "../../../../assets/Images/success.png";
-import failureImage from "../../../../assets/Images/failure.png";
+import successImage from "../../../../assets/Images/Games/success.png";
+import failureImage from "../../../../assets/Images/Games/failure.png";
 import ButtonComponent from "../../../Utils/Button";
 import StoriesBg from '../../../../assets/Images/wordGame/StoriesBg.png'
 import { useLocation } from 'react-router-dom';

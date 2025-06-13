@@ -22,7 +22,7 @@ function StartButton({ onClick, message, startMessage, startGameColor }) {
       label={message || startMessage}
       bgColor={isRetry ? 'bg-yellow-300' : startGameColor}
       textColor={isRetry ? 'text-black' : 'text-white'}
-      size="lg"
+      size="xl"
     />
   );
 }

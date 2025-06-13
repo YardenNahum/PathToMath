@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import background from '../../../assets/Images/nature2.png'
+import background from '../../../assets/Images/Background/HomeBg.png'
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LevelCircle from "./LevelCircle.jsx";
 import addition from '../../../assets/Images/Math_icon/addition_purple.png';
@@ -12,7 +12,7 @@ import { useGrade } from '../../Utils/GradeComponent';
 import { useUser } from "../../Utils/UserContext";
 import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
 import ButtonComponent from '../../Utils/Button.jsx'
-import GameSelection from '../Games/GameSelection.jsx'
+import GameSelection from '../Games/GamesUtils/GameSelection.jsx'
 
 // Subject icons and colors used in the SubjectCircle
 const subjectsData = {

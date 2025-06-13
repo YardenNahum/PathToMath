@@ -2,9 +2,9 @@ import React from 'react';
 import SubMenu from './subMenu';
 import { Link } from 'react-router-dom';
 
-function NavBarItem({ item, isMobile }) {
+function NavBarItem({ item, isMobile, onClick }) {
   return (
-    <li className="relative group " key={item.label}>
+    <li onClick={onClick} className="relative group " key={item.label}>
       <div>
         <Link to={item.link} className={`flex navBarItem whitespace-nowrap items-center gap-2 px-4 py-2 rounded-full transition-all ${item.colorClass || 'bg-white text-black hover:bg-gray-200'}`}>
           {item.icon && (

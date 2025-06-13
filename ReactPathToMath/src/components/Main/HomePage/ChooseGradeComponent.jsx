@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGrade } from '../../Utils/GradeComponent';
 import ButtonComponent from '../../Utils/Button';
 import ProfileCard from './ProfileCard';
-import BagIcon from '../../../assets/Images/school-bag.png';
+import BagIcon from '../../../assets/Images/HomePage/school-bag.png';
 
 function ChooseGradeBtn() {
     const { grade, setGrade } = useGrade();

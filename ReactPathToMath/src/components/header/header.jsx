@@ -3,17 +3,15 @@ import DynamicMenu from './DynamicMenu'
 import { useLoginStatus } from '../Utils/LoginStatusComponent';
 import { Link } from 'react-router-dom';
 import { useState } from 'react'
-import logo from '../../assets/Images/logo copy.png'
-import starIcon from '../../assets/Images/star.png'
-import MathProbLogo from '../../assets/Images/MathProblemsLogo.png'
-import ProfileIcon from '../../assets/Images/profile.png'
-import LoginIcon from '../../assets/Images/login.png'
-import LogoutIcon from '../../assets/Images/logout.png'
-import TutorialVideosIcon from '../../assets/Images/helpVideos.png'
-import ParentOverviewIcon from '../../assets/Images/ParentOverview.png'
-import SignupIcon from '../../assets/Images/SignupIcon.png'
-import BadgesIcon from '../../assets/Images/BadgesHeaderIcon.png'
-import PopQuizIcon from '../../assets/Images/PopQuizHeaderIcon.png'
+import logo from '../../assets/Images/NavbarIcons/logo copy.png'
+import starIcon from '../../assets/Images/NavbarIcons/star.png'
+import MathProbLogo from '../../assets/Images/NavbarIcons/MathProblemsLogo.png'
+import ProfileIcon from '../../assets/Images/NavbarIcons/profile.png'
+import LoginIcon from '../../assets/Images/NavbarIcons/login.png'
+import LogoutIcon from '../../assets/Images/NavbarIcons/logout.png'
+import TutorialVideosIcon from '../../assets/Images/NavbarIcons/helpVideos.png'
+import ParentOverviewIcon from '../../assets/Images/NavbarIcons/ParentOverview.png'
+import SignupIcon from '../../assets/Images/NavbarIcons/SignupIcon.png'
 
 function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -65,22 +63,6 @@ function Header() {
         { label: 'Percentage', link: '/videos/Percentage' }
       ],
       class: "TutorialVideos"
-    },
-        {
-      label: 'Pop Quiz',
-      link: '/pop-quiz',
-      icon: PopQuizIcon,
-      colorClass: "bg-pink-600 hover:bg-pink-700",
-      submenuColor: "hover:bg-red-400",
-      class: "PopQuiz"
-    },
-        {
-      label: 'Badges',
-      link: '/badges',
-      icon: BadgesIcon,
-      colorClass: "bg-yellow-800 hover:bg-yellow-700",
-      submenuColor: "hover:bg-red-400",
-      class: "Badges"
     }
   ];
 
@@ -165,7 +147,7 @@ function Header() {
       {/* Mobile Menu */}
       {isMobileOpen && (
         <div className="w-full mt-4 xl:hidden">
-          <DynamicMenu items={menuData} isMobile={true} />
+          <DynamicMenu items={menuData} isMobile={true} closeMenu={() => setIsMobileOpen(false)}/>
         </div>
       )}
     </header>
