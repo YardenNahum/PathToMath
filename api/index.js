@@ -16,7 +16,7 @@ if (!mongoose.connection.readyState) {
 // Middlewares
 app.use(cors({
   origin: [  'http://localhost:5173',
-'http://localhost:3000', 'https://path-to-math.vercel.app/'],
+'http://localhost:3000', 'https://path-to-math-qw451nz4k-yardennahums-projects.vercel.app/'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
