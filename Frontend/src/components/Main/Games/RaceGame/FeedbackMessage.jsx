@@ -20,7 +20,7 @@ function FeedbackMessage({ message }) {
   const bgColor = isCorrect ? 'bg-green-600' : 'bg-red-600';
 
   return (
-    <div className={`py-2 px-4 rounded-lg text-white text-lg inline-block ${bgColor}`}>
+    <div className={`py-2 px-4 rounded-lg text-white text-md inline-block ${bgColor} md:text-lg`}>
       {message}
     </div>
   );

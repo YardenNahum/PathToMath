@@ -57,7 +57,7 @@ function Track({ position, length, color = '#0000000000', startLabel = '', endLa
         return (
           <div className="flex flex-col items-center">
             {/* Finish icon at the very top */}
-            <div  className="w-24 relative rounded-lg overflow-hidden h-96 shadow-lg mx-4 flex flex-col items-center"
+            <div  className="w-18 relative rounded-lg overflow-hidden h-96 shadow-lg mx-4 flex flex-col items-center"
               style={{
                 background: 'linear-gradient(to top, #7f8fff 20%, #3f3ca8 55%, #000000 100%)',
                   boxShadow: '0 0 15px 5px rgba(123, 104, 238, 0.7)',

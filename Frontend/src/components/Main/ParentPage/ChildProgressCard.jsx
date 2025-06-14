@@ -18,7 +18,7 @@ function ChildProgressCard({ child }) {
             className="w-24 h-24 rounded-full object-cover outline-3 outline-purple-500"
           />
           <div className="flex flex-col justify-start text-left">
-            <h2 className="text-3xl font-semibold text-purple-700 leading-snug">{child?.name}</h2>
+            <h2 className="text-3xl text-wrap font-semibold text-purple-700 leading-snug">{child?.name}</h2>
             <p className="text-lg text-purple-600 mt-1">Grade {child?.grade}</p>
           </div>
         </div>
@@ -27,7 +27,7 @@ function ChildProgressCard({ child }) {
       <div className="w-full flex flex-wrap justify-center gap-4 mt-3 px-2">
         {subjects.map((subject, index) => {
           const completed = levelData?.[subject] ?? 0;
-          const total = 20;
+          const total = 30;
           const percentage = Math.round((completed / total) * 100);
           const isCompleted = completed >= total;
 

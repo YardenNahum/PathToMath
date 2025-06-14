@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
  * @param {React.ReactNode} props.children - The children of the component
  * @returns {React.ReactNode} The rendered component
  */
-function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, children, icon, backgroundImage }) {
+function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, children, icon, backgroundImage, showReturnButton = true }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -83,17 +83,18 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
                 </div>
             </div>
 
+        {/* Dont show return button if its GameSelection popup */}
+        {showReturnButton && (
             <div className=" flex justify-center mb-10">
-                
-                    <ButtonComponent
-                        label="Return"
-                        onClick={handleReturn}
-                        bgColor="bg-blue-400 hover:bg-blue-700"
-                        textColor="text-white"
-                        size="md"
-                    />
-                
+                <ButtonComponent
+                    label="Return"
+                    onClick={handleReturn}
+                    bgColor="bg-blue-400 hover:bg-blue-700"
+                    textColor="text-white"
+                    size="md"
+                />
             </div>
+        )}
         </div>
     );
 }

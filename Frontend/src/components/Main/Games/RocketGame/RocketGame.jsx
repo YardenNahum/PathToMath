@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import generateQuestions from '../GamesUtils/GameLogic';
 import QuestionBox from '../RaceGame/QuestionBox';
 import FeedbackMessage from '../RaceGame/FeedbackMessage';
@@ -14,15 +14,18 @@ import spaceBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
 import { useUser } from '../../../Utils/UserContext';
 import useBotInterval from '../GamesUtils/useBotInterval';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 
 const NUM_QUESTIONS = 10;
 
 function RocketGame() {
-    const { subjectGame, grade, level } = useParams();
+const { subjectGame, grade, level } = useParams();
     const subjectName = subjectGame;
     const gameLevel = parseInt(level);
     const navigate = useNavigate();
     const { user, update } = useUser();
+    const location = useLocation();
+    const updateQuiz = useUpdateQuiz();
 
     // Game state
     const [started, setStarted] = useState(false);
@@ -33,6 +36,8 @@ function RocketGame() {
     const [userAnswer, setUserAnswer] = useState('');
     const [questions, setQuestions] = useState([]);
     const [countdown, setCountdown] = useState(null);
+    const [gameEnded, setGameEnded] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const colorMap = [
     'text-white',
@@ -48,11 +53,26 @@ function RocketGame() {
     setQuestions(generated);
   }, [subjectName, grade, gameLevel]);
 
+  useEffect(() => {
+    if (gameEnded && success) {
+      updateUserProgress({
+        isSuccess: success,
+        location,
+        user,
+        update,
+        updateQuiz,
+        gameLevel,
+        gameSubject: subjectName
+      });
+    }
+  }, [gameEnded, success, location, user, update, updateQuiz, gameLevel, subjectName]);
+
   const handleBotMove = useCallback(() => {
     setBotProgress((prev) => {
       const next = prev + 1;
       if (next >= TRACK_STEPS - 1) {
         setStarted(false);
+        setSuccess(false); // You lost
         setMessage('Opponent wins! Try Again?');
         return TRACK_STEPS - 1;
       }
@@ -68,19 +88,22 @@ function RocketGame() {
   });
   
 
+  // Updating levels progress on levels page after finishing a level successfully
   const handleFinishedGame = () => {
-     if (location.state?.fromQuiz) {
-      updateQuiz();
+    updateUserProgress({
+      isSuccess: success,
+      location,
+      user,
+      update,
+      updateQuiz,
+      gameLevel,
+      gameSubject: subjectName
+    });
+
+    if (location.state?.fromQuiz)
       navigate("/");
-    } else {
-    const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
-    if (gameLevel > currentFinished) {
-      let newUser = user;
-      newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
-      update(user.email, newUser);
-    }
-    navigate(`/subjects/${subjectName}`);
-  }
+    else
+      navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
   };
 
   const startCountdown = () => {
@@ -90,6 +113,8 @@ function RocketGame() {
     setMessage('');
     setUserAnswer('');
     setCountdown(3);
+    setGameEnded(false);
+    setSuccess(false);
 
     const interval = setInterval(() => {
       setCountdown((prev) => {
@@ -118,8 +143,10 @@ function RocketGame() {
       if (newProgress === TRACK_STEPS - 1) {
         setUserProgress(newProgress);
         clearInterval(botTimer.current);
-        setMessage('You Win! Continue To The Next Race?');
         setStarted(false);
+        setGameEnded(true);
+        setSuccess(true);
+        setMessage('You Win! Continue To The Next Planet?');
       } else {
         setUserProgress(newProgress);
         setQuestionIndex(questionIndex + 1);
@@ -137,7 +164,7 @@ function RocketGame() {
         {!started && countdown === null && (
           <div className="flex justify-center">
             <StartButton 
-              onClick={message === 'You Did It! Continue To The Next Planet?' ? handleFinishedGame : startCountdown}
+              onClick={gameEnded && success ? handleFinishedGame : startCountdown}
               message={message} startMessage={'🚀 Ready To Launch?'} 
               // Glow effect on StartButton
               startGameColor="bg-purple-600 relative shadow-lg
@@ -172,7 +199,7 @@ function RocketGame() {
 
             {/* Question Box container */}
           <div
-            className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-150 min-h-[200px]"
+            className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-200 md:w-150 min-h-[200px]"
             style={{
               animation: 'glowPulse 2s infinite',
               boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.8)',

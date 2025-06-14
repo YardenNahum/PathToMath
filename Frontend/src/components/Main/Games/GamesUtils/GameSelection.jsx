@@ -36,33 +36,38 @@ function GameSelection({ subjectGame, level, grade, onGameSelected }) {
     };
 
     return (
-        <GameContainer
-            gameName="Choose Your Math Path!"
-            gameSubject={subjectGame}
-            gameLevel={level}
-            icon={TitleIcon}
-            backgroundImage={backgroundImage}
-        >
-            <div className="bg-green-100 flex flex-col justify-center items-center rounded-lg p-4 shadow-lg mb-5 max-w-2xl mx-auto">
-                <div className="text-center mt-6">
-                    <h2 className="text-3xl font-bold text-gray-800 drop-shadow-sm">Explore the Worlds of Math</h2>
-                </div>
+        <div className="w-full h-full flex justify-center items-center sm:p-4">
+            <GameContainer
+                gameName="Choose Your Math Path!"
+                gameSubject={subjectGame}
+                gameLevel={level}
+                icon={TitleIcon}
+                backgroundImage={backgroundImage}
+                showReturnButton={false}
+            >
+                <div className="bg-green-100 w-full h-full max-h-[45vh] flex flex-col justify-center items-center rounded-lg p-4 shadow-lg -mt-3 mb-5 max-w-2xl mx-auto">
+                    <div className="text-center mt-4 sm:mt-6 px-2">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 drop-shadow-sm -mt-7 mb-3">
+                            Explore the Worlds of Math
+                        </h2>
+                    </div>
 
-                <div className="grid grid-cols-2 gap-6 justify-center items-center max-w-xl mx-auto mt-10 mb-10 gap-x-15 gap-y-8">
-                    {gameButtons.map((game, index) => (
-                    <ButtonComponent
-                        key={index}
-                        label={game.label}
-                        onClick={() => handleSelectGame(game.path)}
-                        bgColor={game.background}
-                        textColor={game.textColor}
-                        size="xl"
-                    />
-                    ))}
+                    <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-xl mx-auto mb-2">
+                        {gameButtons.map((game, index) => (
+                            <div key={index} className="flex justify-center items-center -mb-2">
+                                <ButtonComponent
+                                    label={game.label}
+                                    onClick={() => handleSelectGame(game.path)}
+                                    bgColor={game.background}
+                                    textColor={game.textColor}
+                                    size="md"
+                                />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-
-        </GameContainer>
+            </GameContainer>
+        </div>
     );
 }
 

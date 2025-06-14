@@ -24,14 +24,14 @@ function QuestionBox({ question, userAnswer, setUserAnswer, onSubmit, feedback, 
     <div className="mb-6 text-center">
       <form onSubmit={handleSubmit}>
         {/* Display the current question */}
-        <div className="text-2xl font-medium mb-2">{question}</div>
+        <div className="text-lg font-medium mb-5 mt-3 md:text-4xl">{question}</div>
 
         {/* Input field for the user's answer */}
         <input
           type="text"
           value={userAnswer}
           onChange={(event) => setUserAnswer(event.target.value)}
-          className={`border p-2 rounded mr-2 w-24 text-center ${disabled ? "cursor-not-allowed" : "cursor-normal"}`}
+          className={`border p-2 mb-2 rounded mr-2 w-24 text-center ${disabled ? "cursor-not-allowed" : "cursor-normal"}`}
           autoFocus
           disabled={disabled}
         />

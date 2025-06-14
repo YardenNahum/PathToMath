@@ -37,6 +37,8 @@ function RaceGame() {
   const [userAnswer, setUserAnswer] = useState(''); // User's answer input
   const [questions, setQuestions] = useState([]); // Array of generated math questions for the race
   const [countdown, setCountdown] = useState(null); // Countdown before game starts
+  const [success, setSuccess] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
 
   const colorMap = [
     'text-red-600',
@@ -45,11 +47,24 @@ function RaceGame() {
     'text-black'
   ]
 
-  const [success, setSuccess] = useState(false);
   useEffect(() => {
     const generated = generateQuestions(subjectName, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(generated);
   }, [grade, subjectName]);
+
+  useEffect(() => {
+  if (gameEnded && success) {
+    updateUserProgress({
+      isSuccess: success,
+      location,
+      user,
+      update,
+      updateQuiz,
+      gameLevel,
+      gameSubject: subjectName
+    });
+  }
+}, [gameEnded, success, location, user, update, updateQuiz, gameLevel, subjectName]);
 
   // The total length of the track is number of questions + a "Finish" block
   // Show full length (NUM_QUESTIONS + 1) even if questions haven't loaded yet
@@ -60,6 +75,7 @@ function RaceGame() {
       const next = prev + 1;
       if (next >= TRACK_LENGTH - 1) {
         setStarted(false);
+        setSuccess(false); // You lost
         setMessage('Opponent wins! Try Again?');
         return TRACK_LENGTH - 1;
       }
@@ -78,20 +94,21 @@ function RaceGame() {
 
   // Updating levels progress on levels page after finishing a level successfully
   const handleFinishedGame = () => {
-    const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
-    if (gameLevel > currentFinished) {
-      let newUser = user;
-      newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
-      update(user.email, newUser);
-    }
-    if (location.state?.fromQuiz && success){
-      updateQuiz();
-    }
+    updateUserProgress({
+      isSuccess: success,
+      location,
+      user,
+      update,
+      updateQuiz,
+      gameLevel,
+      gameSubject: subjectName
+    });
+
     if (location.state?.fromQuiz)
       navigate("/");
     else
       navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
-  }
+  };
 
   // Starts the countdown before the game and resets positions and states
   const startCountdown = () => {
@@ -101,6 +118,8 @@ function RaceGame() {
     setMessage('');
     setUserAnswer('');
     setCountdown(3);
+    setGameEnded(false);
+    setSuccess(false);
 
     // Countdown from 3 to "Race!" then start the game
     const interval = setInterval(() => {
@@ -136,9 +155,10 @@ function RaceGame() {
       if (newPos === TRACK_LENGTH - 1) {
         setUserPos(newPos);
         clearInterval(botTimer.current);
-        setMessage('You Win! Continue To The Next Race?');
-        setSuccess(true)
         setStarted(false);
+        setGameEnded(true);
+        setSuccess(true);
+        setMessage('You Win! Continue To The Next Race?');
       } else {
         // Otherwise, update user position and move to next question
         setUserPos(newPos);
@@ -160,8 +180,11 @@ function RaceGame() {
           when the game is not running (before clicking start race or after a race finished and try again needs to be clicked) */}
         {!started && countdown === null && (
           <div className="flex justify-center">
-            <StartButton onClick={message === 'You Win! Continue To The Next Race?' ? handleFinishedGame : startCountdown}
-            message={message} startMessage={'🏁 Start Race'} startGameColor={'bg-orange-400'} />
+            <StartButton
+              onClick={gameEnded && success ? handleFinishedGame : startCountdown}
+              message={message}
+              startMessage={'🏁 Start Race'}
+              startGameColor={'bg-orange-400'} />
           </div>
         )}
 

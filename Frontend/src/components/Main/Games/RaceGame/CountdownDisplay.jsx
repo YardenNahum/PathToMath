@@ -40,7 +40,7 @@ function CountdownDisplay({ countdown, colorMap, startWord }) {
         visible ? 'opacity-100 scale-150' : 'opacity-0 scale-50'
       }`}
     >
-      <div className={`text-6xl font-extrabold text-center my-6 ${colorClass}`}>
+      <div className={`text-4xl font-extrabold text-center my-6 ${colorClass} md:text-6xl`}>
         {countdown === startWord ? startWord : countdown}
       </div>
     </div>
