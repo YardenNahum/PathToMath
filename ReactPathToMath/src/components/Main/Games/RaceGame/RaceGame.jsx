@@ -36,6 +36,7 @@ function RaceGame() {
   const [userAnswer, setUserAnswer] = useState(''); // User's answer input
   const [questions, setQuestions] = useState([]); // Array of generated math questions for the race
   const [countdown, setCountdown] = useState(null); // Countdown before game starts
+  const [success, setSuccess] = useState(false);
 
   const colorMap = [
     'text-red-600',
@@ -44,7 +45,6 @@ function RaceGame() {
     'text-black'
   ]
 
-  const [success, setSuccess] = useState(false);
   useEffect(() => {
     const generated = generateQuestions(subjectName, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(generated);
