@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import ShadowedTitle from '../../../Utils/ShadowedTitle';
 import { useLocation } from 'react-router-dom';
-import GameSelection from './GameSelection'
 /**
  * Game Container Component
  * @param {Object} props - The component props
@@ -14,7 +13,7 @@ import GameSelection from './GameSelection'
  * @param {React.ReactNode} props.children - The children of the component
  * @returns {React.ReactNode} The rendered component
  */
-function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, children, icon, backgroundImage }) {
+function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, children, icon, backgroundImage, showReturnButton = true }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -84,17 +83,18 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
                 </div>
             </div>
 
+        {/* Dont show return button if its GameSelection popup */}
+        {showReturnButton && (
             <div className=" flex justify-center mb-10">
-            {/* Return button (dont show button for GameSelection popup */}
-            {!GameSelection && (
                 <ButtonComponent
                     label="Return"
                     onClick={handleReturn}
                     bgColor="bg-blue-400 hover:bg-blue-700"
                     textColor="text-white"
                     size="md"
-                />)}
+                />
             </div>
+        )}
         </div>
     );
 }

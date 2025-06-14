@@ -45,6 +45,7 @@ function GameSelection({ subjectGame, level, grade, onGameSelected }) {
                 gameLevel={level}
                 icon={TitleIcon}
                 backgroundImage={backgroundImage}
+                showReturnButton={false}
             >
                 <div className="bg-green-100 w-full h-full max-h-[45vh] flex flex-col justify-center items-center rounded-lg p-4 shadow-lg -mt-3 mb-5 max-w-2xl mx-auto">
                     <div className="text-center mt-4 sm:mt-6 px-2">
