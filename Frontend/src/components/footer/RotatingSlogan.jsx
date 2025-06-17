@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
 const slogans = [
-  "Every problem has a solution — find it!",
-  "Every problem you solve makes you stronger.",
-  "Challenge accepted: let's solve it!",
-  "Mistakes help us grow — keep solving!",
-  "Practice makes Perfect - keep at it!",
-  "Mistakes are proof you're trying — never stop learning!",
+  "Every problem has a solution waiting to be discovered — dive in, explore, and find it with confidence!",
+  "Every problem you solve not only sharpens your mind but also strengthens your skills for the challenges ahead.",
+  "Challenge accepted: let's face each problem head-on and turn obstacles into opportunities for growth!",
+  "Mistakes are valuable lessons that help us grow smarter and more resilient — keep pushing forward and solving!",
+  "Practice makes perfect — with every step and every problem, you’re one step closer to mastery and success!",
+  "Mistakes are proof that you’re trying and learning — never stop exploring new ideas and expanding your knowledge!",
 ];
 
 function RotatingSlogan() {
