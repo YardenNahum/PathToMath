@@ -20,7 +20,7 @@ function RotatingSlogan() {
         setCurrentIndex((prev) => (prev + 1) % slogans.length);
         setFade(true);
       }, 500);
-    }, 5000);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
