@@ -18,6 +18,17 @@ const ProfilePage = () => {
   const [avatar, setAvatar] = useState(user?.avatar);
   const showPassword = useRef(false);
 
+  const avatarMap = {
+  avatar1: avatar1,
+  avatar2: avatar2,
+  avatar3: avatar3,
+  avatar4: avatar4,
+  avatar5: avatar5,
+  avatar6: avatar6,
+  avatar7: avatar7,
+  avatar8: avatar8,
+};
+
   /**
    * Show an alert message.
    * @param {string} message - The alert message to show.
@@ -117,24 +128,23 @@ const ProfilePage = () => {
    * @returns {JSX.Element} JSX for avatar selection modal.
    */
   const AvatarOptions = () => {
-    const avatars = [
-      avatar1,
-      avatar2,
-      avatar3,
-      avatar4,
-      avatar5,
-      avatar6,
-      avatar7,
-      avatar8,
-    ];
+    const avatars = Object.keys(avatarMap);
+    const modalRef = useRef();
 
-    /**
-     * Single avatar image component.
-     * @param {Object} props
-     * @param {string} props.avatarEndSrc - Avatar image file name without extension.
-     * @returns {JSX.Element} JSX for avatar image.
-     */
-    const Avatar = ({av}) => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowAvatarSection(false);
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
+    const Avatar = ({ av }) => {
       const currentAvatar = user.avatar;
       const selectedAvatar = avatar;
       const borderColor =
@@ -144,7 +154,6 @@ const ProfilePage = () => {
           ? "border-blue-200"
           : "border-transparent";
 
-
       const handleAvatarClick = () => {
         setAvatar(av);
         setShowAvatarSection(false);
@@ -152,7 +161,7 @@ const ProfilePage = () => {
 
       return (
         <img
-          src={av}
+          src={avatarMap[av] || avatar1}
           className={`md:w-40 md:h-40 h-30 w-30 rounded-xl cursor-pointer border-5 transition hover:scale-105 ${borderColor}`}
           onClick={handleAvatarClick}
         />
@@ -160,16 +169,23 @@ const ProfilePage = () => {
     };
 
     return (
-      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-40">
-        <div className="bg-white p-4 rounded-xl w-3/4 md:w-1/2 h-3/4 overflow-y-auto">
+      <div className="fixed top-8 left-0 w-full h-full backdrop-blur-md bg-white/10 flex items-center justify-center z-40">
+        <div
+          ref={modalRef}
+          className="relative bg-white p-4 rounded-xl w-3/4 md:w-1/2 h-3/4 overflow-y-auto"
+        >
+          <button
+            className="absolute top-3 right-4 text-2xl cursor-pointer font-bold text-gray-500 hover:text-gray-800 transition"
+            onClick={() => setShowAvatarSection(false)}
+          >
+            ×
+          </button>
           <h1 className="mb-5 lg:text-6xl sm:text-5xl text-3xl font-semibold text-black text-center">
             Choose An Avatar:
           </h1>
           <div className="flex flex-wrap gap-7 justify-center">
             {avatars.map((av) => (
-              <Avatar key={av} 
-                av={av}
-              />
+              <Avatar key={av} av={av} />
             ))}
           </div>
         </div>
@@ -186,7 +202,7 @@ const ProfilePage = () => {
       <div className="flex flex-col items-center justify-center md:w-1/3 w-full mr-5 md:p-6 p-2">
         <img
           id="AvatarImg"
-          src={avatar? avatar : user.avatar}
+          src={avatarMap[avatar || user.avatar] || avatar1} // Use the name-to-image map
           className="bg-white border-5 border-blue-500 md:w-48 md:h-48 w-30 h-30 object-cover rounded-xl p-3 mb-4"
           alt="User Avatar"
         />

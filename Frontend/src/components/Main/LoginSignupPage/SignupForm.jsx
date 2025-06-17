@@ -36,7 +36,7 @@ const SignupForm = ({ formData, setFormData, onSubmit }) => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         />
         <SelectInput
-          label="Select Your Class 🎓"
+          label="Select Your Grade 🎓"
           icon={class_icon}
           value={formData.class}
           onChange={(e) => setFormData({ ...formData, class: e.target.value })}
