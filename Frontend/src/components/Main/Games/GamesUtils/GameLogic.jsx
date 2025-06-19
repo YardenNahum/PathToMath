@@ -111,7 +111,7 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
             case "Multiplication":
             case "Division":
                 const offset = Math.max(2, (Math.floor(grade / 10) + 1) * 2);
-                const minBorder = answer - offset;
+                const minBorder = Math.max(0, answer - offset); // Prevent negative answers
                 const maxBorder = answer + offset;
                 optionValue = Math.round(Math.random() * (maxBorder - minBorder) + minBorder);
                 break;

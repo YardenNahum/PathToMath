@@ -184,6 +184,7 @@ const WordProblem = () => {
       level={gameLevel}
       icon={TitleIcon}
       backgroundImage={StoriesBg}
+      howToPlay={"Read the math tale carefully and type your answer in the box. Get at least 2 out of 3 correct to win!"}
     >
       <div className={`inline-block max-w-[800px] mb-5 align-middle justify-center border-5 border-red-300 rounded-3xl shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-white'}`}>
         <div >

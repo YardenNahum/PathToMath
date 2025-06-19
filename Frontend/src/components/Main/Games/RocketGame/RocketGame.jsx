@@ -158,7 +158,14 @@ const { subjectGame, grade, level } = useParams();
   };
 
   return (
-    <GameContainer gameName="Math Planets" gameSubject={subjectName} gameLevel={gameLevel} icon={TitleIcom} backgroundImage={spaceBg}>
+    <GameContainer 
+      gameName="Math Planets" 
+      gameSubject={subjectName} 
+      gameLevel={gameLevel}
+      icon={TitleIcom} 
+      backgroundImage={spaceBg}
+      howToPlay={"After takeoff, answer math questions correctly to move your rocket. First to reach the planet wins!"}
+    >
       <div className="rounded-lg p-4">
               {/* Start button or try again */}
         {!started && countdown === null && (

@@ -208,20 +208,15 @@ const GameCube = () => {
             }
         }
         return (
-            <GameContainer gameName="Roll & Solve" gameSubject={gameSubject} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={CubesBg}>
+            <GameContainer 
+                gameName="Roll & Solve" 
+                gameSubject={gameSubject} 
+                gameLevel={gameLevel} 
+                icon={TitleIcon} 
+                backgroundImage={CubesBg} 
+                howToPlay={"Select dice that add up to the target sum. You have 2 tries per question. Get 3 out of 5 correct to pass!"}
+            >
                 <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
-
-                    <div className='text-sm group flex align-left justify-start items-center gap-2 mb-4'>
-                        {/* How to play button */}
-                        <button className="group items-center flex gap-2 bg-purple-200 shadow-2xl px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
-                            <img src={help_icon} alt="How to play" className="h-5 w-5" />
-                            How to play
-                        </button>
-                        {/* Dropdown text */}
-                        <div className="p-2 mt-2 rounded shadow-md bg-white  group-hover,group-selected:opacity-100 invisible group-hover:visible transition-all duration-300 ">
-                            Choose cubes that sum up to the given number. You have {MAX_TRIES} tries per question.
-                        </div>
-                    </div>
                     {gameFinished ? (
                         <div className="text-2xl flex flex-col items-center justify-center min-h-screen text-center">
                             <h2 className="text-3xl font-semibold text-green-600 mb-4">

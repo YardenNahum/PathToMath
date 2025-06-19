@@ -214,7 +214,14 @@ function BattleRocketGame() {
   };
 
   return (
-    <GameContainer gameName="Rocket Battle" gameSubject={subjectGame} gameLevel={gameLevel} icon={TitleIcom} backgroundImage={spaceBg}>
+    <GameContainer
+      gameName="Rocket Battle"
+      gameSubject={subjectGame} 
+      gameLevel={gameLevel}
+      icon={TitleIcom} 
+      backgroundImage={spaceBg}
+      howToPlay={"After takeoff, answer math questions correctly to move your rocket. First to reach the planet wins!"}
+    >
       {/* Connection P2P */}
       <ConnectionP2P
         connection={connection}

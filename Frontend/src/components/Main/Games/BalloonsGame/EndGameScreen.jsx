@@ -4,7 +4,7 @@ import ButtonComponent from '../../../Utils/Button.jsx';
 // It uses Tailwind CSS for styling and provides feedback based on the player's performance.
 
 function EndGameScreen({ score, total, onFinish }) {
-    // Determine if the score is a success based on a threshold (e.g., 4 out of 5)
+    // Determine if the score is a success based on a threshold
     const isSuccess = score >= 4; 
 
     return (
@@ -20,7 +20,6 @@ function EndGameScreen({ score, total, onFinish }) {
             <div className="text-3xl font-bold text-gray-700 mb-2">
                 Score: {score}/{total}      
             </div>
-
 
             <ButtonComponent
                 label={isSuccess ? '🚀 Next Adventure!' : '🔄 Try Again!'}

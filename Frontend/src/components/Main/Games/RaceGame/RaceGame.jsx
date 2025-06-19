@@ -173,7 +173,14 @@ function RaceGame() {
   };
 
   return (
-    <GameContainer gameName="Math Race" gameSubject={subjectName} gameLevel={gameLevel} icon={TitleIcon} backgroundImage={RaceBg}>
+    <GameContainer 
+      gameName="Math Race" 
+      gameSubject={subjectName} 
+      gameLevel={gameLevel} 
+      icon={TitleIcon} 
+      backgroundImage={RaceBg}
+      howToPlay={"Answer math questions quickly to move forward and beat your opponent to the finish line. One correct answer = one step forward!"}
+    >
       <div className="bg-gray-100 rounded-lg p-4 shadow-lg mb-5 max-w-4xl mx-auto">
 
         {/* Show start race button (for first race) or try again message (for next races)

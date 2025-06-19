@@ -171,6 +171,7 @@ export default function OptionsGame() {
             gameLevel={gameLevel}
             icon={TitleIcon}
             backgroundImage={OptionsBg}
+            howToPlay={"Read the question and select the correct answer from the treasure chests. Try to get at least 4 out of 5 correct to pass the level!"}
         >
             <div className="flex justify-center">
                 <div className={`mb-5 border-8 border-amber-400 rounded-lg p-9 inline-block shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-gray-700'}`}>

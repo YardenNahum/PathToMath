@@ -95,7 +95,7 @@ const LevelsPage = () => {
             >
                 <div className="flex justify-end w-full">
                     <button
-                        className="bg-red-500 text-white rounded px-2 hover:bg-red-400 transition-all duration-300"
+                        className="bg-red-500 text-white rounded cursor-pointer px-2 hover:bg-red-400 transition-all duration-300"
                         onClick={() => handlePopupClick(true)}
                     >
                         X
