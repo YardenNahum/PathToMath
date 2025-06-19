@@ -164,7 +164,7 @@ const { subjectGame, grade, level } = useParams();
       gameLevel={gameLevel}
       icon={TitleIcom} 
       backgroundImage={spaceBg}
-      howToPlay={"After takeoff, answer math questions correctly to move your rocket. First to reach the planet wins!"}
+      howToPlay={"After takeoff, answer math questions correctly to fly your rocket. Reach the planet before your opponent does to win!"}
     >
       <div className="rounded-lg p-4">
               {/* Start button or try again */}

@@ -220,7 +220,7 @@ function BattleRocketGame() {
       gameLevel={gameLevel}
       icon={TitleIcom} 
       backgroundImage={spaceBg}
-      howToPlay={"After takeoff, answer math questions correctly to move your rocket. First to reach the planet wins!"}
+      howToPlay={"Enter your opponent’s Peer ID or share yours to connect. When both are ready, answer questions to race — first to reach the planet wins!"}
     >
       {/* Connection P2P */}
       <ConnectionP2P
