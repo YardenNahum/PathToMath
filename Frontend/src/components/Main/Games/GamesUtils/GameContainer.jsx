@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import ShadowedTitle from '../../../Utils/ShadowedTitle';
 import { useLocation } from 'react-router-dom';
-import help_icon from '../../../../assets/Images/cube_game/how_to_play.png';
-
+import HowToPlay from './HowToPlay';
 /**
  * Game Container Component
  * @param {Object} props - The component props
@@ -82,17 +81,7 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
   <div className="flex-grow text-center text-black mt-6 mx-auto max-w-6xl w-full bg-transparent">
     <div className="rounded-lg p-4 relative max-w-3xl mx-auto mb-5">
       {howToPlay && (
-        <div className='text-sm group flex align-left justify-start items-center gap-2 mb-4'>
-          <button className="group items-center flex w-1/5 gap-2 bg-purple-200 shadow-2xl px-4 py-2 rounded-lg hover:bg-purple-300 transition-colors cursor-pointer">
-            <img src={help_icon} alt="How to play" className="h-5 w-5" />
-            <>
-                How to<br />play
-            </>
-            </button>
-          <div className="p-2 mt-2 rounded shadow-md bg-white invisible group-hover:visible transition-all duration-300">
-            {howToPlay}
-          </div>
-        </div>
+        <HowToPlay howToPlay={howToPlay} />
       )}
       {children}
     </div>
