@@ -1,4 +1,6 @@
-/** Subject Map */
+/**
+ * Subject map defining math operation symbols and functions for each subject.
+ */
 const subjectMap = {
     "Addition": {
         "mathAction": "+",
@@ -22,21 +24,26 @@ const subjectMap = {
 };
 
 /** 
- * Generate Questions
- * @param {string} gameSubject - The subject of the game (Addition, Subtraction, Multiplication, Division, Percentage)
- * @param {number} gameLevel - The level of the game (1-6)
- * @param {number} numOfQuestions - The number of questions to generate (1-10)
- * @param {number} numOfOptions - The number of options to generate (0-4)
- * @returns {Array} - The generated questions (Array of objects with question, var1, var2, answer, options)
+ * Generates an array of math questions based on the given subject, grade, level, and options.
+ * @param {string} gameSubject - The math subject (Addition, Subtraction, etc.)
+ * @param {number|string} grade - The grade level (1-6)
+ * @param {number|string} gameLevel - The game level (1-30)
+ * @param {number} [numOfQuestions=1] - Number of questions to generate (1-10)
+ * @param {number} [numOfOptions=4] - Number of multiple choice options (0-4)
+ * @returns {Array} Array of question objects with question text, variables, answer, and options.
  */
 const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, numOfOptions = 4) => {
     let divisior_array = [10, 20, 25, 50];
 
-    /** Convert grade and gameLevel to number if it's a string */
+    // Convert grade and level to numbers if passed as strings
     if (typeof grade === 'string') grade = Number(grade);
     if (typeof gameLevel === 'string') gameLevel = Number(gameLevel);
 
-    /** Generate Variable */
+    /**
+     * Generates a random variable number based on subject and grade.
+     * @param {number} grade - Current grade
+     * @returns {{value: number|null, textValue: string}} Variable with formatted text
+     */
     const generateVariable = (grade) => {
         let variable;
         let maxValue;
@@ -46,25 +53,19 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         switch (gameSubject) {
             case "Addition":
             case "Subtraction":
-                /**
-                 * 1st grade: 1-10, 2nd grade: 11-50, 3rd grade: 51-100
-                 * 4th grade: 101-500, 5th grade: 501-1000, 6th grade: 1001-1500
-                 */
+                // Set min/max range per grade for addition/subtraction
                 if (grade === 1) { maxValue = 10; minValue = 1; }
                 if (grade === 2) { maxValue = 50; minValue = 11; }
                 if (grade === 3) { maxValue = 100; minValue = 51; }
                 if (grade === 4) { maxValue = 500; minValue = 101; }
                 if (grade === 5) { maxValue = 1000; minValue = 501; }
                 if (grade === 6) { maxValue = 1500; minValue = 1001; }
-
                 variable = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
                 variable += Math.floor(variable / 10) * gameDifficulty;
                 break;
-            case "Multiplication":
-                /** 1st grade: null, 2nd grade: null, 3rd grade: 4-10 
-                 * 4th grade: 9-15, 5th grade: 10-25, 6th grade: 20-30
-                 */
 
+            case "Multiplication":
+                // Set min/max range per grade for multiplication, null for grades < 3
                 if (grade === 1 || grade === 2) variable = null;
                 if (grade === 3) { maxValue = 15; minValue = 9; }
                 if (grade === 4) { maxValue = 25; minValue = 10; }
@@ -74,22 +75,19 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 variable = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
                 variable += Math.floor(variable / 10) * gameDifficulty;
                 break;
+
             case "Division":
-                /** 1st grade: null, 2nd grade: null, 3rd grade: null, 4th grade: 1-10
-                 *  5th grade: 10-50, 6th grade: 30-100 
-                 */
+                // Null for grades < 4; set min/max for grades 4-6
                 if (grade === 1 || grade === 2 || grade === 3) variable = null;
                 if (grade === 4) { maxValue = 10; minValue = 1; }
                 if (grade === 5) { maxValue = 20; minValue = 10; }
                 if (grade === 6) { maxValue = 30; minValue = 15; }
-
                 variable = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
                 variable += Math.floor(variable / 10) * gameDifficulty;
                 break;
+
             case "Percentage":
-                /** 1st grade: null, 2nd grade: null, 3rd grade: null, 4th grade: null
-                 *  5th grade: 1-5, 6th grade: 1-10 
-                 */
+                // Only valid for grades 5 and 6, generate small percentage values
                 variable = grade === 5
                     ? Math.floor(Math.random() * 5) + 1
                     : Math.floor(Math.random() * 10) + 1;
@@ -102,7 +100,12 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         };
     };
 
-    /** Generate Option */
+
+    /**
+     * Generates a fake option for multiple choice answers.
+     * @param {number} answer - The correct answer value.
+     * @returns {{value: number, textValue: string, isCorrect: boolean}} Option object.
+     */
     const generateOption = (answer) => {
         let optionValue;
         switch (gameSubject) {
@@ -127,9 +130,17 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         };
     };
 
+    /**
+     * Formats a number as a locale string.
+     * @param {number} number 
+     * @returns {string}
+     */
     const numberToString = (number) => number.toLocaleString();
 
-    /** Make Question */
+    /**
+     * Creates a single question object based on the subject and grade.
+     * @returns {object} Question object with question text, variables, answer, options
+     */
     const makeQuestion = () => {
         const mathAction = subjectMap[gameSubject].mathAction;
         const mathFunction = subjectMap[gameSubject].function;
@@ -143,9 +154,11 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 var2 = generateVariable(grade);
                 answer = mathFunction(var1.value, var2.value);
                 break;
+
             case "Subtraction":
                 var1 = generateVariable(grade);
                 var2 = generateVariable(grade);
+                // Ensure var1 >= var2 to avoid negative result
                 if (var1.value < var2.value) {
                     const temp = var1;
                     var1 = var2;
@@ -153,22 +166,24 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                 }
                 answer = mathFunction(var1.value, var2.value);
                 break;
+
             case "Multiplication":
                 var1 = generateVariable(grade);
                 var2 = generateVariable(grade);
                 answer = mathFunction(var1.value, var2.value);
                 break;
+
             case "Division":
                 var1 = generateVariable(grade);
-                var1.value = var1.value == 1 ? 2 : var1.value;
+                var1.value = var1.value == 1 ? 2 : var1.value;  // Avoid 1 to prevent trivial division
 
-                var2 = generateVariable(4);
-                var1.value = var1.value * var2.value;
+                var2 = generateVariable(4); // Divisor
+                var1.value = var1.value * var2.value;   // Make dividend divisible by divisor
                 var1.textValue = numberToString(var1.value);
 
                 answer = mathFunction(var1.value, var2.value);
                 break;
-                
+
             case "Percentage":
                 var2 = generateVariable(grade); // denominator
                 var2.value = Math.max(1, var2.value); // prevent division by 0
@@ -181,6 +196,7 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
                     textValue: numberToString(cappedNumerator)
                 };
                 var2.textValue = numberToString(var2.value);
+
                 answer = Math.round((var1.value / var2.value) * 100);
                 break;
 
@@ -189,9 +205,10 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         let options = [];
         let questionText;
 
-        // Generate fake answers
+        // Generate fake options until desired count minus 1 (for correct answer)
         while (options.length < numOfOptions - 1) {
             const fakeAnswer = generateOption(answer);
+            // Ensure unique fake options and not equal to correct answer
             if (!options.some(option => option.value === fakeAnswer.value) && fakeAnswer.value !== answer) {
                 options.push(fakeAnswer);
             }
@@ -206,7 +223,7 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         const insertIndex = Math.floor(Math.random() * options.length + 1);
         options.splice(insertIndex, 0, answerObject);
 
-        // Generate the question text
+        // Create question text depending on subject
         if (gameSubject === "Percentage") {
             questionText = `What is ${var1.textValue} out of ${var2.textValue} as a percentage?`;
         } else {
@@ -222,7 +239,10 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         }
     }
 
-    /** Validate Input */
+    /**
+     * Validates the input parameters for question generation.
+     * @returns {boolean} True if valid, false otherwise.
+     */
     const validateInput = () => {
         /** Validate Subject */
         if (subjectMap[gameSubject] === undefined) {
@@ -273,16 +293,15 @@ const generateQuestions = (gameSubject, grade, gameLevel, numOfQuestions = 1, nu
         return true;
     }
 
-    /** Generate Questions */
+    // Abort if input is invalid
     if (!validateInput()) return [];
 
     const newQuestions = [];
     while (newQuestions.length < numOfQuestions) {
-        // Generate a new question
         const question = makeQuestion();
         let isDuplicate = false;
 
-        // Check if the question is a duplicate of any existing questions
+        // Avoid duplicate questions, considering order for commutative operations
         for (const existing of newQuestions) {
             const isSameOrder = question.var1 === existing.var1 && question.var2 === existing.var2;
             const isReversedOrder = question.var1 === existing.var2 && question.var2 === existing.var1;

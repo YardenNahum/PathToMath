@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useUser } from './UserContext'; // adjust path as needed
+import { useUser } from './UserContext';
+
 // Import the user context to access user data and update functions
 const GradeContext = createContext();
 // Create a context for grade management

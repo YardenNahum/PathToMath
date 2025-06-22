@@ -1,11 +1,16 @@
+/* Ensure the body takes full viewport width and height, and prevent horizontal scroll due to overflow */
 body{
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
 }
+
+/* Adds a subtle glowing drop shadow around elements with the 'streak' class for popquiz */
 .streak {
   filter: drop-shadow(0 0 6px grey);
 }
+
+/* Background image styling for sections like home page: covers full area, centered, no repeat */
 .background-image {
   background-image: url("./assets/Images/Background/HomeBg.png");
   background-size: cover;
@@ -15,33 +20,42 @@ body{
   width: 100%;
   left: 0; 
 }
+
+/* Semi-transparent black overlay to darken content beneath it */
 .dark-background {
   background-color: rgb(0, 0, 0);
   opacity: 0.2;
 }
+
+/* Font style used for playful, child-friendly UI elements */
 .playful-font {
   font-family: 'Fredoka One', 'Comic Sans MS', cursive;
   color: rgb(109, 71, 0);
 }
 
+/* Navbar item appearance: white text, padding, and no underline */
 .navBarItem {
   color: white;
   padding: 10px 20px;
   text-decoration: none;
 }
 
+/* Enables 3D space for child elements to be rotated in 3D perspective */
 .perspective {
   perspective: 1000px;
 }
 
+/* Children of this element preserve their 3D transforms (used in card flips) */
 .transform-style-preserve-3d {
   transform-style: preserve-3d;
 }
 
+/* Hide the back face of an element when it's rotated (used in 3D card flips) */
 .backface-hidden {
   backface-visibility: hidden;
 }
 
+/* Rotate the element 180 degrees around the Y-axis (used to flip cards) */
 .rotate-y-180 {
   transform: rotateY(180deg);
 }

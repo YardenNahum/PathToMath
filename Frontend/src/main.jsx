@@ -5,7 +5,7 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 /**
- * Pages
+ * Page components used for routing
  */
 import HomePage from './components/Main/HomePage/HomePage.jsx'
 import LoginSignup from './components/Main/LoginSignupPage/LoginSignup.jsx'
@@ -22,13 +22,15 @@ import LogoutPage from './components/Main/LoginSignupPage/Logout.jsx';
 import WordGame from './components/Main/Games/WordGame/WordProblem.jsx';
 import RocketGame from './components/Main/Games/RocketGame/RocketGame.jsx';
 import PopQuiz from './components/Main/PopQuizPage/PopQuiz.jsx';
-import BalloonsGame  from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
+import BalloonsGame from './components/Main/Games/BalloonsGame/BalloonsGame.jsx'
 import RewardsPage from './components/Main/BadgesPage/RewardsPage';
 import BattleRocketGame from './components/Main/Games/BattleRocketGame/BattleRocketGame.jsx'
 import GameSelection from './components/Main/Games/GamesUtils/GameSelection.jsx'
 
 /**
- * Router for the app
+ * Define application routes using React Router.
+ * Each route maps a URL path to a specific page component.
+ * Nested under the root App layout.
  */
 const router = createBrowserRouter([
   {
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
       { path: '/videos/:subject', element: <RelevantVideo />, },
       { path: '/profile', element: <Profile />, },
       { path: '/ParentPage', element: <ParentPage />, },
-      { path: '/badges', element: <RewardsPage />} ,
+      { path: '/badges', element: <RewardsPage /> },
       { path: '/pop-quiz', element: <PopQuiz />, },
       { path: '/logout', element: <LogoutPage /> }
     ],
@@ -60,7 +62,9 @@ const router = createBrowserRouter([
 ])
 
 /**
- * Render the app
+ * Render the entire application into the root DOM element.
+ * React.StrictMode enables additional development checks and warnings.
+ * RouterProvider supplies the routing context to the app.
  */
 createRoot(document.getElementById('root')).render(
   <StrictMode>

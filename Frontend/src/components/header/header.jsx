@@ -13,19 +13,35 @@ import TutorialVideosIcon from '../../assets/Images/NavbarIcons/helpVideos.png'
 import ParentOverviewIcon from '../../assets/Images/NavbarIcons/ParentOverview.png'
 import SignupIcon from '../../assets/Images/NavbarIcons/SignupIcon.png'
 
+/**
+ * Header component renders the top navigation bar.
+ * It displays the logo, a responsive menu toggle button for mobile,
+ * and a dynamic menu that adapts to user login status and user type (e.g. Parent).
+ * 
+ * The menu items change depending on:
+ * - Whether the user is logged in or not (shows Profile and Logout or Signup and Login)
+ * - Whether the user is a parent (shows Parent Overview instead of Math Problems and Tutorial Videos)
+ * 
+ * Mobile menu is toggled by a hamburger button and uses the DynamicMenu component.
+ */
 function Header() {
+  // State to track if the mobile menu is open
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // Check localStorage if current user is a parent
   const isParent = localStorage.getItem("userType") == "Parent";
 
+  // Toggle mobile menu open/close state
   const toggleMobileMenu = () => {
     setIsMobileOpen(!isMobileOpen);
   };
+
+  // Get current login status from context
   const { isLoggedIn } = useLoginStatus();
 
-  // Main menu item
+  // Default menu for non-parent users
   let menuData = [
     {
-      //Home page
       label: 'Home',
       link: '/',
       icon: starIcon,
@@ -34,7 +50,6 @@ function Header() {
       className: "Home"
     },
     {
-      //Math Problems page
       label: 'Math Problems',
       link: '/subjects',
       icon: MathProbLogo,
@@ -66,10 +81,9 @@ function Header() {
     }
   ];
 
-  //  User is a parent, add Parent Overview to menu
+  // If user is a parent, replace menu with parent-specific items
   if (isParent) {
     menuData = [];
-
     menuData.push({
       label: 'Home',
       link: '/',
@@ -78,7 +92,7 @@ function Header() {
       submenuColor: "hover:bg-blue-500",
       className: "Home"
     });
-    
+
     menuData.push({
       label: 'Parent Overview',
       link: '/ParentPage',
@@ -87,15 +101,12 @@ function Header() {
       submenuColor: "hover:bg-orange-500",
       className: "ParentView"
     });
-
-    
   }
 
-  // Add Login or Logout dynamically
+  // Append Profile and Logout links if logged in, otherwise add Signup and Login links
   if (isLoggedIn) {
     menuData.push(
       {
-        //Profile Page
         label: 'Profile',
         link: '/profile',
         icon: ProfileIcon,
@@ -128,26 +139,27 @@ function Header() {
   return (
     <header className="flex flex-col xl:flex-row items-start xl:items-center z-30 justify-between w-full py-6 px-6 md:px-20 bg-blue-400 drop-shadow-md playful-font relative">
       <div className="flex justify-between items-center w-full xl:w-auto">
-        {/* Logo link to Home */}
+        {/* Logo linking to home page */}
         <Link to="/" className="hover:scale-105 transition-all">
           <img src={logo} alt="Logo" className="  w-60" />
         </Link>
-        
+
+        {/* Mobile hamburger menu button */}
         <button className="xl:hidden text-3xl text-white cursor-pointer" onClick={toggleMobileMenu}>
-          {/* simple hamburger menu for mobile view */}
+          {/* Show close icon if menu is open, hamburger icon otherwise */}
           {isMobileOpen ? '✖' : '☰'}
         </button>
       </div>
 
-      {/* Desktop Menu */}
+      {/* Desktop menu (hidden on mobile) */}
       <div className="hidden xl:block">
         <DynamicMenu items={menuData} isMobile={false} />
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu (shown only when toggled open) */}
       {isMobileOpen && (
         <div className="w-full mt-4 xl:hidden">
-          <DynamicMenu items={menuData} isMobile={true} closeMenu={() => setIsMobileOpen(false)}/>
+          <DynamicMenu items={menuData} isMobile={true} closeMenu={() => setIsMobileOpen(false)} />
         </div>
       )}
     </header>

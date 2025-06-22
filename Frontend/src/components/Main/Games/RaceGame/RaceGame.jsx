@@ -16,30 +16,31 @@ import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import useBotInterval from '../GamesUtils/useBotInterval.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
-const NUM_QUESTIONS = 10; // Number of questions in the race
+const NUM_QUESTIONS = 10; // Total number of questions per race
 
 function RaceGame() {
-  // Game state flags and data
   const { subjectGame, grade, level } = useParams(); //subject, grade and level from URL Params
   const subjectName = subjectGame;
   const gameLevel = parseInt(level);
+
   const updateQuiz = useUpdateQuiz();
   const location = useLocation();
-
   const navigate = useNavigate();
-
   const { user,update } = useUser();
-  const [started, setStarted] = useState(false); // Is the game currently running?
-  const [userPos, setUserPos] = useState(0); // User's current position on the track
-  const [botPos, setBotPos] = useState(0); // Opponent bot position on the track
-  const [questionIndex, setQuestionIndex] = useState(0); // Index of the current question the user is answering
-  const [message, setMessage] = useState(''); // Message shown to the user (win/loss, correct/incorrect)
-  const [userAnswer, setUserAnswer] = useState(''); // User's answer input
-  const [questions, setQuestions] = useState([]); // Array of generated math questions for the race
-  const [countdown, setCountdown] = useState(null); // Countdown before game starts
-  const [success, setSuccess] = useState(false);
-  const [gameEnded, setGameEnded] = useState(false);
+  
+  // Game state management
+  const [started, setStarted] = useState(false);  // Whether the race has started
+  const [userPos, setUserPos] = useState(0);  // User's current position on the track
+  const [botPos, setBotPos] = useState(0);  // Bot's position on the track
+  const [questionIndex, setQuestionIndex] = useState(0); // Index of the current question
+  const [message, setMessage] = useState(''); // Feedback message (correct/wrong/win/lose)
+  const [userAnswer, setUserAnswer] = useState(''); // User's input
+  const [questions, setQuestions] = useState([]); // List of generated questions
+  const [countdown, setCountdown] = useState(null); // Countdown timer before game start
+  const [success, setSuccess] = useState(false);  // Whether the user won
+  const [gameEnded, setGameEnded] = useState(false);  // Whether the game has ended
 
+  // Countdown display colors
   const colorMap = [
     'text-red-600',
     'text-yellow-500',
@@ -47,11 +48,13 @@ function RaceGame() {
     'text-black'
   ]
 
+  // Generate questions once on component mount or when grade/subject changes
   useEffect(() => {
     const generated = generateQuestions(subjectName, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(generated);
   }, [grade, subjectName]);
 
+  // After game ends and user wins, update progress or quiz data
   useEffect(() => {
   if (gameEnded && success) {
     updateUserProgress({
@@ -66,16 +69,15 @@ function RaceGame() {
   }
 }, [gameEnded, success, location, user, update, updateQuiz, gameLevel, subjectName]);
 
-  // The total length of the track is number of questions + a "Finish" block
-  // Show full length (NUM_QUESTIONS + 1) even if questions haven't loaded yet
-  const TRACK_LENGTH = 11; // Total blocks on the track (including start and finish)
+  const TRACK_LENGTH = 11; // 10 questions + 1 finish line block
 
+  // Bot movement handler: advance bot one step and check for race end
   const handleBotMove = useCallback(() => {
     setBotPos((prev) => {
       const next = prev + 1;
       if (next >= TRACK_LENGTH - 1) {
-        setStarted(false);
-        setSuccess(false); // You lost
+        setStarted(false);  // Stop the game
+        setSuccess(false); // Mark as lost
         setMessage('Opponent wins! Try Again?');
         return TRACK_LENGTH - 1;
       }
@@ -83,6 +85,7 @@ function RaceGame() {
     });
   }, [TRACK_LENGTH]);
 
+  // Triggers bot movement at intervals
   const botTimer = useBotInterval({
     started,
     onMove: handleBotMove,
@@ -90,9 +93,7 @@ function RaceGame() {
     level: gameLevel,
   });
 
-  
-
-  // Updating levels progress on levels page after finishing a level successfully
+  // Navigate and update user after finishing a successful race
   const handleFinishedGame = () => {
     updateUserProgress({
       isSuccess: success,
@@ -110,7 +111,7 @@ function RaceGame() {
       navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
   };
 
-  // Starts the countdown before the game and resets positions and states
+  // Initiates countdown sequence before race starts
   const startCountdown = () => {
     setUserPos(0);
     setBotPos(0);
@@ -121,7 +122,7 @@ function RaceGame() {
     setGameEnded(false);
     setSuccess(false);
 
-    // Countdown from 3 to "Race!" then start the game
+    // Countdown logic: 3 → 2 → 1 → "Race!" → start
     const interval = setInterval(() => {
       setCountdown((prev) => {
         if (prev === 1) {
@@ -141,9 +142,8 @@ function RaceGame() {
   // The current question the user must answer based on questionIndex
   const currentQuestion = questions[questionIndex];
 
-  // Handles user submitting an answer
+  // Process user submission and check correctness
   const handleAnswerSubmit = () => {
-    // Prevent submission if game not started or no current question available
     if (!started || !currentQuestion) return;
 
     // Compare user's trimmed answer to the correct answer (converted to string)
@@ -160,13 +160,13 @@ function RaceGame() {
         setSuccess(true);
         setMessage('You Win! Continue To The Next Race?');
       } else {
-        // Otherwise, update user position and move to next question
+        // Move to next question and update position
         setUserPos(newPos);
         setQuestionIndex((prev) => prev + 1);
         setMessage('Correct!');
       }
     } else {
-      // If answer is wrong, show message and clear input
+      // Wrong answer feedback
       setMessage('Incorrect, Try again!');
       setUserAnswer('');
     }
@@ -183,8 +183,7 @@ function RaceGame() {
     >
       <div className="bg-gray-100 rounded-lg p-4 shadow-lg mb-5 max-w-4xl mx-auto">
 
-        {/* Show start race button (for first race) or try again message (for next races)
-          when the game is not running (before clicking start race or after a race finished and try again needs to be clicked) */}
+        {/* Show start button or continue button depending on game state */}
         {!started && countdown === null && (
           <div className="flex justify-center">
             <StartButton
@@ -195,10 +194,10 @@ function RaceGame() {
           </div>
         )}
 
-        {/* Use CountdownDisplay component for visuals before game starts */}
+        {/* Countdown display before game starts */}
         <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🏁 Race!'} />
 
-        {/* Show the question box only when the game has started */}
+        {/* Question box only appears during the game */}
         {started && questionIndex < questions.length && (
           <QuestionBox
             question={currentQuestion?.question}
@@ -208,7 +207,7 @@ function RaceGame() {
             feedback={<FeedbackMessage message={message} />}
           />
         )}
-        {/* Show tracks immediately based on TRACK_LENGTH (even if questions haven't loaded yet) */}
+        {/* Display the race track with user/bot positions */}
         {TRACK_LENGTH > 1 && (
           <TrackSection
             userPos={userPos}

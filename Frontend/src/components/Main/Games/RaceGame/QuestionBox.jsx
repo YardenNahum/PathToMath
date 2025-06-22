@@ -1,29 +1,34 @@
 import React from 'react';
 
 /**
- * QuestionBox component renders a question with an input field for the user's answer,
- * a submit button, and optional feedback after submission.
- * 
+ * QuestionBox component renders a math or quiz-style question
+ * with a text input for the user's answer, a submit button,
+ * and optional feedback (e.g. correct/incorrect response).
+ *
  * @param {Object} props
- * @param {string} props.question - The current question to display
- * @param {string} props.userAnswer - The user's current input answer
- * @param {function} props.setUserAnswer - Setter function to update the user's answer
- * @param {function} props.onSubmit - Callback function triggered on form submission
- * @param {React.ReactNode} [props.feedback] - Feedback message to display below the input
- * @returns {React.ReactNode} The rendered QuestionBox component
+ * @param {string} props.question - The current question to be displayed
+ * @param {string} props.userAnswer - The current answer typed by the user
+ * @param {function} props.setUserAnswer - Function to update the userAnswer state
+ * @param {function} props.onSubmit - Function to handle form submission
+ * @param {React.ReactNode} [props.feedback] - Optional feedback to show after submission
+ * @param {boolean} [props.disabled=false] - Whether inputs should be disabled (e.g., while waiting)
+ * @returns {React.ReactNode} Rendered QuestionBox component
  */
 function QuestionBox({ question, userAnswer, setUserAnswer, onSubmit, feedback, disabled = false }) {
 
-  // Handle form submission: prevent default and call onSubmit callback
+  /**
+   * Handles form submission:
+   * Prevents page reload and invokes the onSubmit callback
+   */
   const handleSubmit = (event) => {
-    event.preventDefault();
-    onSubmit();
+    event.preventDefault(); // Prevent default form behavior
+    onSubmit(); // Trigger the provided submit handler
   };
 
   return (
     <div className="mb-6 text-center">
       <form onSubmit={handleSubmit}>
-        {/* Display the current question */}
+        {/* Display the question text */}
         <div className="text-lg font-medium mb-5 mt-3 md:text-4xl">{question}</div>
 
         {/* Input field for the user's answer */}
@@ -36,13 +41,13 @@ function QuestionBox({ question, userAnswer, setUserAnswer, onSubmit, feedback, 
           disabled={disabled}
         />
 
-        {/* Submit button */}
+        {/* Submit answer button */}
         <button type="submit" className={`bg-blue-600 text-white px-4 py-2 rounded ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`} disabled={disabled}>
           Submit
         </button>
       </form>
 
-      {/* Feedback message below input */}
+      {/* Show feedback message if provided */}
       {feedback && (
         <div className="mt-4">
           {feedback}

@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { getUserByMail, addUser, updateUser } from '../../services/UserService';
 import { useLoginStatus } from './LoginStatusComponent';
 import { use } from 'react';
+
 const UserContext = createContext();
 
 // Custom hook to access the user context

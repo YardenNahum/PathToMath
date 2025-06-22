@@ -2,18 +2,20 @@ import React from 'react';
 import ButtonComponent from '../../../Utils/Button';
 
 /**
- * StartButton component renders a button to start or retry the race.
- * It displays a custom message if provided, otherwise a default "Start Race" label.
- * The button style changes based on whether it's a retry (message present) or initial start.
- * 
+ * StartButton component renders a button used to start or retry the race.
+ * - Shows a custom message (e.g., retry message) if provided,
+ *   otherwise displays a default "Start Race" label.
+ * - Styles the button differently depending on whether it is a retry or the initial start.
+ *
  * @param {Object} props
- * @param {function} props.onClick - Callback function to handle button click
+ * @param {function} props.onClick - Function to handle button clicks
  * @param {string} [props.message] - Optional message to display on the button (e.g., "Retry")
- * @returns {React.ReactNode} The rendered StartButton component
+ * @param {string} props.startMessage - Default label shown on initial start (e.g., "Start Race")
+ * @param {string} props.startGameColor - Background color class for initial start button
+ * @returns {React.ReactNode} Rendered StartButton component
  */
 function StartButton({ onClick, message, startMessage, startGameColor }) {
-  
-  // Determine if button is for retry or for winning based on message presence
+  // If message exists, treat button as a retry button, otherwise as initial start
   const isRetry = Boolean(message);
 
   return (

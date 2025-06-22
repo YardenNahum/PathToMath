@@ -9,21 +9,26 @@ import { UserProvider } from './components/Utils/UserContext';
 
 function App() {
   return (
+    // Global context for login status
     <LoginStatusProvider>
+      {/* Global context for user data (e.g., name, grade, progress) */}
       <UserProvider>
+        {/* Global context for selected grade level across the app */}
         <GradeProvider>
           <div className="flex min-h-screen flex-col relative">
-            {/* Header - Fixed position at top */}
+            {/* Header - remains fixed at the top of the page */}
             <header className="sticky top-0 z-100 w-full bg-white">
               <Header />
             </header>
 
+            {/* Main content rendered based on the current route */}
             <Outlet className="flex-grow w-full" />
 
-            {/* Footer */}
+            {/* Footer - displayed at the bottom of the page */}
             <footer className="w-full bg-white ">
               <Footer />
             </footer>
+
           </div>
         </GradeProvider>
       </UserProvider>
