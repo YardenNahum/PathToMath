@@ -45,7 +45,7 @@ function HomePage() {
 
             {/* Main content */}
             <div className="flex flex-col items-center justify-start gap-4 w-full lg:w-2/3 h-full">
-                <ShadowedTitle text="Welcome To Path2Math!"/>
+                <ShadowedTitle text="Welcome To Path2Math!" textColor='#fcc612'/>
                 <ProfileDiv />
                 <CirclesContainer />
             </div>
