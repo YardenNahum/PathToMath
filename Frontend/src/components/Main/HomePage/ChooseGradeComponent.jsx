@@ -4,16 +4,20 @@ import ButtonComponent from '../../Utils/Button';
 import ProfileCard from './ProfileCard';
 import BagIcon from '../../../assets/Images/HomePage/school-bag.png';
 import { getOrdinalSuffix } from '../../Utils/ordinalGrade';
-
+/**
+ * ChooseGradeBtn component
+ * @returns {JSX.Element} - The rendered component.
+ */
 function ChooseGradeBtn() {
     const { grade, setGrade } = useGrade();
     const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
     const popupRef = useRef(null);
-
+    // toggle the visibility of the grade selection calculator
     const toggleCalculator = () => {
         setIsCalculatorOpen((prev) => !prev);
     };
-
+    // Handle grade selection and close the calculator
+    // This function updates the grade state and closes the calculator popup
     const handleGradeSelection = (selectedGrade) => {
         setGrade(selectedGrade);
         setIsCalculatorOpen(false);

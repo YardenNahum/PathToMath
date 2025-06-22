@@ -5,7 +5,10 @@ import ChooseGrade from './ChooseGradeComponent';
 import profile from "../../../assets/Images/NavbarIcons/profile.png"; 
 import {useUser} from '../../Utils/UserContext'
 import { useNavigate } from 'react-router-dom';
-
+/**
+ * ProfileDiv component
+ * @returns {JSX.Element} - The rendered ProfileDiv component.
+ */
 function ProfileDiv() {
     const isLoggedIn = useLoginStatus();
     const { user } = useUser();

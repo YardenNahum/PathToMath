@@ -8,6 +8,11 @@ const UserContext = createContext();
 // Custom hook to access the user context
 export const useUser = () => useContext(UserContext);
 
+/**
+ * UserProvider component
+ * @param {Object} props - The component props.
+ * @returns {JSX.Element} - The rendered component.
+ */
 // Provider component
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -28,7 +33,11 @@ export const UserProvider = ({ children }) => {
       logout();  
     }
   }, [user, login, logout]);
-  // Load user by email and set state
+  /**
+   * Load user by email and set state
+   * @param {string} email - The email of the user to load.
+   * @returns {Promise<Object|null>} - The loaded user object or null if not found.
+   */
   const loadUser = async (email) => {
     try {
       const fetchedUser = await getUserByMail(email);
@@ -39,8 +48,11 @@ export const UserProvider = ({ children }) => {
       return null;
     }
   };
-
-  // Register a new user
+  /**
+   * Register a new user
+   * @param {Object} userData - The user data to register.
+   * @returns {Promise<Object>} - The registered user object.
+   */
   const register = async (userData) => {
     try {
       const newUser = await addUser(userData);
@@ -53,6 +65,12 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Update user by email
+   * @param {string} email - The email of the user to update.
+   * @param {Object} updates - The updated user data.
+   * @returns {Promise<Object>} - The updated user object.
+   */
   // Update user by email
   const update = async (email, updates) => {
     try {
@@ -65,13 +83,19 @@ export const UserProvider = ({ children }) => {
       throw error;
     }
   };
-
+  /**
+   * Logout user and clear state
+   * @returns {void}
+   */
   // Logout user
   const logoutUser = () => {
     setUser(null);
     localStorage.removeItem('userEmail');
   };
-//get user by email without setting state
+/** * Get user by email without setting state
+ * @param {string} email - The email of the user to fetch.
+ * * @returns {Promise<Object>} - The user object if found, otherwise throws an error.
+ */
 const getUserByMailNoSet = async (email) => {
   try {
     return await getUserByMail(email);
@@ -80,7 +104,13 @@ const getUserByMailNoSet = async (email) => {
     throw error; // rethrow to handle in calling function
   }
 };
-//check if user exists by email
+  
+
+/**
+ * Check if a user exists by email.
+ * @param {string} email - The email of the user to check.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the user exists, otherwise false.
+ */
 const checkIfUserExists = async (email) => {
   try {
     const user = await getUserByMail(email);

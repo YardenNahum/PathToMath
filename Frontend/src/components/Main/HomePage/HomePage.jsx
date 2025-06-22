@@ -22,7 +22,12 @@ const avatarMap = {
   avatar6: avatar6,
   avatar7: avatar7,
 };
-
+/**
+ * HomePage component
+ * @returns {JSX.Element} - The rendered HomePage component.
+ * This component serves as the main landing page for the application,
+ * displaying a welcome message, user profile, and various interactive circles.
+ */
 function HomePage() {
     const { user } = useUser();
     return (

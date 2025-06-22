@@ -1,5 +1,18 @@
 import React from 'react';
-
+/**
+ *  SubjectCircle component
+ *  Renders a circular subject icon with an image, title, and description.
+ * * @param {Object} props - The properties for the component.
+ * @param {string} props.imageSrc - The URL of the image to display in the circle.
+ * @param {string} props.title - The title to display below the circle.
+ * @param {string} props.description - The description to display on the back side of the circle.
+ * @param {string} [props.variant="flip"] - The variant of the circle ("
+ *  circle" for static circle, "flip" for flipping card).
+ * @param {string} [props.circleColor="#D3D3D3"] - The background color of the circle.
+ * @param {number} [props.size=240] - The size of the circle in pixels.
+ * @param {boolean} [props.clickable=true] - Whether the circle is clickable.
+ * @returns {JSX.Element} - The rendered SubjectCircle component.
+ */
 function SubjectCircle({
   imageSrc,
   title,

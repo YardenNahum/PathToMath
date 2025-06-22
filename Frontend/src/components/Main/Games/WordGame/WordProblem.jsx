@@ -15,7 +15,10 @@ import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
-
+/**
+ * WordProblem component
+ * @returns {JSX.Element} - The rendered component.
+ */
 const WordProblem = () => {
   // Get the subject and level from the URL parameters
   const { subjectGame, level } = useParams();
@@ -102,12 +105,16 @@ const WordProblem = () => {
       setFeedback(<p className="text-red-600">Wrong! The correct answer was {correct}</p>);
     }
   };
+  /**
+   * Function to handle the next question click
+   * It updates the questions array, sets the next question as current,
+   */
   // Function to handle the next question click
   const nextQuestionClicked = () => {
     setUserAnswer("");
     const updatedQuestions = [...questions];
     updatedQuestions.shift();
-    //check if there
+    //check if its not the last question
     if (updatedQuestions.length >= 1) {
       setQuestions(updatedQuestions);
       setCurrentQuestion(updatedQuestions[0]);
@@ -118,7 +125,10 @@ const WordProblem = () => {
     }
 
   };
-
+/**
+ * Function to generate the end game object
+ * It checks the number of correct answers and updates the user progress accordingly.
+ */
   const generateEnd = () => {
     const isSuccess = correctAnswers >= 2;
     //update user progress based on success
@@ -131,6 +141,8 @@ const WordProblem = () => {
       gameLevel: parseInt(level),
       gameSubject: subjectGame
     });
+    // Set the end game object based on success or failure
+    // If the user has answered at least 2 questions correctly, they win
     setEndGameObject({
       bgColor: isSuccess ? "bg-green-200" : "bg-red-200",
       text: `${isSuccess ? 'Great!' : 'Oh no!'} You answered ${correctAnswers} / ${numOfQuestions} Correct Answers.`,
@@ -157,7 +169,10 @@ const WordProblem = () => {
   };
 
 
-  /** End Game Component */
+  /**
+   * End Game Component
+   * @returns {JSX.Element} - The end game component with an image and button.
+   */
   const endGameComponent = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-4">

@@ -18,10 +18,13 @@ export const GradeProvider = ({ children }) => {
       setGradeState(user.grade);
     }
   }, [user]);
-
+/**
+ * Set the user's grade.
+ * @param {number} newGrade - The new grade to set.
+ */
   const setGrade = async (newGrade) => {
     setGradeState(newGrade);
-
+    // Update the grade state and also update the user in the database
     if (user) {
       try {
         // Update the user's grade in the database

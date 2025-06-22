@@ -24,15 +24,28 @@ export const questions = {
     negative: "${var2} out of ${var1} failed. What is the failure percentage?"
   }
 };
-
+/**
+ * Get a fallback question based on the subject and variables.
+ * @param {string} subject - The subject of the question.
+ * @param {number} var1 - The first variable to include in the question.
+ * @param {number} var2 - The second variable to include in the question.
+ * @param {number} answer - The answer to the question.
+ * @returns {string} - The generated fallback question.
+ */
 const getFallbackQuestion = (subject, var1, var2, answer) => {
   const templates = questions[subject];
   if (!templates) return "No template found for subject.";
+  // Determine if the answer is positive or negative based on its value
   const type = answer >= 0 ? "positive" : "negative";
+  // Select the appropriate template based on the type
   const template = templates[type];
   return template.replace("${var1}", var1).replace("${var2}", var2);
 };
-
+/**
+ * FallbackWordProblem component
+ * @param {Object} param0 - The component props.
+ * @returns {JSX.Element} - The rendered component.
+ */
 export const FallbackWordProblem = ({ subject, var1, var2, answer }) => {
   const question = getFallbackQuestion(subject, var1, var2, answer);
   return <div>{question}</div>;

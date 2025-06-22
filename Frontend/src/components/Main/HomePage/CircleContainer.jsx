@@ -10,7 +10,11 @@ import { useUser } from '../../Utils/UserContext';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
-
+// CircleContainer component
+/**
+ * Renders a container with circular subject icons.
+ * @returns {JSX.Element} - The rendered circle container.
+ */
 const circleData = [
   {
     title: 'Play With A Friend',
@@ -43,8 +47,14 @@ const circleData = [
     link: '/badges',
   },
 ];
+/**
+ * CirclesContainer component
+ * @returns {JSX.Element} - The rendered circle container.
+ */
 function CirclesContainer() {
   const { user,update } = useUser();
+  // Effect to reset user streak if last pop quiz was not today or yesterday
+  // This effect checks the user's last pop quiz date and resets the streak if necessary
   useEffect(() => {
       if (!user?.pop_quiz_last_date) return;
       const lastDate = new Date(user.pop_quiz_last_date);

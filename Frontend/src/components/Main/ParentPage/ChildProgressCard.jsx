@@ -19,10 +19,16 @@ const avatarMap = {
   avatar7,
   avatar8,
 };
-
+/**
+ * ChildProgressCard component
+ * @param {Object} child- The props for the component.
+ * @returns {JSX.Element} - The rendered ChildProgressCard component.
+ */
 function ChildProgressCard({ child }) {
   const subjects = ['Addition', 'Subtraction', 'Multiply', 'Division', 'Percentage'];
+  //gets the grade level data based on the child's grade
   const gradeIndex = parseInt(child?.grade) - 1;
+  //levelData is an array of objects, each object contains the progress for each subject
   const levelData = child?.gradeLevel?.[gradeIndex];
 
   return (
