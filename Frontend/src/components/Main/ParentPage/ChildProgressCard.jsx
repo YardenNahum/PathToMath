@@ -1,10 +1,29 @@
 import React from 'react';
-import CardBckgr from '../../../assets/Images/Background/StudentCardBg.jpg'
+import CardBckgr from '../../../assets/Images/Background/StudentCardBg.jpg';
+import avatar1 from '../../../assets/Images/Avatars/avatar1.png';
+import avatar2 from '../../../assets/Images/Avatars/avatar2.png';
+import avatar3 from '../../../assets/Images/Avatars/avatar3.png';
+import avatar4 from '../../../assets/Images/Avatars/avatar4.png';
+import avatar5 from '../../../assets/Images/Avatars/avatar5.png';
+import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
+import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
+import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
+
+const avatarMap = {
+  avatar1,
+  avatar2,
+  avatar3,
+  avatar4,
+  avatar5,
+  avatar6,
+  avatar7,
+  avatar8,
+};
 
 function ChildProgressCard({ child }) {
   const subjects = ['Addition', 'Subtraction', 'Multiply', 'Division', 'Percentage'];
   const gradeIndex = parseInt(child?.grade) - 1;
-  const levelData = child?.gradeLevel[gradeIndex];
+  const levelData = child?.gradeLevel?.[gradeIndex];
 
   return (
     <div style={{ backgroundImage: `url(${CardBckgr})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -13,7 +32,7 @@ function ChildProgressCard({ child }) {
       <div className="flex justify-center w-full mb-4">
         <div className="flex items-center gap-4">
           <img
-            src={child?.avatar}
+            src={avatarMap[child?.avatar] || avatar1} // use avatar map here
             alt={`${child?.name}'s avatar`}
             className="w-24 h-24 rounded-full object-cover outline-3 outline-purple-500"
           />
@@ -23,7 +42,7 @@ function ChildProgressCard({ child }) {
           </div>
         </div>
       </div>
-      {/* Subject progress: 2 per row, wrap as needed */}
+
       <div className="w-full flex flex-wrap justify-center gap-4 mt-3 px-2">
         {subjects.map((subject, index) => {
           const completed = levelData?.[subject] ?? 0;
@@ -37,7 +56,6 @@ function ChildProgressCard({ child }) {
                 <span className="text-sm font-medium text-gray-800">{subject}</span>
                 <span className="text-sm text-gray-800">{completed}/{total}</span>
               </div>
-              {/* Progress Bar */}
               <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full ${isCompleted ? 'bg-green-500' : 'bg-yellow-400'}`}
