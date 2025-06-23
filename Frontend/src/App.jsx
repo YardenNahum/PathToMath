@@ -7,6 +7,11 @@ import Footer from './components/footer/footer';
 import { Outlet } from 'react-router-dom'
 import { UserProvider } from './components/Utils/UserContext';
 
+/**
+ * App component renders the main application layout.
+ * 
+ * @returns {React.ReactNode} The rendered App component
+ */
 function App() {
   return (
     // Global context for login status

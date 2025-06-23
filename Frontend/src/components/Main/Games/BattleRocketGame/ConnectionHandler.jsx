@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
-
-// Connect to opponent
+/**
+ * Connect to opponent
+ * @param {Object} peer - The peer object
+ * @param {string} opponentId - The opponent's ID
+ * @param {function} setConnection - The function to set the connection
+ * @param {function} setOpponentPeerId - The function to set the opponent's peer ID
+ * @param {function} setConnectionError - The function to set the connection error
+ */
 export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPeerId, setConnectionError) => {
     setConnectionError('');
     if (!peer || !opponentId) return;
@@ -24,7 +29,13 @@ export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPe
     }
 };
 
-// Handle data from opponent
+/**
+ * Handle data from opponent
+ * @param {Object} data - The data from the opponent
+ * @param {function} setOpponentStarted - The function to set the opponent started
+ * @param {function} setOpponentProgress - The function to set the opponent progress
+ * @param {function} handleFinishedGame - The function to handle the finished game
+ */
 export const handleData = (data, setOpponentStarted, setOpponentProgress, handleFinishedGame) => {
     console.log('Received data:', data);
     if (data === 'start') {
@@ -38,7 +49,11 @@ export const handleData = (data, setOpponentStarted, setOpponentProgress, handle
     }
 };
 
-// Send data to opponent
+/**
+ * Send data to opponent
+ * @param {Object} connection - The connection object
+ * @param {string} data - The data to send to the opponent
+ */
 export const handleSend = (connection, data) => {
     if (connection) {
         connection.send(data);

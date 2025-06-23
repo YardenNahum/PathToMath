@@ -8,9 +8,14 @@ import SubjectBadgesPopup from './SubjectBadgesPopup';
 import Badge from './Badge';
 import topicGrade from '../../Utils/GradeSubjects';
 
+/**
+ * Badge color for the badges
+ */
 const badgeColor = "from-amber-300 to-amber-500"
 
-// Subject badges map unchanged
+/**
+ * Subject badges map
+ */
 const subjectBadgesMap = {
   Addition: [
     { title: "Addition Novice", description: "Complete 5 levels", icon: "🎖️", color: badgeColor, level: 5 },
@@ -44,6 +49,9 @@ const subjectBadgesMap = {
   ],
 };
 
+/**
+ * Subject style map
+ */
 const subjectStyleMap = {
   Addition: { icon: "➕", color: "from-green-400 to-emerald-500" },
   Subtraction: { icon: "➖", color: "from-red-400 to-rose-500" },
@@ -52,17 +60,24 @@ const subjectStyleMap = {
   Percentage: { icon: "%", color: "from-purple-400 to-pink-500" },
 };
 
+/**
+ * RewardsPage component renders the rewards page.
+ * 
+ * @returns {React.ReactNode} The rendered RewardsPage component
+ */
 const RewardsPage = () => {
   const { user } = useUser();
   const { grade } = useGrade();
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
 
+  // Handle subject click
   const handleSubjectClick = (subject) => {
     setSelectedSubject(subject);
     setShowPopup(true);
   };
 
+  // Handle close popup
   const handleClosePopup = () => {
     setShowPopup(false);
     setSelectedSubject(null);
@@ -114,12 +129,17 @@ const RewardsPage = () => {
       ) : (
         <>
           <div className="playful-font relative z-10 flex flex-col items-center justify-start pt-8 pb-16 px-4">
+            {/* Title */}
             <div className="flex items-center gap-4 mb-8">
               <ShadowedTitle text={"Explore Your Badges!"} />
             </div>
+
+            {/* Welcome message */}
             <div className="mb-6 text-center bg-white/20 backdrop-blur-sm rounded-2xl p-4 border border-white/30">
               <p className="text-2xl font-bold text-white drop-shadow-lg">Welcome back, {user.name}! 🌟</p>
             </div>
+
+            {/* Progress bar */}
             <div className="mb-8 w-full max-w-2xl">
               <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-blue-200 relative overflow-hidden">
                 <div className="mb-8 text-center">
@@ -144,6 +164,7 @@ const RewardsPage = () => {
               </div>
             </div>
 
+            {/* Subject progress */}
             {Object.entries(subjectBreakdown).length > 0 && (
               <div className="mb-8 w-full max-w-6xl">
                 <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-green-200 ">
@@ -184,6 +205,7 @@ const RewardsPage = () => {
             )}
           </div>
 
+          {/* Subject badges popup */}
           {showPopup && selectedSubject && (
             <SubjectBadgesPopup
               subject={selectedSubject}

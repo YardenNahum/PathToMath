@@ -3,6 +3,12 @@ import Peer from 'peerjs'
 import Message from './message'
 import { peerConfig } from '../utils/config'
 
+/**
+ * PeerChat component renders the peer-to-peer text chat.
+ * It handles peer connections, data handling, and message sending.
+ * 
+ * @returns {React.ReactNode} The rendered PeerChat component
+ */
 export default function PeerChat() {
     const [peer, setPeer] = useState(null)
     const [connection, setConnection] = useState(null)
@@ -11,6 +17,7 @@ export default function PeerChat() {
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState('')
 
+    // Initialize peer on component mount
     useEffect(() => {
         // init peer on component mount
         const pr = new Peer(peerConfig)
@@ -20,6 +27,7 @@ export default function PeerChat() {
         }
     }, [])
 
+    // Get my address (peer ID)
     useEffect(() => {
         if (!peer) return
         // get my address (peer id)
@@ -37,11 +45,12 @@ export default function PeerChat() {
                 const cn = peer.call(con.peer, localStream)
                 setCall(cn)
             })
-        })        
+        })
     }, [peer])
 
+    // Handle data from the connection
     useEffect(() => {
-        if (!connection) return       
+        if (!connection) return
         connection.on('data', function (data) {
             handleData(data)
         })
@@ -53,6 +62,7 @@ export default function PeerChat() {
         })
     }, [connection])
 
+    // Connect to the recipient
     const connectRecipient = e => {
         e.preventDefault()
         if (connection) {
@@ -62,13 +72,15 @@ export default function PeerChat() {
         }
     }
 
+    // Connect to the recipient
     const connect = recId => {
         const con = peer.connect(recId)
         setConnection(con)
         console.log('Connection established - sender')
     }
 
-    const disconnect = () => {       
+    // Disconnect from the recipient
+    const disconnect = () => {
         if (connection) {
             connection.close()
             setConnection(null) // sender side
@@ -78,11 +90,13 @@ export default function PeerChat() {
         setMessage('')
     }
 
+    // Handle data from the connection
     const handleData = d => {
         console.log(d)
         setMessages(prevMessages => [...prevMessages, { me: false, text: d }])
     }
 
+    // Handle send message
     const handleSend = e => {
         e.preventDefault()
         if (connection) {
@@ -97,11 +111,14 @@ export default function PeerChat() {
             <div class="py-4 text-2xl">Peer-to-peer Text Chat</div>
             {peer && (
                 <>
+                    {/* My address */}
                     <div class="flex justify-start w-full gap-2 pb-4">
                         <div class="w-1/2">
                             <div class="text-slate-400">my address</div>
                             <div class="selectable">{address}</div>
                         </div>
+
+                        {/* Recipient */}
                         <div class="w-1/2">
                             <div class="text-slate-400">recipient</div>
                             <form onSubmit={connectRecipient}>
@@ -114,6 +131,8 @@ export default function PeerChat() {
                             </form>
                         </div>
                     </div>
+
+                    {/* Connection */}
                     {connection && (
                         <form onSubmit={handleSend}>
                             <div class="flex justify-start gap-2">
@@ -122,7 +141,8 @@ export default function PeerChat() {
                                     Send
                                 </button>
                             </div>
-                            {/* vertical scroll must be added */}
+
+                            {/* Messages */}
                             {messages.reverse().map((message, index) => (
                                 <Message key={index} text={message.text} me={message.me} />
                             ))}
