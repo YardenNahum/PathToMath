@@ -40,7 +40,7 @@ const ConnectionP2PBox = ({ connection, myPeerId, opponentPeerId, setOpponentPee
                         {/* Connect button */}
                         <button
                             onClick={() => connectToOpponent(opponentPeerId)}
-                            className="px-4 py-2 bg-pink-700 rounded hover:bg-pink-500"
+                            className="px-4 py-2 bg-pink-700 rounded hover:bg-pink-500 cursor-pointer"
                         >
                             Connect
                         </button>

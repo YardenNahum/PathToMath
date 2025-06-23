@@ -213,7 +213,7 @@ export default function RocketGame({ mode = 'single' }) {
 
     if (isMultiplayer) {
       handleSend(connection, newProgress);
-      if (newProgress === NUM_QUESTIONS - 1) handleFinishedGame(true);
+      if (newProgress === TRACK_STEPS - 1) handleFinishedGame(true);
     } 
     // Single player
     else {
@@ -369,7 +369,7 @@ export default function RocketGame({ mode = 'single' }) {
           {gameFinished && (
             <div className="flex flex-col items-center justify-center text-white text-xl font-bold">
               <h1>{message}</h1>
-              <button onClick={handleNextRace} className="mt-2 px-4 py-2 bg-purple-600 rounded hover:bg-purple-500">
+              <button onClick={handleNextRace} className="mt-2 px-4 py-2 bg-purple-600 rounded hover:bg-purple-500 cursor-pointer">
                 Continue To Next Race
               </button>
             </div>
