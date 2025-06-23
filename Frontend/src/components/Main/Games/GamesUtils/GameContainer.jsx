@@ -60,8 +60,8 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
             {/* Show Pop Quiz title if applicable */}
             {popQuiz && (
                 <div className='flex justify-center'>
-                    <div className="mt-5 text-center text-3xl w-120 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full shadow-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105">
-                        <span className="inline-block px-6 py-2 rounded-lg ">
+                    <div className="mt-3 text-center text-xl sm:text-2xl md:text-3xl w-auto max-w-[90%] bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105">
+                        <span className="inline-block px-3 sm:px-4 py-1 rounded-lg">
                             Random Pop Quiz! 🥇
                         </span>
                     </div>
@@ -101,18 +101,17 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
                 </div>
             </div>
 
-            {/* Return button unless hidden explicitly */}
-            {showReturnButton && (
-                <div className=" flex justify-center mb-10">
-                    <ButtonComponent
-                        label="Return"
-                        onClick={handleReturn}
-                        bgColor="bg-blue-400 hover:bg-blue-700"
-                        textColor="text-white"
-                        size="md"
-                    />
-                </div>
-            )}
+            <div className=" flex justify-center mb-10">
+                {!popQuiz && (
+                <ButtonComponent
+                    label="Return"
+                    onClick={handleReturn}
+                    bgColor="bg-blue-400 hover:bg-blue-700"
+                    textColor="text-white"
+                    size="md"
+                />
+                )}
+            </div>
         </div>
     );
 }

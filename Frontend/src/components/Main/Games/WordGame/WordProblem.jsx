@@ -152,10 +152,19 @@ const WordProblem = () => {
       handleClick: () => {
         if (isSuccess) {
           if (location.state?.fromQuiz) {
+            updateQuiz();
             navigate("/");
-          } else {
+          }
+          else {
+            const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
+            if (gameLevel > currentFinished) {
+              let newUser = { ...user };
+              newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
+              update(user.email, newUser);
+            }
             navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
           }
+
         } else {
           // Retry current level
           resetGame();

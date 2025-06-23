@@ -6,7 +6,7 @@
  * @param {function} setOpponentPeerId - The function to set the opponent's peer ID
  * @param {function} setConnectionError - The function to set the connection error
  */
-export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPeerId, setConnectionError) => {
+export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPeerId, setConnectionError, setOpponentGrade, myGrade) => {
     setConnectionError('');
     if (!peer || !opponentId) return;
 
@@ -15,8 +15,17 @@ export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPe
         setConnection(con);
 
         con.on('open', () => {
-            console.log('Connected to opponent');
+            console.log('Connected to opponent, sending my grade:', myGrade);
             setOpponentPeerId(opponentId);
+            // Send my grade
+            con.send({ type: 'grade', grade: myGrade });
+        });
+
+        con.on('data', (data) => {
+            if (typeof data === 'object' && data.type === 'grade') {
+                console.log('Received opponent grade:', data.grade);
+                setOpponentGrade(data.grade);
+            }
         });
 
         con.on('error', (err) => {
@@ -28,6 +37,7 @@ export const connectToOpponent = (peer, opponentId, setConnection, setOpponentPe
         setConnectionError('Failed to connect to opponent');
     }
 };
+
 
 /**
  * Handle data from opponent

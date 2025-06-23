@@ -83,9 +83,16 @@ function BalloonsGame() {
     // Handle game finish
     const handleFinish = () => {
         if (location.state?.fromQuiz) {
+            updateQuiz();
             navigate("/");
         }
         else {
+            const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
+            if (score >= 4 && gameLevel > currentFinished) {
+                let newUser = user;
+                newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
+                updateUser(user.email, newUser);
+            }
             navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
         }
     };
@@ -98,7 +105,6 @@ function BalloonsGame() {
             gameLevel={gameLevel}
             icon={TitleIcon3}
             backgroundImage={BalloonsBg}
-            howToPlay={"Pop the balloon with the correct answer to the question! Score at least 4 out of 5 to pass the level."}
         >
             <div className="bg-pink-100 rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto">
                 {!gameOver ? (
@@ -106,15 +112,15 @@ function BalloonsGame() {
                         {/* Progress Bar */}
                         <div className="mb-8 mt-5 w-full max-w-md mx-auto">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm font-semibold text-gray-600">You Answered:</span>
+                                <span className="text-sm font-semibold text-gray-600">Progress</span>
                                 <span className="text-sm font-semibold text-gray-600">
-                                    {currentQuestionIndex} / {NUM_QUESTIONS} Questions
+                                    {currentQuestionIndex + 1}/{NUM_QUESTIONS}
                                 </span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
                                 <div
                                     className="bg-gradient-to-r from-yellow-200 to-pink-500 h-3 rounded-full transition-all duration-500 ease-out"
-                                    style={{ width: `${((currentQuestionIndex) / NUM_QUESTIONS) * 100}%` }}
+                                    style={{ width: `${((currentQuestionIndex + 1) / NUM_QUESTIONS) * 100}%` }}
                                 />
                             </div>
                         </div>

@@ -10,49 +10,51 @@ import { useUser } from '../../Utils/UserContext';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
-
+import { useGrade } from '../../Utils/GradeComponent';
 /**
  * Renders a container with circular subject icons.
  * @returns {JSX.Element} - The rendered circle container.
  */
-const circleData = [
-  {
-    title: 'Play With A Friend',
-    description: 'Battle your friends in a rocket race!',
-    imageSrc: multiplayerCircle,
-    link: `/RocketGame/multi/Addition/1/20`,
-  },
-  {
-    title: 'Math Problems',
-    description: 'Solve fun puzzles to improve your skills!',
-    imageSrc: mathCircle,
-    link: '/subjects',
-  },
-  {
-    title: 'Tutorial Videos',
-    description: 'Watch videos to learn new tricks!',
-    imageSrc: vidsCircle,
-    link: '/videos',
-  },
-  {
-    title: 'Pop Quiz',
-    description: 'Take quick quizzes to test yourself!',
-    imageSrc: popquiz_circle,
-    link: '/pop-quiz',
-  },
-  {
-    title: 'Badges',
-    description: 'Earn badges as you progress!',
-    imageSrc: badgeCircle,
-    link: '/badges',
-  },
-];
+
 /**
  * CirclesContainer component
  * @returns {JSX.Element} - The rendered circle container.
  */
 function CirclesContainer() {
   const { user,update } = useUser();
+  const { grade } = useGrade();
+  const circleData = [
+    {
+      title: 'Play With A Friend',
+      description: 'Battle your friends in a rocket race!',
+      imageSrc: multiplayerCircle,
+      link: `/RocketGame/multi/Addition/${grade}/20`,
+    },
+    {
+      title: 'Math Problems',
+      description: 'Solve fun puzzles to improve your skills!',
+      imageSrc: mathCircle,
+      link: '/subjects',
+    },
+    {
+      title: 'Tutorial Videos',
+      description: 'Watch videos to learn new tricks!',
+      imageSrc: vidsCircle,
+      link: '/videos',
+    },
+    {
+      title: 'Pop Quiz',
+      description: 'Take quick quizzes to test yourself!',
+      imageSrc: popquiz_circle,
+      link: '/pop-quiz',
+    },
+    {
+      title: 'Badges',
+      description: 'Earn badges as you progress!',
+      imageSrc: badgeCircle,
+      link: '/badges',
+    },
+  ];
   // Effect to reset user streak if last pop quiz was not today or yesterday
   // This effect checks the user's last pop quiz date and resets the streak if necessary
   useEffect(() => {
@@ -78,7 +80,7 @@ function CirclesContainer() {
       }
     }, [user]);
   return (
-    <div className="flex flex-wrap justify-center mb-8 md: flex w-3/4">
+    <div className="flex-wrap justify-center mb-8 md: flex w-3/4">
       {circleData.map(({ imageSrc, title, description, link }, index) => {
         const isPopQuiz = title === "Pop Quiz";
 

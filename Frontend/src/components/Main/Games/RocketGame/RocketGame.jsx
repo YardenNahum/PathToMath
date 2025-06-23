@@ -32,6 +32,7 @@ const NUM_QUESTIONS = 10; // Total number of questions per game
 export default function RocketGame({ mode = 'single' }) {
   const isMultiplayer = mode === 'multi';   // Determine if game is in multiplayer version
   const { subjectGame, grade, level } = useParams();
+  
   const gameLevel = parseInt(level);
   const subjectName = subjectGame;
   const navigate = useNavigate();
@@ -63,6 +64,9 @@ export default function RocketGame({ mode = 'single' }) {
   const [myPeerId, setMyPeerId] = useState('');
   const [opponentPeerId, setOpponentPeerId] = useState('');
   const [connectionError, setConnectionError] = useState('');
+  const [opponentGrade, setOpponentGrade] = useState(null);
+  const [myGrade, setMyGrade] = useState(grade);
+  const [gameGrade, setGameGrade] = useState(parseInt(grade));
 
   const colorMap = ['text-white', 'text-white', 'text-white', 'text-white'];  // All white for countdown
   const TRACK_STEPS = NUM_QUESTIONS + 1;
@@ -72,9 +76,9 @@ export default function RocketGame({ mode = 'single' }) {
    * Generate questions when subject/grade/level change.
    */
   useEffect(() => {
-    const generated = generateQuestions(subjectName, grade, gameLevel, NUM_QUESTIONS, 1);
+    const generated = generateQuestions(subjectName, gameGrade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(generated);
-  }, [subjectName, grade, gameLevel]);
+  }, [subjectName, gameGrade, gameLevel]);
 
   /**
    * Initialize PeerJS in multiplayer mode.
@@ -87,6 +91,17 @@ export default function RocketGame({ mode = 'single' }) {
   }, [isMultiplayer]);
 
   /**
+   *  Handle Grade as min grade between both players on multi mode
+   */
+  useEffect(() => {
+    if (isMultiplayer && myGrade && opponentGrade) {
+      const minGrade = Math.min(parseInt(myGrade), parseInt(opponentGrade));
+      setGameGrade(minGrade);
+    }
+    console.log("both players playing on grade" ,gameGrade)
+  }, [isMultiplayer, myGrade, opponentGrade]);
+
+  /**
    * Handle PeerJS events: open connection, receive connection, or errors.
    */
   useEffect(() => {
@@ -95,9 +110,23 @@ export default function RocketGame({ mode = 'single' }) {
     peer.on('connection', (con) => {
       setConnection(con);
       setOpponentPeerId(con.peer);
+
+      // Send my Grade to opponent
+      con.on('open', () => {
+        handleSend(con, { type: 'grade', grade: myGrade });
+      });
+
+      // Recive Opponent Grade
+      con.on('data', (data) => {
+        if (typeof data === 'object' && data.type === 'grade') {
+          setOpponentGrade(data.grade);
+        }
+      });
+      
     });
     peer.on('error', () => setConnectionError('Connection Error. Try Again.'));
   }, [peer]);
+
 
   /**
    * Start countdown when both players are ready.
@@ -155,7 +184,7 @@ export default function RocketGame({ mode = 'single' }) {
   const botTimer = useBotInterval({
     started,
     onMove: handleBotMove,
-    grade,
+    gameGrade,
     level: gameLevel,
   });
 
@@ -290,6 +319,8 @@ export default function RocketGame({ mode = 'single' }) {
     setConnection(null);
     setUserAnswer('');
     setMessage('');
+    setOpponentGrade('')
+    setGameGrade(grade);
     const newQuestions = generateQuestions(subjectGame, grade, gameLevel, NUM_QUESTIONS, 1);
     setQuestions(newQuestions);
     setQuestionIndex(0);
@@ -317,10 +348,21 @@ export default function RocketGame({ mode = 'single' }) {
           myPeerId={myPeerId}
           opponentPeerId={opponentPeerId}
           setOpponentPeerId={setOpponentPeerId}
-          connectToOpponent={(id) => connectToOpponent(peer, id, setConnection, setOpponentPeerId, setConnectionError)}
-          connectionError={connectionError}
+          connectToOpponent={(id) =>
+            connectToOpponent(
+              peer,
+              id,
+              setConnection,
+              setOpponentPeerId,
+              setConnectionError,
+              setOpponentGrade,
+              myGrade
+            )
+          }
+                    connectionError={connectionError}
         />
       )}
+
 
       {!started && !gameFinished && countdown === null && (
         <div className="flex justify-center">

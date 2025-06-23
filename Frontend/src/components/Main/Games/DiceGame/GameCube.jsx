@@ -227,14 +227,15 @@ const GameCube = () => {
                                 onClick={() => {
                                     if (success) {
 
-                                        handleFinishedGame();         // navigates to next level
-                                    } else {
-                                        restartGame();         // replay same level
-                                    }
-                                }}
-                            >
-                                {success ? "Next level" : "Try again"}
-                            </button>
+                                    handleFinishedGame();         // navigates to next level
+                                } else {
+                                    restartGame();         // replay same level
+                                }
+                            }}
+                        >  
+                            {success ? "Next level": "Try again"}
+                        </button>
+
 
                         </div>
                     ) : (
