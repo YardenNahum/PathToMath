@@ -10,45 +10,45 @@ import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
 import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
 import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
 
+/**
+ * ProfilePage component for user profile management.
+ * @returns {JSX.Element} JSX for profile page.
+ */
 const ProfilePage = () => {
   const { user, update } = useUser();
+
+  // Alert Section
   const [isAlert, setIsAlert] = useState(false);
   const [message, setMessage] = useState({ message: "", isSuccess: false });
+
+  // Avatar Section
   const [showAvatarSection, setShowAvatarSection] = useState(false);
   const [avatar, setAvatar] = useState(user?.avatar);
   const showPassword = useRef(false);
 
+  // Avatar Map
   const avatarMap = {
-  avatar1: avatar1,
-  avatar2: avatar2,
-  avatar3: avatar3,
-  avatar4: avatar4,
-  avatar5: avatar5,
-  avatar6: avatar6,
-  avatar7: avatar7,
-  avatar8: avatar8,
-};
+    avatar1: avatar1,
+    avatar2: avatar2,
+    avatar3: avatar3,
+    avatar4: avatar4,
+    avatar5: avatar5,
+    avatar6: avatar6,
+    avatar7: avatar7,
+    avatar8: avatar8,
+  };
 
-  /**
-   * Show an alert message.
-   * @param {string} message - The alert message to show.
-   * @param {boolean} isSuccess - Whether the alert is success (true) or error (false).
-   * @returns {void}
-   */
+  // Show Alert
   const showAlert = (message, isSuccess) => {
     setMessage({ message, isSuccess });
     setIsAlert(true);
   };
 
-  /**
-   * Handles profile update form submission.
-   * Updates user data if any changes are detected.
-   * @param {Event} event - The form submission event.
-   * @returns {void}
-   */
+  // Update Profile
   const updateProfile = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+
     // Extract form data and check for changes
     const updatedUser = {
       ...user,
@@ -58,6 +58,7 @@ const ProfilePage = () => {
       grade: parseInt(formData.get("grade")) || user.grade,
       avatar: avatar || user.avatar,
     };
+
     // Check if any fields have changed
     const isSame =
       updatedUser.name === user.name &&
@@ -65,6 +66,7 @@ const ProfilePage = () => {
       updatedUser.password === user.password &&
       updatedUser.grade === user.grade &&
       updatedUser.avatar === user.avatar;
+
     // Check if any required fields are empty
     const isEmpty =
       !formData.get("name") ||
@@ -86,13 +88,7 @@ const ProfilePage = () => {
     }
   };
 
-  /**
-   * Alert component to show messages.
-   * @param {Object} props
-   * @param {string} props.message - The alert message.
-   * @param {boolean} props.isSuccess - Whether alert is success or error.
-   * @returns {JSX.Element} JSX for alert box.
-   */
+  // Alert
   const Alert = ({ message, isSuccess }) => {
     const messageModel = {
       success: "bg-green-500",
@@ -114,8 +110,8 @@ const ProfilePage = () => {
       >
         <p className="font-semibold">{message}</p>
         <button
-            className="text-white font-bold px-2 hover:text-gray-300 cursor-pointer"
-            onClick={() => setIsAlert(false)}
+          className="text-white font-bold px-2 hover:text-gray-300 cursor-pointer"
+          onClick={() => setIsAlert(false)}
         >
           OK
         </button>
@@ -123,10 +119,7 @@ const ProfilePage = () => {
     );
   };
 
-  /**
-   * AvatarOptions modal component for choosing avatars.
-   * @returns {JSX.Element} JSX for avatar selection modal.
-   */
+  // Avatar Options
   const AvatarOptions = () => {
     const avatars = Object.keys(avatarMap);
     const modalRef = useRef();
@@ -144,6 +137,7 @@ const ProfilePage = () => {
       };
     }, []);
 
+    // Avatar
     const Avatar = ({ av }) => {
       const currentAvatar = user.avatar;
       const selectedAvatar = avatar;
@@ -151,8 +145,8 @@ const ProfilePage = () => {
         selectedAvatar === av
           ? "border-blue-500"
           : currentAvatar === av
-          ? "border-blue-200"
-          : "border-transparent";
+            ? "border-blue-200"
+            : "border-transparent";
 
       const handleAvatarClick = () => {
         setAvatar(av);
@@ -193,10 +187,7 @@ const ProfilePage = () => {
     );
   };
 
-  /**
-   * Avatar display section with change button.
-   * @returns {JSX.Element} JSX for avatar section.
-   */
+  // Avatar Section
   const AvatarSection = () => {
     return (
       <div className="flex flex-col items-center justify-center md:w-1/3 w-full mr-5 md:p-6 p-2">
@@ -216,10 +207,7 @@ const ProfilePage = () => {
     );
   };
 
-  /**
-   * GradePicker select input.
-   * @returns {JSX.Element} JSX for grade selection dropdown.
-   */
+  // Grade Picker
   const GradePicker = () => {
     const gradeOptions = [
       { value: 1, label: "1st Grade" },
@@ -251,14 +239,7 @@ const ProfilePage = () => {
     );
   };
 
-  /**
-   * InputBox component for labeled inputs with optional password visibility toggle.
-   * @param {Object} props
-   * @param {string} props.labelText - Label text for input.
-   * @param {string} props.type - Input type (text, email, password, etc.).
-   * @param {string} props.field - Field name used for input id and name.
-   * @returns {JSX.Element} JSX for input box.
-   */
+  // Input Box
   const InputBox = ({ labelText, type, field }) => {
     const isPassword = type === "password";
 
@@ -296,10 +277,7 @@ const ProfilePage = () => {
     );
   };
 
-  /**
-   * Profile form including avatar, inputs, grade picker and update button.
-   * @returns {JSX.Element} JSX for profile form.
-   */
+  // Profile Form
   const ProfileForm = () => (
     <div className="relative border-10 border-white flex flex-col md:flex-row bg-blue-200 rounded-xl py-2 md:py-10 md:h-auto xl:w-1/2 justify-center items-center shadow-md w-full gap-8">
       <AvatarSection />

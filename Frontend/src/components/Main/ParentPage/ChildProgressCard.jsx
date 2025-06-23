@@ -9,6 +9,7 @@ import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
 import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
 import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
 
+// Avatar Map
 const avatarMap = {
   avatar1,
   avatar2,
@@ -19,6 +20,7 @@ const avatarMap = {
   avatar7,
   avatar8,
 };
+
 /**
  * ChildProgressCard component
  * @param {Object} child- The props for the component.

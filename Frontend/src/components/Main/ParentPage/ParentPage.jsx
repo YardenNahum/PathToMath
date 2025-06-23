@@ -2,6 +2,7 @@ import React from 'react';
 import ChildProgressCard from './ChildProgressCard';
 import {useUser} from '../../Utils/UserContext';
 import Background from '../../../assets/Images/Background/HomeBg.png'
+
 /**
  * ParentPage component
  * @returns {JSX.Element} - The rendered ParentPage component.
