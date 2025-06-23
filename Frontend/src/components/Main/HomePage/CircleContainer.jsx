@@ -10,7 +10,7 @@ import { useUser } from '../../Utils/UserContext';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
-// CircleContainer component
+
 /**
  * Renders a container with circular subject icons.
  * @returns {JSX.Element} - The rendered circle container.
@@ -20,7 +20,7 @@ const circleData = [
     title: 'Play With A Friend',
     description: 'Battle your friends in a rocket race!',
     imageSrc: multiplayerCircle,
-    link: `/BattleRocketGame/Addition/1/20`,
+    link: `/RocketGame/multi/Addition/1/20`,
   },
   {
     title: 'Math Problems',

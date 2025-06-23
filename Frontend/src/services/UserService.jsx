@@ -6,7 +6,6 @@ const URL = `${BASE_URL}/api/users`;
  * Fetch all users from the API.
  * @returns {Promise<Array>} - A promise that resolves to an array of users.
  */
-// Get all users
 export const getUsers = async () => {
   try {
     const response = await axios.get(URL);

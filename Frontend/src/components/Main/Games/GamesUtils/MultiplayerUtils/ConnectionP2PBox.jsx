@@ -13,7 +13,7 @@ import React from 'react';
  * @param {string} props.connectionError - The connection error message
  * @returns {React.ReactNode} The rendered ConnectionP2P component
  */
-const ConnectionP2P = ({ connection, myPeerId, opponentPeerId, setOpponentPeerId, connectToOpponent, connectionError }) => {
+const ConnectionP2PBox = ({ connection, myPeerId, opponentPeerId, setOpponentPeerId, connectToOpponent, connectionError }) => {
     return (
         <div className="rounded-lg p-4">
             {/* Connection UI */}
@@ -25,16 +25,16 @@ const ConnectionP2P = ({ connection, myPeerId, opponentPeerId, setOpponentPeerId
                     {/* Peer IDs */}
                     <p className="mb-2 text-xl">Your Peer ID: <span className="ml-5 text-xl tracking-widest">{myPeerId}</span></p>
                     <p className="mb-2 text-xl">Share this ID with your opponent</p>
-                    
+
                     {/* Input and button container */}
-                    <div className="flex gap-5 items-center justify-center">
+                    <div className="flex flex-col md:flex-row gap-5 items-center justify-center">
                         {/* Opponent's Peer ID input */}
                         <input
                             type="text"
                             value={opponentPeerId}
                             onChange={(e) => setOpponentPeerId(e.target.value)}
                             placeholder="Enter opponent's Peer ID"
-                            className="text-lg bg-white text-black px-3 py-2 rounded placeholder-gray-400 w-100 text-center  "
+                            className="text-lg bg-white text-black px-3 py-2 rounded placeholder-gray-400 w-70 text-center md:w-100"
                         />
 
                         {/* Connect button */}
@@ -56,4 +56,4 @@ const ConnectionP2P = ({ connection, myPeerId, opponentPeerId, setOpponentPeerId
     );
 };
 
-export default ConnectionP2P;
+export default ConnectionP2PBox;
