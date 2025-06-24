@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
@@ -22,21 +21,23 @@ const VideoGallery = ({ videos, onVideoClick }) => {
           <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center">
             <Play fill="white" className="text-white ml-1" size={24} />
           </div>
-          <h3 className="text-2xl font-bold ml-3 text-indigo-700">Fun Math Videos</h3>
+          <h3 className="text-2xl font-bold ml-3 text-indigo-700">
+            Videos Library:
+          </h3>
         </div>
         
         {/* Navigation Controls */}
         <div className="absolute right-0 top-2 flex gap-2">
           <button
             onClick={() => scroll("left")}
-            className="p-3 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 transition-all duration-300 transform hover:scale-110"
+            className="p-3 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
             aria-label="Scroll left"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => scroll("right")}
-            className="p-3 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 transition-all duration-300 transform hover:scale-110"
+            className="p-3 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
             aria-label="Scroll right"
           >
             <ChevronRight size={20} />
@@ -46,7 +47,7 @@ const VideoGallery = ({ videos, onVideoClick }) => {
         {/* Video Grid */}
         <div 
           ref={scrollRef}
-          className="grid grid-flow-col auto-cols-max gap-6 overflow-x-auto pt-4 pb-8 px-2 scroll-smooth no-scrollbar snap-x snap-mandatory"
+          className="grid grid-flow-col auto-`cols-max gap-6 overflow-x-auto pt-4 pb-8 px-2 scroll-smooth no-scrollbar snap-x snap-mandatory"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {videos.map((video, index) => (
@@ -57,7 +58,7 @@ const VideoGallery = ({ videos, onVideoClick }) => {
               onMouseLeave={() => setHoveredVideo(null)}
             >
               <div 
-                onClick={() => onVideoClick(video.id)}
+                onClick={() => onVideoClick(video.id, video.title)}
                 className={`
                   bg-white rounded-2xl overflow-hidden cursor-pointer transition-all duration-500
                   shadow-lg hover:shadow-2xl transform hover:-translate-y-2

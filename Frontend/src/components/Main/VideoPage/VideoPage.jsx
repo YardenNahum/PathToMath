@@ -44,7 +44,7 @@ const SubjectsPage = () => {
       }}
     >
       <div className="flex flex-col items-center mt-5 gap-10 z-10">
-        <ShadowedTitle text="Choose Your Math Topic and Begin Practicing!" />
+        <ShadowedTitle text="Get Confident in every Subject with These Videos!" />
 
         {rows.map((_, rowIndex) => (
           <div key={rowIndex} className="flex justify-center gap-10 flex-wrap">

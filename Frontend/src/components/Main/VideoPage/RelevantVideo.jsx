@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
-import background from '../../../assets/Images/Background/HomeBg.png'
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import background from '../../../assets/Images/Background/HomeBg.png';
 import snail_icon from '../../../assets/Images/Loaders/snail_icon.png';
-import VideoGallery from './Gallery.jsx'; // make sure the path is correct
-import { Volume2, VolumeX, Maximize2, Minimize2, X, Star, BookOpen, ThumbsUp } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
+import VideoGallery from './Gallery.jsx';
+import { Volume2, VolumeX, Maximize2, Minimize2, X, BookOpen, Star } from "lucide-react";
 import { useGrade } from '../../Utils/GradeComponent.jsx';
 import { useParams } from 'react-router-dom';
 import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
 import SubjectCircle from "../../Main/HomePage/SubjectCircle.jsx";
 import { subjectsData } from "../../Utils/SubjectData.jsx";
+import { getOrdinalSuffix } from "../../Utils/OrdinalGrade.jsx";
+
 const API_KEY = "AIzaSyABk2py4r0NYy5x63rfJ3bxoY3gMJKtMy8";
 
 const RelevantVideo = () => {
   const { subject } = useParams();
   const { grade } = useGrade();
 
+  const [progress, setProgress] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
   const [videos, setVideos] = useState([]);
@@ -23,10 +25,40 @@ const RelevantVideo = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTip, setShowTip] = useState(false);
+  const fullscreenRef = useRef(null);
 
-  // Colors for the fun math theme
-  const colors = ["bg-pink-500", "bg-purple-500", "bg-indigo-500", "bg-blue-500", "bg-green-500"];
-  
+  // Colors for badges
+  const colors = ["bg-pink-500", "bg-purple-500", "bg-indigo-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-red-500"];
+
+  // Progress bar effect
+  useEffect(() => {
+    let intervalId;
+
+    if (loading) {
+      setProgress(0); // reset at start
+
+      intervalId = setInterval(() => {
+        setProgress((prev) => {
+          // Increase by 5 every 150ms but max 90%, leaving last 10% for finalizing
+          if (prev < 90) {
+            return prev + 5;
+          } else {
+            return prev;
+          }
+        });
+      }, 150);
+    } else {
+      // When loading ends, progress jumps to 100%
+      setProgress(100);
+      // Clear interval in case it’s still running
+      if (intervalId) clearInterval(intervalId);
+    }
+
+    // Cleanup interval on unmount or when loading changes
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [loading]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -35,7 +67,21 @@ const RelevantVideo = () => {
       setVideos([]);
 
       try {
-        const query = `${subject} grade ${grade} math`;
+        const subjectQueryMap = {
+          addition: ["addition", "adding", "math facts", "sums"],
+          subtraction: ["subtraction", "taking away", "minus", "difference"],
+          multiplication: ["multiplication", "times tables", "products"],
+          division: ["division", "quotients", "divide", "splitting"],
+          percentage: ["percentages", "ratios", "fractions", "proportions"],
+        };
+
+        const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
+
+        const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
+        const keywordPhrase = keywords.join(" OR ");
+
+        const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
+
         const maxResults = 10;
         const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
         const response = await fetch(url);
@@ -65,10 +111,21 @@ const RelevantVideo = () => {
     fetchVideos();
   }, [grade, subject]);
 
+  // Sync fullscreen state
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      const fullscreenElement = document.fullscreenElement;
+      setIsFullscreen(fullscreenElement === fullscreenRef.current);
+    };
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+    };
+  }, []);
+
   const handleVideoSelect = (id, title) => {
     setSelectedVideo(id);
     setSelectedVideoTitle(title);
-    // Show a math tip when video starts
     setTimeout(() => setShowTip(true), 1000);
     setTimeout(() => setShowTip(false), 8000);
   }
@@ -84,19 +141,51 @@ const RelevantVideo = () => {
   }
 
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-  }
+    const el = fullscreenRef.current;
 
+    if (!document.fullscreenElement && el) {
+      el.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   const mathTips = [
     "Adding zero to any number gives you the same number!",
     "You can add numbers in any order and get the same answer!",
     "When you add 1, you get the number that comes next when counting!",
     "Adding 10 to a number makes the tens place go up by 1!",
-    "You can break numbers apart to make adding easier!"
+    "You can break numbers apart to make adding easier!",
+    "Multiplying by zero always results in zero!",
+    "Dividing a number by itself equals one!",
+    "Percentages are just parts out of 100!",
+    "Subtracting a number twice brings you back to the original number!",
+    "Fractions represent parts of a whole!",
+    "Multiplication is repeated addition!",
+    "The commutative property means order doesn't matter for addition or multiplication!",
   ];
 
   const randomTip = mathTips[Math.floor(Math.random() * mathTips.length)];
+
+  // Define base keywords for each subject
+  const baseKeywords = useMemo(() => {
+    switch (subject?.toLowerCase()) {
+      case "addition":
+        return ["Addition", "Sum", "Plus", "Adding", "Increase", "Combine"];
+      case "subtraction":
+        return ["Subtraction", "Minus", "Difference", "Decrease", "Take Away"];
+      case "multiplication":
+        return ["Multiplication", "Times", "Product", "Multiply", "Factors", "Repeated Addition"];
+      case "division":
+        return ["Division", "Divide", "Quotient", "Fraction", "Share", "Split"];
+      case "percentage":
+        return ["Percentage", "Percent", "Ratio", "Fraction", "Part", "Proportion"];
+      default:
+        return [subject ? subject.charAt(0).toUpperCase() + subject.slice(1) : "Math", "Math"];
+    }
+  }, [subject]);
 
   return (
     <div
@@ -108,61 +197,80 @@ const RelevantVideo = () => {
         backgroundPosition: 'center',
       }}
     >
-            <div className="flex items-center gap-4 mb-8 justify-center">
-                <div className="flex items-center gap-6">
-                    <SubjectCircle
-                        imageSrc={subjectsData[subject]?.icon}
-                        title={subject}
-                        variant="circle"
-                        circleColor={subjectsData[subject]?.color || "#D3D3D3"}
-                        size={150}
-                        clickable={false}
-                    />
-                    <ShadowedTitle
-                        text={`Lets Learn ${subject}`}
-                        shadowColor={subjectsData[subject]?.color}
-                    />
-                </div>
-            </div>
-
+      <div className="flex items-center gap-4 mb-8 justify-center">
+        <div className="flex items-center gap-6">
+          <SubjectCircle
+            imageSrc={subjectsData[subject]?.icon}
+            title={subject}
+            variant="circle"
+            circleColor={subjectsData[subject]?.color || "#D3D3D3"}
+            size={150}
+            clickable={false}
+          />
+          <ShadowedTitle
+            text={`Top ${subject} Videos for ${getOrdinalSuffix(grade)} Grade`}
+            shadowColor={subjectsData[subject]?.color}
+          />
+        </div>
+      </div>
 
       {loading && (
-        <div className="flex flex-col items-center justify-center h-[300px]">
+        <div className="flex playful-font flex-col items-center justify-center h-[300px]">
           <img
             src={snail_icon}
             alt="Loading snail"
-            className="w-16 h-16 mb-1 animate-bounce"
-          />
-          <div className="w-80 h-4 bg-gray-300 rounded-full overflow-hidden">
-            <div className="h-full bg-sky-400 animate-loading-bar" style={{ width: '100%' }}></div>
+            className="w-16 h-16 animate-bounce"
+          /> Loading videos...
+          <div className="mt-4 text-gray-600">Please wait while we fetch the best videos for you!</div>
+          {/* Progress bar */}
+          <div className="w-80 h-4 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-amber-400 transition-all duration-150"
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
         </div>
       )}
 
-      {error && <p className="text-lg text-red-500 text-center">{error}</p>}
+      {error && <p className="text-lg text-red-500 font-extrabold text-center">{error}</p>}
 
       {!loading && !error && (
         <VideoGallery videos={videos} onVideoClick={handleVideoSelect} />
       )}
 
       {selectedVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-indigo-900/90 to-purple-900/90 backdrop-blur-sm">
-          <div className={`relative ${isFullscreen ? 'w-full h-full' : 'w-[90%] max-w-4xl'} rounded-3xl overflow-hidden transform transition-all duration-300`}>
+        <div className="fixed top-20 inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-indigo-900/90 to-purple-900/90 backdrop-blur-sm">
+          <div
+            ref={fullscreenRef}
+            className={`relative overflow-hidden transform transition-all duration-300
+              ${isFullscreen ? 'w-screen h-screen rounded-none' : 'w-[90%] max-w-4xl rounded-3xl'}`}
+          >
             {/* Fun decorative elements */}
-            <div className="absolute -top-8 -left-8 w-16 h-16 bg-yellow-300 rounded-full opacity-30 animate-pulse"></div>
-            <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-pink-400 rounded-full opacity-30"></div>
-            <div className="absolute top-1/3 -right-6 w-12 h-12 bg-indigo-400 rounded-full opacity-30"></div>
-            <div className="absolute bottom-1/3 -left-6 w-14 h-14 bg-green-400 rounded-full opacity-30"></div>
+            {!isFullscreen && (
+              <>
+                <div className="absolute -top-8 -left-8 w-16 h-16 bg-yellow-300 rounded-full opacity-30 animate-pulse"></div>
+                <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-pink-400 rounded-full opacity-30"></div>
+                <div className="absolute top-1/3 -right-6 w-12 h-12 bg-indigo-400 rounded-full opacity-30"></div>
+                <div className="absolute bottom-1/3 -left-6 w-14 h-14 bg-green-400 rounded-full opacity-30"></div>
+              </>
+            )}
 
             {/* Card with video */}
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-8 border-indigo-100">
+            <div
+              className={`bg-white shadow-2xl overflow-hidden
+                ${isFullscreen ? 'h-full border-0 rounded-none' : 'rounded-3xl border-8 border-indigo-100'}`}
+            >
               {/* Video title bar */}
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex items-center justify-between text-white">
+              <div
+                className={`bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex items-center justify-between
+                  ${isFullscreen ? 'absolute top-0 left-0 right-0 z-10 rounded-none' : ''}`}
+                style={isFullscreen ? { backdropFilter: 'blur(10px)', backgroundColor: 'rgba(67, 56, 202, 0.7)' } : {}}
+              >
                 <div className="flex items-center">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-3">
                     <Star className="text-yellow-500 fill-yellow-500" size={20} />
                   </div>
-                  <h3 className="font-bold text-lg md:text-xl truncate max-w-md">
+                  <h3 className="font-bold text-lg break-words max-w-xl leading-snug md:text-xl">
                     {selectedVideoTitle || "Math Video"}
                   </h3>
                 </div>
@@ -170,19 +278,19 @@ const RelevantVideo = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={toggleMute}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors cursor-pointer"
                   >
                     {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                   </button>
                   <button
                     onClick={toggleFullscreen}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors cursor-pointer"
                   >
                     {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                   </button>
                   <button
                     onClick={handleCloseVideo}
-                    className="p-2 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors"
+                    className="p-2 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors cursor-pointer"
                   >
                     <X size={20} />
                   </button>
@@ -190,16 +298,14 @@ const RelevantVideo = () => {
               </div>
 
               {/* Video player */}
-              <div className="relative">
+              <div className={`relative ${isFullscreen ? 'h-full pt-16' : ''}`}>
                 <iframe
-                  className={`w-full ${isFullscreen ? 'h-screen' : 'h-[400px]'}`}
+                  className={`w-full ${isFullscreen ? 'h-full' : 'h-[400px]'}`}
                   src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&mute=${isMuted ? 1 : 0}`}
                   title="Math Video"
-                  frameBorder="0"
                   allow="autoplay; fullscreen"
                   allowFullScreen
-                ></iframe>
-
+                />
                 {/* Math Tip popup */}
                 {showTip && (
                   <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:max-w-xs bg-white rounded-xl p-4 shadow-lg border-l-8 border-green-500 animate-fade-in-up">
@@ -222,30 +328,21 @@ const RelevantVideo = () => {
                 )}
               </div>
 
-              {/* Fun controls bar */}
-              <div className="bg-gray-50 p-4">
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {['Addition', 'Subtraction', 'Counting', 'Place Value', 'Shapes'].map((skill, i) => (
-                    <div key={skill} className={`${colors[i % colors.length]} text-white px-3 py-1 rounded-full text-sm font-medium`}>
-                      {skill}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-3 flex justify-between items-center">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map(star => (
-                      <Star key={star} className="text-yellow-400 fill-yellow-400" size={16} />
+              {/* Relevant keywords badges */}
+              {!isFullscreen && (
+                <div className="bg-gray-50 p-4">
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {baseKeywords.map((keyword, i) => (
+                      <div
+                        key={keyword}
+                        className={`${colors[i % colors.length]} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                      >
+                        {keyword}
+                      </div>
                     ))}
-                    <span className="text-xs text-gray-500 ml-1">Great for learning!</span>
                   </div>
-
-                  <button className="flex items-center gap-1 text-indigo-600 font-medium text-sm">
-                    <ThumbsUp size={16} />
-                    <span>Great Video!</span>
-                  </button>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -255,4 +352,3 @@ const RelevantVideo = () => {
 };
 
 export default RelevantVideo;
-
