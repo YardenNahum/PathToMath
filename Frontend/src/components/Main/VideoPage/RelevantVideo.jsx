@@ -60,56 +60,59 @@ const RelevantVideo = () => {
     };
   }, [loading]);
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      setLoading(true);
-      setError(null);
-      setVideos([]);
+useEffect(() => {
+  const fetchVideos = async () => {
+    setLoading(true);
+    setError(null);
+    setVideos([]);
 
-      try {
-        const subjectQueryMap = {
-          addition: ["addition", "adding", "math facts", "sums"],
-          subtraction: ["subtraction", "taking away", "minus", "difference"],
-          multiplication: ["multiplication", "times tables", "products"],
-          division: ["division", "quotients", "divide", "splitting"],
-          percentage: ["percentages", "ratios", "fractions", "proportions"],
-        };
+    try {
+      const subjectQueryMap = {
+        addition: ["addition", "adding", "math facts", "sums"],
+        subtraction: ["subtraction", "taking away", "minus", "difference"],
+        multiplication: ["multiplication", "times tables", "products"],
+        division: ["division", "quotients", "divide", "splitting"],
+        percentage: ["percentages", "ratios", "fractions", "proportions"],
+      };
 
-        const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
+      const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
+      const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
+      const keywordPhrase = keywords.join(" OR ");
+      const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
 
-        const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
-        const keywordPhrase = keywords.join(" OR ");
+      const maxResults = 10;
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
+      
+      const response = await fetch(url);
 
-        const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
-
-        const maxResults = 10;
-        const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error("YouTube data not available");
-        }
-
-        const data = await response.json();
-        const videoItems = data.items.map((item) => ({
-          id: item.id.videoId,
-          title: item.snippet.title,
-          thumbnail: item.snippet.thumbnails.high.url,
-        }));
-
-        setTimeout(() => {
-          setVideos(videoItems);
-          setLoading(false);
-        }, 3000);
-      } catch (err) {
-        console.error(err);
-        setError("Could not fetch from YouTube");
-        setLoading(false);
+      if (!response.ok) {
+        // Try parsing and logging the detailed error response
+        const errorBody = await response.json();
+        console.error("YouTube API error body:", errorBody);
+        throw new Error(errorBody?.error?.message || "YouTube data not available");
       }
-    };
 
-    fetchVideos();
-  }, [grade, subject]);
+      const data = await response.json();
+      const videoItems = data.items.map((item) => ({
+        id: item.id.videoId,
+        title: item.snippet.title,
+        thumbnail: item.snippet.thumbnails.high.url,
+      }));
+
+      setTimeout(() => {
+        setVideos(videoItems);
+        setLoading(false);
+      }, 3000);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError(`Could not fetch from YouTube: ${err.message}`);
+      setLoading(false);
+    }
+  };
+
+  fetchVideos();
+}, [grade, subject]);
+
 
   // Sync fullscreen state
   useEffect(() => {
