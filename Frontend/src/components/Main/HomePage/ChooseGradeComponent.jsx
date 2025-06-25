@@ -3,7 +3,7 @@ import { useGrade } from '../../Utils/GradeComponent';
 import ButtonComponent from '../../Utils/Button';
 import ProfileCard from './ProfileCard';
 import BagIcon from '../../../assets/Images/HomePage/school-bag.png';
-import { getOrdinalSuffix } from '../../Utils/ordinalGrade';
+import { getOrdinalSuffix } from '../../Utils/OrdinalGrade';
 /**
  * ChooseGradeBtn component
  * @returns {JSX.Element} - The rendered component.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getOrdinalSuffix } from '../../Utils/ordinalGrade';
+import { getOrdinalSuffix } from '../../Utils/OrdinalGrade';
 
 const SelectInput = ({ label, icon, options, value, onChange }) => {
 
