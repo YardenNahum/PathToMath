@@ -17,7 +17,7 @@ const ConnectionP2PBox = ({ connection, myPeerId, opponentPeerId, setOpponentPee
     return (
         <div className="rounded-lg p-4">
             {/* Connection UI */}
-            {!connection && (
+            {!connection || !connection.open ? (
                 <div className="shadow-2xl mb-4 p-4 bg-gradient-to-br from-pink-500 via-purple-500 to-blue-300 rounded-xl text-white flex flex-col">
                     {/* Title */}
                     <h2 className="text-3xl mb-2">Connect to Opponent!</h2>
@@ -51,7 +51,7 @@ const ConnectionP2PBox = ({ connection, myPeerId, opponentPeerId, setOpponentPee
                         )}
                     </div>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

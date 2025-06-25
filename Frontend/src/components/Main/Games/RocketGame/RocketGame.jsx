@@ -32,7 +32,7 @@ const NUM_QUESTIONS = 10; // Total number of questions per game
 export default function RocketGame({ mode = 'single' }) {
   const isMultiplayer = mode === 'multi';   // Determine if game is in multiplayer version
   const { subjectGame, grade, level } = useParams();
-  
+
   const gameLevel = parseInt(level);
   const subjectName = subjectGame;
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ export default function RocketGame({ mode = 'single' }) {
   const [opponentPeerId, setOpponentPeerId] = useState('');
   const [connectionError, setConnectionError] = useState('');
   const [opponentGrade, setOpponentGrade] = useState(null);
-  const [myGrade, setMyGrade] = useState(grade);
+  const [myGrade, _] = useState(grade);
   const [gameGrade, setGameGrade] = useState(parseInt(grade));
 
   const colorMap = ['text-white', 'text-white', 'text-white', 'text-white'];  // All white for countdown
@@ -98,7 +98,7 @@ export default function RocketGame({ mode = 'single' }) {
       const minGrade = Math.min(parseInt(myGrade), parseInt(opponentGrade));
       setGameGrade(minGrade);
     }
-    console.log("both players playing on grade" ,gameGrade)
+    console.log("both players playing on grade", gameGrade)
   }, [isMultiplayer, myGrade, opponentGrade]);
 
   /**
@@ -122,7 +122,7 @@ export default function RocketGame({ mode = 'single' }) {
           setOpponentGrade(data.grade);
         }
       });
-      
+
     });
     peer.on('error', () => setConnectionError('Connection Error. Try Again.'));
   }, [peer]);
@@ -155,8 +155,8 @@ export default function RocketGame({ mode = 'single' }) {
       }
     });
     connection.on('close', () => {
-      setConnection(null);
-      setOpponentStarted(false);
+      handleNextRace();
+      setConnectionError('Opponent Disconnected');
     });
     connection.on('error', () => {
       setConnectionError('Connection lost. Please try again.');
@@ -243,7 +243,7 @@ export default function RocketGame({ mode = 'single' }) {
     if (isMultiplayer) {
       handleSend(connection, newProgress);
       if (newProgress === TRACK_STEPS - 1) handleFinishedGame(true);
-    } 
+    }
     // Single player
     else {
       if (newProgress === TRACK_STEPS - 1) {
@@ -294,7 +294,7 @@ export default function RocketGame({ mode = 'single' }) {
     }
   };
 
-  
+
   /**
    * Navigates to home page if from quiz, or to subject page if not.
    */
@@ -327,7 +327,7 @@ export default function RocketGame({ mode = 'single' }) {
   };
 
   // Determines if question box should be visible
-  const showQuestionBox = isMultiplayer ? gameStart && connection : started;
+  const showQuestionBox = isMultiplayer ? gameStart && connection?.open : started;
 
   return (
     <GameContainer
@@ -338,7 +338,7 @@ export default function RocketGame({ mode = 'single' }) {
       backgroundImage={spaceBg}
       howToPlay={
         isMultiplayer
-          ? "Enter your opponent’s Peer ID or share yours to connect. When both are ready, answer questions to race — first to reach the planet wins!"
+          ? "Enter your opponent's Peer ID or share yours to connect. When both are ready, answer questions to race — first to reach the planet wins!"
           : "After takeoff, answer math questions correctly to fly your rocket. Reach the planet before your opponent does to win!"
       }
     >
@@ -359,23 +359,23 @@ export default function RocketGame({ mode = 'single' }) {
               myGrade
             )
           }
-                    connectionError={connectionError}
+          connectionError={connectionError}
         />
       )}
 
 
-      {!started && !gameFinished && countdown === null && (
+      {((isMultiplayer && connection?.open) || !isMultiplayer) && (!started && !gameFinished && countdown === null) ? (
         <div className="flex justify-center">
           <StartButton
-            onClick={gameEnded && success ? handleFinished : isMultiplayer ? startGame : startCountdown}
+            onClick={gameEnded && success ? handleFinished : isMultiplayer && !connection?.open ? handleFinished : isMultiplayer ? startGame : startCountdown}
             message={message}
             startMessage={'🚀 Ready To Launch?'}
             startGameColor="bg-purple-600 relative shadow-lg before:absolute before:inset-0 before:rounded-xl before:animate-pulse before:shadow-[0_0_15px_5px_rgba(138,43,226,0.8)] before:pointer-events-none"
           />
         </div>
-      )}
+      ) : null}
 
-      {isMultiplayer && started && !opponentStarted && (
+      {isMultiplayer && connection?.open && started && !opponentStarted && (
         <div className="flex justify-center text-white text-2xl font-bold">
           Waiting for opponent to start...
         </div>
@@ -404,9 +404,6 @@ export default function RocketGame({ mode = 'single' }) {
               onSubmit={handleAnswerSubmit}
               feedback={<FeedbackMessage message={message} />}
             />
-          )}
-          {isMultiplayer && gameStart && !connection && (
-            <div className="text-white text-xl font-bold">Opponent Disconnected</div>
           )}
           {gameFinished && (
             <div className="flex flex-col items-center justify-center text-white text-xl font-bold">
