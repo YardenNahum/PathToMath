@@ -22,6 +22,7 @@ const gradeLevelSchema = new mongoose.Schema(
   },
   { _id: false }
 );
+
 /**
  * Generates default grade level data for a user.
  * @returns {Array<GradeLevel>} - An array of GradeLevel objects.
@@ -33,6 +34,7 @@ const defaultGradeLevels = () => Array(6).fill({
   Division: 0,
   Percentage: 0
 });
+
 /**
  * User schema
  * @typedef {Object} User

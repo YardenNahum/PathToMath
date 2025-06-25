@@ -3,21 +3,32 @@ import { useGrade } from '../../../Utils/GradeComponent';
 import { FallbackWordProblem, questions } from './FallBackQuestions';
 import ApiService from '../../../../services/ApiService';
 
-
+/**
+ * WordProblemsCreator component generates a magical word problem 
+ * based on math inputs using an AI API. Falls back to a local template if the API fails.
+ *
+ * @param {string} subject - The math operation
+ * @param {number} var1 - The first operand in the equation
+ * @param {number} var2 - The second operand in the equation
+ * @param {number} answer - The expected answer (var1 op var2)
+ */
 const WordProblemsCreator = ({ subject, var1, var2, answer }) => {
-  const { grade } = useGrade();
-  const [wordProblem, setWordProblem] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { grade } = useGrade(); // Get current user grade from context
+  const [wordProblem, setWordProblem] = useState(""); // Holds the generated word problem
+  const [loading, setLoading] = useState(false);  // Indicates whether the question is being generated
 
   useEffect(() => {
     //flag to cancel the questiion generating if it was already set
     let cancelled = false;
+
     //generate question func
     const generate = async () => {
       if (!subject || var1 == null || var2 == null || answer == null) return;
+
       //set loading and current question
       setLoading(true);
       setWordProblem("");
+
       //prompt for gemini
       const prompt = `Here are two example word problems:
         Positive answer example: "${questions[subject.toLowerCase()]?.positive}"        
@@ -51,8 +62,10 @@ const WordProblemsCreator = ({ subject, var1, var2, answer }) => {
         setLoading(false);
       }
     };
+
     //generate question
     generate();
+
     //put true in cancelled if done generating
     return () => {
       cancelled = true;
@@ -64,14 +77,17 @@ const WordProblemsCreator = ({ subject, var1, var2, answer }) => {
     <div className="w-full mt-6">
       <div className="relative overflow-hidden m-full">
         <div className="p-6">
+          
+          {/* Loading AI question */}
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center gap-3">
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-indigo-500 border-t-transparent"></div>
-                <span className="text-gray-600 font-medium">generating problem...</span>
+                <span className="text-gray-600 font-medium">Generating a Problem...</span>
               </div>
             </div>
           ) : (
+            // Displaying the generated word problem or fallback
             <div className="space-y-4  w-full">
               <div className="  w-full rounded-xl ">
                 <div className="w-full text-gray-700 text-lg lg:text-xl leading-relaxed font-medium">
@@ -79,11 +95,12 @@ const WordProblemsCreator = ({ subject, var1, var2, answer }) => {
                 </div>
               </div>
 
+              {/* Tag showing the numbers used */}
               {subject && (
                 <div className="flex flex-wrap gap-2 pt-2">
                   {var1 !== null && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      🔢 Uses {var1} & {var2}
+                      🔢 Use these in your solution: {var1} & {var2}
                     </span>
                   )}
                 </div>

@@ -4,6 +4,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Create Gemini client with API key
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 /**
  * POST request to Gemini to generate a question from a prompt
  * @route POST /generate-question
@@ -20,7 +21,7 @@ apiRoute.post('/generate-question', async (req, res) => {
 
   try {
     // Initialize the Gemini model
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' }); 
+    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
     // Generate content using the model
     // Using the model to generate a question based on the provided prompt
     const result = await model.generateContent(prompt);

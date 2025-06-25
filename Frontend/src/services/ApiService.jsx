@@ -2,6 +2,7 @@ import axios from 'axios';
 import BASE_URL from '../components/Utils/Config_server';
 
 const URL = `${BASE_URL}/api/`;
+
 /**
  * Generates questions using AI based on the provided prompt.
  * @param {string} prompt - The prompt to generate questions from.

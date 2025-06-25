@@ -16,12 +16,12 @@ import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
 /**
- * WordProblem component
+ * WordProblem component - Interactive game where children solve fairy-tale themed word problems.
+ * Users answer 3 questions, and if they get at least 2 correct, they progress to the next level.
  * @returns {JSX.Element} - The rendered component.
  */
 const WordProblem = () => {
-  // Get the subject and level from the URL parameters
-  const { subjectGame, level } = useParams();
+  const { subjectGame, level } = useParams(); // Get the subject and level from the URL parameters
   // Define the game subject and level
   const gameSubject = subjectGame;
   const gameLevel = parseInt(level);
@@ -52,9 +52,13 @@ const WordProblem = () => {
   const [endGameObject, setEndGameObject] = useState(null);
   // State to track loading state
   const [isLoading, setIsLoading] = useState(true);
+
   const numOfQuestions = 3;
   const numOfOptions = 1;
-  // Function to reset the game state
+
+  /**
+   * Resets the game to initial state, for retrying the level.
+   */
   const resetGame = () => {
     setCurrentQuestion(null);
     setFeedback(null);
@@ -63,7 +67,10 @@ const WordProblem = () => {
     setEndGame(false);
     setEndGameObject(null);
   };
-  // Function to load a new game level
+
+  /**
+   * Loads a new set of word problems based on subject, grade and level.
+   */
   const loadGameLevel = () => {
     // Generate new questions based on the subject, grade, level, number of questions and options
     const newQuestions = generateQuestions(gameSubject, parseInt(grade), gameLevel, numOfQuestions, numOfOptions);
@@ -71,7 +78,6 @@ const WordProblem = () => {
     setQuestions(newQuestions);
     //  Set the current question as the first in the array
     setCurrentQuestion(newQuestions[0]);
-
     // Reset the correct answers and user answer
     setCorrectAnswers(0);
     // Reset user answer
@@ -80,17 +86,22 @@ const WordProblem = () => {
     setFeedback(null);
     setIsLoading(false);
   };
+
   // Load the game level when the component mounts
   useEffect(() => {
     loadGameLevel();
   }, []);
-  // Function to handle the submission of the user's answer
+
+  /**
+   * Handles the submission of the user's answer and gives feedback.
+   */
   const handleSubmit = () => {
     // Check if the user has entered an answer
     if (!userAnswer) {
       setFeedback(<p className="text-red-600">Please enter an answer!</p>);
       return;
     }
+
     setIsAnswerVisible(true)
     const userNumericAnswer = parseInt(userAnswer);
     // Check if the answer is correct
@@ -105,15 +116,15 @@ const WordProblem = () => {
       setFeedback(<p className="text-red-600">Wrong! The correct answer was {correct}</p>);
     }
   };
+
   /**
-   * Function to handle the next question click
-   * It updates the questions array, sets the next question as current,
+   * Proceeds to the next question or ends the game if finished.
    */
-  // Function to handle the next question click
   const nextQuestionClicked = () => {
     setUserAnswer("");
     const updatedQuestions = [...questions];
     updatedQuestions.shift();
+
     //check if its not the last question
     if (updatedQuestions.length >= 1) {
       setQuestions(updatedQuestions);
@@ -123,12 +134,12 @@ const WordProblem = () => {
     } else {
       generateEnd();
     }
-
   };
-/**
- * Function to generate the end game object
- * It checks the number of correct answers and updates the user progress accordingly.
- */
+
+  /**
+   * Function to generate the end game object
+   * It checks the number of correct answers and updates the user progress accordingly.
+   */
   const generateEnd = () => {
     const isSuccess = correctAnswers >= 2;
     //update user progress based on success
@@ -141,6 +152,7 @@ const WordProblem = () => {
       gameLevel: parseInt(level),
       gameSubject: subjectGame
     });
+
     // Set the end game object based on success or failure
     // If the user has answered at least 2 questions correctly, they win
     setEndGameObject({
@@ -177,7 +189,6 @@ const WordProblem = () => {
     setEndGame(true);
   };
 
-
   /**
    * End Game Component
    * @returns {JSX.Element} - The end game component with an image and button.
@@ -211,8 +222,7 @@ const WordProblem = () => {
       howToPlay={"Read the math tale carefully and type your answer in the box. Get at least 2 out of 3 correct to win!"}
     >
       <div className={`inline-block max-w-[800px] mb-5 align-middle justify-center border-5 border-red-300 rounded-3xl shadow-lg ${endGame ? endGameObject?.containerColor : 'bg-white'}`}>
-        <div >
-
+        <div>
           {isLoading ? (
             <div className="text-center max-w-3xl text-xl font-semibold mt-8">Loading your question...</div>
           ) : (
@@ -235,6 +245,7 @@ const WordProblem = () => {
               </div>
             )
           )}
+
           {endGame && (
             <>
               <div className="m-5">{endGameObject?.text}
@@ -243,7 +254,6 @@ const WordProblem = () => {
               </div>
             </>
           )}
-
 
           {!endGame && isAnswerVisible && (
             <div className="flex justify-center gap-10 mb-4">
@@ -259,7 +269,6 @@ const WordProblem = () => {
         </div>
       </div>
     </GameContainer>
-
   );
 };
 

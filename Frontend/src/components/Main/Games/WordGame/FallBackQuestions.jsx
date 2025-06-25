@@ -1,8 +1,8 @@
 import React from 'react';
-// json of questions 
+
+// Word problem templates for each subject
+// Each subject has positive and negative templates
 export const questions = {
-    // Define templates for different subjects
-    // Each subject has positive and negative templates
   addition: {
     positive: "Liam has ${var1} apples and gets ${var2} more. How many apples now?",
     negative: "Liam had ${var1} apples but lost ${var2}. How many left?"
@@ -41,10 +41,16 @@ const getFallbackQuestion = (subject, var1, var2, answer) => {
   const template = templates[type];
   return template.replace("${var1}", var1).replace("${var2}", var2);
 };
+
 /**
- * FallbackWordProblem component
- * @param {Object} param0 - The component props.
- * @returns {JSX.Element} - The rendered component.
+ * FallbackWordProblem
+ * Displays a simple question if the AI fails to generate one.
+ * 
+ * @param {Object} props
+ * @param {string} props.subject
+ * @param {number} props.var1
+ * @param {number} props.var2
+ * @param {number} props.answer
  */
 export const FallbackWordProblem = ({ subject, var1, var2, answer }) => {
   const question = getFallbackQuestion(subject, var1, var2, answer);
