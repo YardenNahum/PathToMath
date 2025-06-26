@@ -4,17 +4,24 @@ import { useUser } from "../../Utils/UserContext";
 import LoginSignup from './LoginSignup';
 import ButtonComponent from "../../Utils/Button";
 const LogoutPage = () => {
+    // Get logout function from UserContext
     const { logoutUser } = useUser();
+
+    // React Router hook to programmatically navigate
     const navigate = useNavigate();
 
+    // Called when user confirms logout
     const handleConfirmLogout = () => {
-        logoutUser();
-        localStorage.removeItem("userType");
-        navigate("/login");
+        logoutUser(); // Clear user context
+        localStorage.removeItem("userType"); // Remove user type from localStorage
+        navigate("/login"); // Redirect to login page
     }
+
+    // Called when user cancels logout
     const handleCancelLogout = () => {
-        navigate(-1);
+        navigate(-1); // Go back to previous page
     }
+
     return (
         <div>
             <LoginSignup />
@@ -41,3 +48,4 @@ const LogoutPage = () => {
     );
 }
 export default LogoutPage;
+       
