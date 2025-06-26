@@ -3,12 +3,23 @@ import { useUser } from '../../Utils/UserContext.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { generateRandomGame } from "../Games/GamesUtils/GenerateRandomGame.jsx";
 
+/**
+ * PopQuiz component automatically redirects the user to a random game and level for their grade.
+ * If the user is not signed in, prompts them to sign in or return home.
+ *
+ * @returns {JSX.Element} The rendered component or redirect logic
+ */
 const PopQuiz = () => {
+    // React Router hook for navigation
     const navigate = useNavigate();
+    // React Router hook to access the current location object
     const location = useLocation();
+    // Get the current user from context
     const { user } = useUser();
+    // Get the user's grade
     const grade = user?.grade;
 
+    // List of possible subjects for the pop quiz
     const subjectsConfigs = [
         { name: "Addition" },
         { name: "Subtraction" },
@@ -17,22 +28,28 @@ const PopQuiz = () => {
         { name: "Percentage" }
     ];
 
+    // On mount or when grade/location changes, redirect to a random game for the user's grade
     useEffect(() => {
         if (!grade) return;
 
+        // Only allow subjects up to the user's grade
         const subjects = grade === 1
             ? subjectsConfigs.slice(0, grade + 1)
             : subjectsConfigs.slice(0, grade);
 
+        // Pick a random subject and level
         const randomSubject = subjects[Math.floor(Math.random() * subjects.length)].name;
         const randomLevel = Math.floor(Math.random() * 30) + 1;
+        // Pick a random game for the subject
         const randomGameName = generateRandomGame(randomSubject);
 
+        // Redirect to the random game, passing state to indicate it's from a quiz
         navigate(`/${randomGameName}/${randomSubject}/${grade}/${randomLevel}`, {
             state: { fromQuiz: true }
         });
     }, [grade, location]);
 
+    // If user is not signed in, show prompt to sign in or return home
     if (!user) {
         return (
             <div className="font-sans playful-font flex flex-col items-center justify-center h-screen bg-gradient-to-br from-pink-200 via-yellow-200 to-red-100 text-center px-4">
@@ -60,6 +77,7 @@ const PopQuiz = () => {
         );
     }
 
+    // Show loading message while redirecting
     return (
         <div className="text-center mt-10 text-lg text-gray-600 animate-pulse">
             Loading your awesome Pop Quiz...

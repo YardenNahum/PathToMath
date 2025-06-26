@@ -6,8 +6,17 @@ import dice_4 from '../../../../assets/Images/cube_game/4.png';
 import dice_5 from '../../../../assets/Images/cube_game/5.png';
 import dice_6 from '../../../../assets/Images/cube_game/6.png';
 
-// Genarate cubes game grid
+/**
+ * Cubes component renders a clickable dice image for the dice game.
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.value - The value of the dice (1-6)
+ * @param {function} props.onClick - Click handler for the dice button
+ * @param {string} [props.className] - Additional CSS classes for styling
+ * @returns {JSX.Element} The rendered dice button
+ */
 const Cubes = ({value,onClick,className}) => {
+    // Mapping dice values to their corresponding images
     const dice_images = {
         1: {image: dice_1},
         2: {image: dice_2},
@@ -19,6 +28,7 @@ const Cubes = ({value,onClick,className}) => {
     
     return (
         <div>
+            {/* Render a button with the dice image. When clicked, calls onClick. */}
             <button onClick={onClick} className={`rounded-2xl bg-white ${className}`}>
                 <img 
                     src={dice_images[value].image}

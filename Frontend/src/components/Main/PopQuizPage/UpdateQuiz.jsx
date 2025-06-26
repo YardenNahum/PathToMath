@@ -1,9 +1,22 @@
 import { useUser } from '../../Utils/UserContext';
 import { updateUser } from '../../../services/UserService';
 
+/**
+ * Custom hook to update the user's pop quiz streak and last quiz date.
+ * Handles streak logic based on whether the user played today, yesterday, or missed days.
+ *
+ * @returns {Function} updateQuiz - Function to update the user's quiz streak
+ */
 export const useUpdateQuiz = () => {
+  // Get user and update function from context
   const { user, update } = useUser();
 
+  /**
+   * Updates the user's pop quiz streak and last quiz date.
+   * - If the user already played today, does nothing.
+   * - If the user played yesterday, increments streak.
+   * - Otherwise, resets streak to 1.
+   */
   const updateQuiz = async () => {
     if (!user) {
       return;
@@ -14,6 +27,7 @@ export const useUpdateQuiz = () => {
       ? new Date(user.pop_quiz_last_date)
       : null;
 
+    // Helper to normalize a date to local midnight (removes time part)
     const normalizeLocalDate = (date) => {
       const d = new Date(date);
       d.setHours(0, 0, 0, 0);
@@ -22,7 +36,6 @@ export const useUpdateQuiz = () => {
 
     const todayLocal = normalizeLocalDate(today);
     const lastQuizLocal = quizLastDate ? normalizeLocalDate(quizLastDate) : null;
-
 
     // Check if already updated today
     if (lastQuizLocal && lastQuizLocal.getTime() === todayLocal.getTime()) {
@@ -35,6 +48,7 @@ export const useUpdateQuiz = () => {
 
     const isYesterday = lastQuizLocal && lastQuizLocal.getTime() === yesterdayLocal.getTime();
 
+    // Prepare new user object with updated streak
     const newUser = { ...user };
     if (!quizLastDate) {
       newUser.streak = 1;
@@ -46,6 +60,7 @@ export const useUpdateQuiz = () => {
 
     newUser.pop_quiz_last_date = today;
 
+    // Update user in backend and context
     await updateUser(user.email, newUser);
     update(user.email, newUser);
   };
