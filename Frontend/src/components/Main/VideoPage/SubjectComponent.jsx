@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Create a React context to manage subject data globally
 const SubjectContext = createContext();
 
+// Custom hook to access subject context more easily
 export const useSubject = () => useContext(SubjectContext);
 
+// Context provider that wraps the app and manages subject-level state
 export const SubjectProvider = ({ children }) => {
+    // Default structure for each subject: current level and total levels
     const initialSubjects = {
         Addition: { currentLevel: 1, numOfLevels: 30 },
         Subtraction: { currentLevel: 1, numOfLevels: 30 },
@@ -13,12 +17,14 @@ export const SubjectProvider = ({ children }) => {
         Percentage: { currentLevel: 1, numOfLevels: 30 },
     };
 
-    // Load subjects and gameSubject from localStorage
+    // Load subjects and gameSubject (current active subject) from localStorage if available
     const savedSubjects = JSON.parse(localStorage.getItem("subjects")) || initialSubjects;
     const savedGameSubject = JSON.parse(localStorage.getItem("gameSubject")) || null;
 
-    // Initialize state
+    // State for all subjects' progress
     const [subjects, setSubjects] = useState(savedSubjects);
+
+    // State for the currently selected subject and level in an active game
     const [gameSubject, setGameSubject] = useState(savedGameSubject);
 
     // Save subjects to localStorage whenever they change
@@ -33,7 +39,10 @@ export const SubjectProvider = ({ children }) => {
         }
     }, [gameSubject]);
 
-    // Select a subject to start a game
+    /**
+     * Select a subject to start playing
+     * Sets the current gameSubject state with its current level and max levels
+     */
     const selectSubject = (subjectName) => {
         const selectedSubject = subjects[subjectName];
         if (!selectedSubject) return;
@@ -48,14 +57,17 @@ export const SubjectProvider = ({ children }) => {
         localStorage.setItem("gameSubject", JSON.stringify(newGameSubject));
     };
 
-    // Update the current level for the selected subject
+    /**
+     * Update the current level for the active game subject
+     * Only allows forward progress (no going back)
+     */
     const updateLevel = (newLevel) => {
         const { level } = gameSubject;
         if (newLevel < level) return; // Prevent going back to a previous level
 
         const { subject } = gameSubject;
 
-        // Update subjects
+        // Update the specific subject's current level
         setSubjects((prevSubjects) => {
             const updatedSubjects = {
                 ...prevSubjects,

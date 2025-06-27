@@ -174,31 +174,31 @@ const RewardsPage = () => {
                     {Object.entries(subjectBreakdown)
                       .filter(([subject]) => topicGrade[subject] <= grade)
                       .map(([subject, levels]) => {
-                      const style = subjectStyleMap[subject] || {
-                        icon: "❓",
-                        color: "from-gray-400 to-gray-500",
-                      };
+                        const style = subjectStyleMap[subject] || {
+                          icon: "❓",
+                          color: "from-gray-400 to-gray-500",
+                        };
 
-                      return (
-                        <div
-                          key={subject}
-                          onClick={() => handleSubjectClick(subject)}
-                          className="cursor-pointer"
-                        >
-                          <Badge
-                            reward={{
-                              title: subject,
-                              icon: style.icon,
-                              color: style.color,
-                              label: `${levels} Levels Completed`,
-                            }}
-                            isEarned={true}
-                            showProgress={true}
-                            currentProgress={levels}
-                          />
-                        </div>
-                      );
-                    })}
+                        return (
+                          <div
+                            key={subject}
+                            onClick={() => handleSubjectClick(subject)}
+                            className="cursor-pointer"
+                          >
+                            <Badge
+                              reward={{
+                                title: subject,
+                                icon: style.icon,
+                                color: style.color,
+                                label: `${levels} Levels Completed`,
+                              }}
+                              isEarned={true}
+                              showProgress={true}
+                              currentProgress={levels}
+                            />
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>

@@ -11,6 +11,7 @@ import OptionsBg from '../../../../assets/Images/Background/optionsBg.jpg';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import MultipleChoiceCard from './MultipleChoiceCard.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+
 /**
  * OptionsGame component represents a multiple-choice quiz game with progression logic.
  * It loads questions based on subject, grade, and level, tracks correct answers,
@@ -102,7 +103,6 @@ export default function OptionsGame() {
      * If success, updates user progress and navigates accordingly.
      * If failure, offers retry.
      */
-
     const generateEnd = () => {
         const isSuccess = correctAnswers >= 4;
         //update user progress based on success
@@ -126,14 +126,14 @@ export default function OptionsGame() {
                         updateQuiz();
                         navigate("/");
                     } else {
-                    // Update user's grade level progress if this level is higher than recorded
-                    const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-                    if (gameLevel > currentFinished) {
-                        let newUser = { ...user };
-                        newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-                        update(user.email, newUser);
-                    }
-                    navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
+                        // Update user's grade level progress if this level is higher than recorded
+                        const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
+                        if (gameLevel > currentFinished) {
+                            let newUser = { ...user };
+                            newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
+                            update(user.email, newUser);
+                        }
+                        navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
                     }
                 } else {
                     // Retry current level

@@ -62,7 +62,6 @@ export default function MultipleChoiceCard({
             // Before answer reveal, all options have the default text color
             return "text-amber-400";
         }
-
         const isCorrect = option.value === question.answer.value;
         const isSelected = option.value === selectedOption.value;
         return isCorrect || isSelected ? "text-black" : "text-amber-400";

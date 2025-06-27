@@ -1,10 +1,16 @@
 import React, { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
+/**
+ * VideoGallery displays a horizontally scrollable list of video cards.
+ * Each video can be clicked to trigger an action (e.g. play).
+ * Navigation arrows allow horizontal scrolling through the video list.
+ */
 const VideoGallery = ({ videos, onVideoClick }) => {
-  const scrollRef = useRef(null);
-  const [hoveredVideo, setHoveredVideo] = useState(null);
-  
+  const scrollRef = useRef(null); // Ref for the scrollable container
+  const [hoveredVideo, setHoveredVideo] = useState(null); // Track which video is being hovered
+
+  // Scroll the video container left or right by half its visible width
   const scroll = (direction) => {
     if (scrollRef.current) {
       const container = scrollRef.current;
@@ -25,8 +31,8 @@ const VideoGallery = ({ videos, onVideoClick }) => {
             Videos Library:
           </h3>
         </div>
-        
-        {/* Navigation Controls */}
+
+        {/* Navigation Arrows */}
         <div className="absolute right-0 top-2 flex gap-2">
           <button
             onClick={() => scroll("left")}
@@ -43,9 +49,9 @@ const VideoGallery = ({ videos, onVideoClick }) => {
             <ChevronRight size={20} />
           </button>
         </div>
-        
+
         {/* Video Grid */}
-        <div 
+        <div
           ref={scrollRef}
           className="grid grid-flow-col auto-`cols-max gap-6 overflow-x-auto pt-4 pb-8 px-2 scroll-smooth no-scrollbar snap-x snap-mandatory"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -57,55 +63,55 @@ const VideoGallery = ({ videos, onVideoClick }) => {
               onMouseEnter={() => setHoveredVideo(video.id)}
               onMouseLeave={() => setHoveredVideo(null)}
             >
-              <div 
+              {/* Video Card */}
+              <div
                 onClick={() => onVideoClick(video.id, video.title)}
                 className={`
                   bg-white rounded-2xl overflow-hidden cursor-pointer transition-all duration-500
                   shadow-lg hover:shadow-2xl transform hover:-translate-y-2
-                  ${index % 3 === 0 ? 'border-l-8 border-pink-400' : 
-                    index % 3 === 1 ? 'border-l-8 border-purple-400' : 
-                    'border-l-8 border-indigo-400'}
+                  ${index % 3 === 0 ? 'border-l-8 border-pink-400' :
+                    index % 3 === 1 ? 'border-l-8 border-purple-400' :
+                      'border-l-8 border-indigo-400'}
                 `}
               >
                 {/* Thumbnail */}
                 <div className="relative">
-                  <img 
-                    src={video.thumbnail} 
+                  <img
+                    src={video.thumbnail}
                     alt={video.title}
                     className="w-full h-40 object-cover"
                   />
-                  
+
                   {/* Play Button Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-16 h-16 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
                       <Play fill="currentColor" className="text-indigo-600 ml-1" size={32} />
                     </div>
                   </div>
-                  
-                  {/* Video Number */}
+
+                  {/* Video Number Label */}
                   <div className="absolute top-3 right-3 bg-white bg-opacity-90 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold text-indigo-700">
                     {index + 1}
                   </div>
                 </div>
-                
+
                 {/* Video Info */}
                 <div className={`p-4 ${index % 3 === 0 ? 'bg-pink-50' : index % 3 === 1 ? 'bg-purple-50' : 'bg-indigo-50'}`}>
                   <h3 className="font-bold text-gray-800 mb-1 line-clamp-2 h-12">
                     {video.title}
                   </h3>
-                  
+
                   <div className="flex items-center mt-2">
-                    <div className={`w-3 h-3 rounded-full mr-2 ${hoveredVideo === video.id ? 'animate-pulse' : ''} ${
-                      index % 3 === 0 ? 'bg-pink-500' : 
-                      index % 3 === 1 ? 'bg-purple-500' : 
-                      'bg-indigo-500'
-                    }`}></div>
+                    <div className={`w-3 h-3 rounded-full mr-2 ${hoveredVideo === video.id ? 'animate-pulse' : ''} ${index % 3 === 0 ? 'bg-pink-500' :
+                      index % 3 === 1 ? 'bg-purple-500' :
+                        'bg-indigo-500'
+                      }`}></div>
                     <span className="text-xs text-gray-600">Click to watch</span>
                   </div>
                 </div>
               </div>
-              
-              {/* Fun decorative elements based on position */}
+
+              {/* Decorative elements based on position */}
               {index % 4 === 0 && (
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full z-10 transform rotate-12"></div>
               )}
@@ -122,8 +128,8 @@ const VideoGallery = ({ videos, onVideoClick }) => {
           ))}
         </div>
       </div>
-      
-      {/* Fun decorative background elements */}
+
+      {/* Decorative background elements */}
       <div className="absolute -z-10 top-1/4 left-10 w-20 h-20 bg-yellow-200 rounded-full opacity-20"></div>
       <div className="absolute -z-10 bottom-1/4 right-10 w-32 h-32 bg-purple-200 rounded-full opacity-20"></div>
       <div className="absolute -z-10 bottom-1/3 left-1/4 w-16 h-16 bg-pink-200 rounded-full opacity-20"></div>

@@ -11,19 +11,24 @@ import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.p
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 
-// Constants
-const NUM_QUESTIONS = 5;
+const NUM_QUESTIONS = 5;  // Total number of questions in the game
 
+/**
+ * BalloonsGame component is an interactive game where players answer math questions
+ * by popping balloons that represent different answer choices.
+ * 
+ * It includes score tracking, visual feedback, and user progress updates.
+ */
 function BalloonsGame() {
-    // Extract parameters from the URL
-    const { subjectGame, grade, level } = useParams();
+    const { subjectGame, grade, level } = useParams();  // Extract parameters from the URL
     const subjectName = subjectGame;
     const gameLevel = parseInt(level);
+
     const navigate = useNavigate();
     const location = useLocation();
     const updateQuiz = useUpdateQuiz();
+    const { user, update } = useUser();
 
-    const { user,update } = useUser();
     // State variables
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -40,7 +45,12 @@ function BalloonsGame() {
     }, [grade, subjectName]);
 
     const currentQuestion = questions[currentQuestionIndex];
-    // Handle balloon click
+
+    /**
+     * Handle click on a balloon.
+     * Checks if the selected answer is correct and shows feedback.
+     * Then proceeds to the next question.
+     */
     const handleBalloonClick = (value) => {
         if (!currentQuestion) return;
 
@@ -61,7 +71,11 @@ function BalloonsGame() {
             }, 1500);
         }
     };
-    // Proceed to the next question or end the game if all questions are answered
+
+    /**
+     * Proceed to the next question or end the game if all are completed.
+     * Triggers progress update if game is over.
+     */
     const proceedToNextQuestion = () => {
         if (currentQuestionIndex + 1 < NUM_QUESTIONS) {
             setCurrentQuestionIndex((prev) => prev + 1);
@@ -77,10 +91,14 @@ function BalloonsGame() {
                 gameLevel: parseInt(level),
                 gameSubject: subjectGame
             });
-
         }
     };
-    // Handle game finish
+
+    /**
+     * Handle final steps when the game ends.
+     * Navigates based on context (quiz or regular game mode),
+     * and updates user's level progress if necessary.
+     */
     const handleFinish = () => {
         if (location.state?.fromQuiz) {
             updateQuiz();
@@ -96,7 +114,6 @@ function BalloonsGame() {
             navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
         }
     };
-
 
     return (
         <GameContainer
@@ -125,13 +142,13 @@ function BalloonsGame() {
                             </div>
                         </div>
 
-                        {/* Game Field */}
+                        {/* Main Game Area: Question + Balloons */}
                         <div className="flex flex-col items-center">
                             <QuestionBox question={currentQuestion?.question} />
                             <BalloonField options={currentQuestion?.options} onBalloonClick={handleBalloonClick} />
                         </div>
 
-                        {/* Feedback Overlays */}
+                        {/* Correct Feedback Overlay */}
                         {showCorrectFeedback && (
                             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                                 <div className="bg-green-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
@@ -140,6 +157,7 @@ function BalloonsGame() {
                             </div>
                         )}
 
+                        {/* Incorrect Feedback Overlay */}
                         {showIncorrectFeedback && (
                             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                                 <div className="bg-orange-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
@@ -149,6 +167,7 @@ function BalloonsGame() {
                         )}
                     </div>
                 ) : (
+                    // End screen after all questions
                     <EndGameScreen score={score} total={NUM_QUESTIONS} onFinish={handleFinish} />
                 )}
             </div>

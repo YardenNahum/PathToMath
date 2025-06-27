@@ -10,7 +10,7 @@ import SubjectCircle from "../../Main/HomePage/SubjectCircle.jsx";
 import { subjectsData } from "../../Utils/SubjectData.jsx";
 import { getOrdinalSuffix } from "../../Utils/OrdinalGrade.jsx";
 
-const API_KEY = "AIzaSyABk2py4r0NYy5x63rfJ3bxoY3gMJKtMy8";
+const API_KEY = "AIzaSyABk2py4r0NYy5x63rfJ3bxoY3gMJKtMy8";  // YouTube API key
 
 const RelevantVideo = () => {
   const { subject } = useParams();
@@ -60,58 +60,62 @@ const RelevantVideo = () => {
     };
   }, [loading]);
 
-useEffect(() => {
-  const fetchVideos = async () => {
-    setLoading(true);
-    setError(null);
-    setVideos([]);
+  // Fetch YouTube videos based on subject and grade
+  useEffect(() => {
+    const fetchVideos = async () => {
+      setLoading(true);
+      setError(null);
+      setVideos([]);
 
-    try {
-      const subjectQueryMap = {
-        addition: ["addition", "adding", "math facts", "sums"],
-        subtraction: ["subtraction", "taking away", "minus", "difference"],
-        multiplication: ["multiplication", "times tables", "products"],
-        division: ["division", "quotients", "divide", "splitting"],
-        percentage: ["percentages", "ratios", "fractions", "proportions"],
-      };
+      try {
+        // Alternate keywords to improve search
+        const subjectQueryMap = {
+          addition: ["addition", "adding", "math facts", "sums"],
+          subtraction: ["subtraction", "taking away", "minus", "difference"],
+          multiplication: ["multiplication", "times tables", "products"],
+          division: ["division", "quotients", "divide", "splitting"],
+          percentage: ["percentages", "ratios", "fractions", "proportions"],
+        };
 
-      const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
-      const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
-      const keywordPhrase = keywords.join(" OR ");
-      const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
+        const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
+        const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
+        const keywordPhrase = keywords.join(" OR ");
+        const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
 
-      const maxResults = 10;
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
-      
-      const response = await fetch(url);
+        const maxResults = 10;
+        // Construct API URL
+        const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
 
-      if (!response.ok) {
-        // Try parsing and logging the detailed error response
-        const errorBody = await response.json();
-        console.error("YouTube API error body:", errorBody);
-        throw new Error(errorBody?.error?.message || "YouTube data not available");
-      }
+        const response = await fetch(url);
 
-      const data = await response.json();
-      const videoItems = data.items.map((item) => ({
-        id: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.high.url,
-      }));
+        if (!response.ok) {
+          // Try parsing and logging the detailed error response
+          const errorBody = await response.json();
+          console.error("YouTube API error body:", errorBody);
+          throw new Error(errorBody?.error?.message || "YouTube data not available");
+        }
 
-      setTimeout(() => {
-        setVideos(videoItems);
+        const data = await response.json();
+        const videoItems = data.items.map((item) => ({
+          id: item.id.videoId,
+          title: item.snippet.title,
+          thumbnail: item.snippet.thumbnails.high.url,
+        }));
+
+        // Simulate loading delay
+        setTimeout(() => {
+          setVideos(videoItems);
+          setLoading(false);
+        }, 3000);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(`Could not fetch from YouTube: ${err.message}`);
         setLoading(false);
-      }, 3000);
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError(`Could not fetch from YouTube: ${err.message}`);
-      setLoading(false);
-    }
-  };
+      }
+    };
 
-  fetchVideos();
-}, [grade, subject]);
+    fetchVideos();
+  }, [grade, subject]);
 
 
   // Sync fullscreen state
@@ -155,6 +159,7 @@ useEffect(() => {
     }
   };
 
+  // Educational tips shown while video plays
   const mathTips = [
     "Adding zero to any number gives you the same number!",
     "You can add numbers in any order and get the same answer!",
@@ -170,9 +175,10 @@ useEffect(() => {
     "The commutative property means order doesn't matter for addition or multiplication!",
   ];
 
+  // Randomly chosen math tip for overlay popup
   const randomTip = mathTips[Math.floor(Math.random() * mathTips.length)];
 
-  // Define base keywords for each subject
+  // Related subject keywords displayed as badges
   const baseKeywords = useMemo(() => {
     switch (subject?.toLowerCase()) {
       case "addition":

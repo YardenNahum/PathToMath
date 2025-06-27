@@ -70,7 +70,7 @@ const PopQuiz = () => {
                         onClick={() => navigate('/')}
                         className="bg-blue-300 mt-4 px-7 py-4 ml-4 text-gray-600  rounded-full shadow-md transition-all duration-300"
                     >
-                         Back to Home
+                        Back to Home
                     </button>
                 </div>
             </div>

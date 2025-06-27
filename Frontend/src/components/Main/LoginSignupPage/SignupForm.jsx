@@ -2,21 +2,30 @@ import React from 'react';
 import LabeledInput from './LabelInput';
 import SelectInput from './SelectInput';
 import ButtonComponent from '../../Utils/Button';
-
-// Importing icons for form inputs
 import user_icon from '../../../assets/Images/LoginSignup/user.png';
 import email_icon from '../../../assets/Images/LoginSignup/email.png';
 import password_icon from '../../../assets/Images/LoginSignup/padlock.png';
 import class_icon from '../../../assets/Images/LoginSignup/reading-book.png';
 
+/**
+ * SignupForm renders the sign-up input form for new users.
+ * Includes fields for name, email, password, and grade selection.
+ *
+ * @param {Object} formData - The current state of form values
+ * @param {Function} setFormData - Function to update form values
+ * @param {Function} onSubmit - Function to call when submitting the form
+ */
 const SignupForm = ({ formData, setFormData, onSubmit }) => {
   return (
-      // Card-like container for the signup form
+    // Card-like container for the signup form
     <div className="bg-blue-100 p-10 rounded-3xl shadow-xl w-full max-w-sm border-4 border-blue-300">
+
       <h2 className="text-3xl font-bold text-center text-blue-800">Join the Fun! ✨</h2>
       <div className="h-1 w-12 bg-blue-800 rounded-full mx-auto my-3"></div>
-       {/* Input fields container */}
+
+      {/* Input fields for user details */}
       <div className="flex flex-col gap-0.5">
+        {/* Name input */}
         <LabeledInput
           label="Name"
           type="text"
@@ -24,7 +33,8 @@ const SignupForm = ({ formData, setFormData, onSubmit }) => {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
-         {/* Email input */}
+
+        {/* Email input */}
         <LabeledInput
           label="Email"
           type="email"
@@ -32,7 +42,8 @@ const SignupForm = ({ formData, setFormData, onSubmit }) => {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
-         {/* Password input */}
+
+        {/* Password input */}
         <LabeledInput
           label="Password"
           type="password"
@@ -40,7 +51,8 @@ const SignupForm = ({ formData, setFormData, onSubmit }) => {
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         />
-           {/* Grade selection dropdown */}
+
+        {/* Grade selection dropdown */}
         <SelectInput
           label="Select Your Grade 🎓"
           icon={class_icon}
@@ -49,7 +61,8 @@ const SignupForm = ({ formData, setFormData, onSubmit }) => {
           options={[1, 2, 3, 4, 5, 6]}
         />
       </div>
-      {/* Join Now button */}
+
+      {/* Submit button */}
       <div className="mt-6 flex justify-center">
         <ButtonComponent
           label="Join Now 🚀"

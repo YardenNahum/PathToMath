@@ -84,11 +84,14 @@ const GameCube = () => {
             setFeedbackMessage("❌ Please select at least one cube.");
             return;
         }
+
         let check_sum = 0;
         selected.forEach(index => {
             check_sum += cubes[index];
         });
+
         setIsDisabled(true);
+
         if (check_sum === sum) {
             setFeedbackMessage("✅ Correct! You found a valid combination.");
             setCorrect(prev => prev + 1);
@@ -226,12 +229,12 @@ const GameCube = () => {
     }
 
     return (
-        <GameContainer 
-            gameName="Roll & Solve" 
-            gameSubject={subjectGame} 
-            gameLevel={gameLevel} 
-            icon={TitleIcon} 
-            backgroundImage={CubesBg} 
+        <GameContainer
+            gameName="Roll & Solve"
+            gameSubject={subjectGame}
+            gameLevel={gameLevel}
+            icon={TitleIcon}
+            backgroundImage={CubesBg}
             howToPlay={"Select dice that add up to the target sum. You have 2 tries per question. Get 3 out of 5 correct to pass!"}
         >
             <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
@@ -244,13 +247,13 @@ const GameCube = () => {
                         <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
                             onClick={() => {
                                 if (success) {
-                                    handleFinishedGame();         // navigates to next level
+                                    handleFinishedGame();   // navigates to next level
                                 } else {
-                                    restartGame();         // replay same level
+                                    restartGame();  // replay same level
                                 }
                             }}
-                        >  
-                            {success ? "Next level": "Try again"}
+                        >
+                            {success ? "Next level" : "Try again"}
                         </button>
                     </div>
                 ) : (
@@ -282,14 +285,12 @@ const GameCube = () => {
                                 />
                             ))}
                         </div>
-
                         <div
                             className={`mt-6 text-xl text-center transition-opacity duration-300 ${feedbackMessage ? "opacity-100 text-purple-700" : "opacity-0"
                                 }`}
                         >
                             {feedbackMessage}
                         </div>
-
                         <div className="flex justify-center items-center gap-4 mt-6">
                             <button
                                 className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded-lg"
@@ -297,7 +298,6 @@ const GameCube = () => {
                             >
                                 Check
                             </button>
-
                             <button
                                 className={`bg-orange-400 text-white hover:cursor-pointer px-4 py-2 rounded-lg transition-opacity duration-300 ${next ? "opacity-100" : "opacity-0"}`}
                                 onClick={() => renderGame()}
@@ -305,7 +305,6 @@ const GameCube = () => {
                                 {next}
                             </button>
                         </div>
-
                     </div>
                 )}
             </div>

@@ -23,7 +23,7 @@ const GuestPrompt = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen relative overflow-hidden"             
+    <div className="min-h-screen relative overflow-hidden"
       style={{
         backgroundImage: `url(${BadgesBg})`,
         backgroundSize: 'cover',
@@ -59,7 +59,7 @@ const GuestPrompt = () => {
             </div>
 
             {/* Sign up button */}
-            <button 
+            <button
               onClick={() => navigate("/Signup")}
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full shadow-lg font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
