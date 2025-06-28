@@ -80,7 +80,7 @@ const RelevantVideo = () => {
         const keywordPhrase = keywords.join(" OR ");
         const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
 
-        // 🔁 Replace with service call
+        // Use the API service to fetch videos
         const data = await apiService.fetchYouTubeVideos(query);
 
         const videoItems = data.items.map((item) => ({
