@@ -18,6 +18,23 @@ const generateQuestionsAI = async (prompt) => {
   }
 };
 
+/**
+ * Fetches YouTube videos related to the query.
+ * @param {string} query - The search string.
+ * @returns {Promise<Object>} - The list of videos.
+ */
+const fetchYouTubeVideos = async (query) => {
+  try {
+    const response = await axios.get(`${URL}youtube/search`, {
+      params: { query },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
-  generateQuestionsAI
+  generateQuestionsAI,
+  fetchYouTubeVideos
 };

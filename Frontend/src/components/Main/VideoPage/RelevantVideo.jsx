@@ -9,8 +9,7 @@ import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
 import SubjectCircle from "../../Main/HomePage/SubjectCircle.jsx";
 import { subjectsData } from "../../Utils/SubjectData.jsx";
 import { getOrdinalSuffix } from "../../Utils/OrdinalGrade.jsx";
-
-const API_KEY = "AIzaSyABk2py4r0NYy5x63rfJ3bxoY3gMJKtMy8";  // YouTube API key
+import apiService from "../../../services/ApiService.jsx";
 
 const RelevantVideo = () => {
   const { subject } = useParams();
@@ -68,7 +67,6 @@ const RelevantVideo = () => {
       setVideos([]);
 
       try {
-        // Alternate keywords to improve search
         const subjectQueryMap = {
           addition: ["addition", "adding", "math facts", "sums"],
           subtraction: ["subtraction", "taking away", "minus", "difference"],
@@ -82,27 +80,15 @@ const RelevantVideo = () => {
         const keywordPhrase = keywords.join(" OR ");
         const query = `${gradeLabel} ${subject} math for kids | ${keywordPhrase}`;
 
-        const maxResults = 10;
-        // Construct API URL
-        const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=${maxResults}`;
+        // 🔁 Replace with service call
+        const data = await apiService.fetchYouTubeVideos(query);
 
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          // Try parsing and logging the detailed error response
-          const errorBody = await response.json();
-          console.error("YouTube API error body:", errorBody);
-          throw new Error(errorBody?.error?.message || "YouTube data not available");
-        }
-
-        const data = await response.json();
         const videoItems = data.items.map((item) => ({
           id: item.id.videoId,
           title: item.snippet.title,
           thumbnail: item.snippet.thumbnails.high.url,
         }));
 
-        // Simulate loading delay
         setTimeout(() => {
           setVideos(videoItems);
           setLoading(false);
@@ -116,7 +102,6 @@ const RelevantVideo = () => {
 
     fetchVideos();
   }, [grade, subject]);
-
 
   // Sync fullscreen state
   useEffect(() => {

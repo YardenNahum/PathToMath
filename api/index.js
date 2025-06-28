@@ -36,6 +36,9 @@ app.use("/api/users", users);
 const api = require("./routes/api.route");
 app.use("/api", api);
 
+const youtubeRoutes = require('./routes/youtube.route');
+app.use('/api/youtube', youtubeRoutes);
+
 //For local run on port 5000
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
