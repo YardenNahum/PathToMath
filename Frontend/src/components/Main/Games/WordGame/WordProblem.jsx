@@ -164,16 +164,9 @@ const WordProblem = () => {
       handleClick: () => {
         if (isSuccess) {
           if (location.state?.fromQuiz) {
-            updateQuiz();
             navigate("/");
           }
-          else {
-            const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-            if (gameLevel > currentFinished) {
-              let newUser = { ...user };
-              newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-              update(user.email, newUser);
-            }
+          else{
             navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
           }
 

@@ -4,24 +4,24 @@ import React from 'react';
 // Each subject has positive and negative templates
 export const questions = {
   addition: {
-    positive: "Liam has ${var1} apples and gets ${var2} more. How many apples now?",
-    negative: "Liam had ${var1} apples but lost ${var2}. How many left?"
+    positive: "In the enchanted forest, Leo the wizard found ${var1} glowing mushrooms and his owl brought him ${var2} more. How many glowing mushrooms does Leo have now?",
+    negative: "Leo had ${var1} glowing mushrooms, but a greedy troll took ${var2}. How many does he have left?"
   },
   subtraction: {
-    positive: "Emma had ${var1} candies and gave ${var2} away. How many left?",
-    negative: "Emma wants to give ${var2} candies but has ${var1}. How many more she needs?"
+    positive: "Princess Elara had ${var1} magic crystals and gave ${var2} to a wandering fairy. How many does she have left?",
+    negative: "Elara needs ${var2} magic crystals to lift the curse but only has ${var1}. How many more does she need?"
   },
   multiplication: {
-    positive: "There are ${var1} boxes with ${var2} toys each. How many toys total?",
-    negative: "A bug removed ${var1} boxes with ${var2} toys. How many lost?"
+    positive: "There are ${var1} treasure chests in the dragon's lair, and each holds ${var2} golden coins. How many coins are there in total?",
+    negative: "A spell shattered ${var1} treasure chests, each with ${var2} coins. How many coins were lost?"
   },
   division: {
-    positive: "You have ${var1} marbles and ${var2} kids. How many per kid?",
-    negative: "Need ${var2} parts, only have ${var1}. What is the shortage per part?"
+    positive: "You have ${var1} enchanted apples to share with ${var2} forest creatures. How many apples does each creature get?",
+    negative: "The wizard needs to divide ${var1} spells into ${var2} scrolls. How many spells per scroll are missing?"
   },
   percentage: {
-    positive: "${var2} out of ${var1} students did homework. What percent is that?",
-    negative: "${var2} out of ${var1} failed. What is the failure percentage?"
+    positive: "${var2} out of ${var1} young wizards passed their flying exam. What percentage passed?",
+    negative: "${var2} out of ${var1} potions turned sour. What percentage failed?"
   }
 };
 /**

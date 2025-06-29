@@ -56,7 +56,7 @@ function RaceGame() {
 
   // After game ends and user wins, update progress or quiz data
   useEffect(() => {
-  if (gameEnded && success) {
+  if (gameEnded) {
     updateUserProgress({
       isSuccess: success,
       location,
@@ -67,7 +67,7 @@ function RaceGame() {
       gameSubject: subjectName
     });
   }
-}, [gameEnded, success, location, user, update, updateQuiz, gameLevel, subjectName]);
+}, [gameEnded, success]);
 
   const TRACK_LENGTH = 11; // 10 questions + 1 finish line block
 
@@ -78,6 +78,7 @@ function RaceGame() {
       if (next >= TRACK_LENGTH - 1) {
         setStarted(false);  // Stop the game
         setSuccess(false); // Mark as lost
+        setGameEnded(true); // Game has ended
         setMessage('Opponent wins! Try Again?');
         return TRACK_LENGTH - 1;
       }
@@ -95,15 +96,6 @@ function RaceGame() {
 
   // Navigate and update user after finishing a successful race
   const handleFinishedGame = () => {
-    updateUserProgress({
-      isSuccess: success,
-      location,
-      user,
-      update,
-      updateQuiz,
-      gameLevel,
-      gameSubject: subjectName
-    });
 
     if (location.state?.fromQuiz)
       navigate("/");

@@ -74,7 +74,7 @@ const LevelsPage = () => {
     }
 
     // Get the current level of the user for the selected subject and grade
-    const playersLevel = user?.gradeLevel[grade - 1]?.[subjectGame] + 1 || 1;
+    const playersLevel = user?.gradeLevel[grade - 1]?.[subjectGame].level + 1 || 1;
     const numOfLevels = 30
     const levelPercentage = ((playersLevel - 1) / numOfLevels) * 100;
 
