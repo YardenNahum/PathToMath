@@ -40,8 +40,8 @@ export default function updateUserProgress({ isSuccess, location, user, update, 
             newUser.gradeLevel[user.grade - 1][gameSubject].totalTries += newUser.gradeLevel[user.grade - 1][gameSubject].currentLevelTries;
             newUser.gradeLevel[user.grade - 1][gameSubject].currentLevelTries = 1; // Reset current level tries
 
-            // Only reset advice if level is a multiple of 5 (or whatever logic you like)
-            if (gameLevel % 5 === 0) {
+            // Only reset advice if level is a multiple of 3
+            if (gameLevel % 3 === 0) {
                 localStorage.removeItem('advice');
             }
             // Update the user's record
