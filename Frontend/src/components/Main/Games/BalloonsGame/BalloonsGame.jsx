@@ -10,6 +10,9 @@ import { useUser } from '../../../Utils/UserContext';
 import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.png';
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+import useSound from 'use-sound';
+import BalloonPopSound from '../../../../assets/sounds/balloonPop.mp3';
+import useGameSounds from '../GamesUtils/Sounds.jsx'
 
 const NUM_QUESTIONS = 5;  // Total number of questions in the game
 
@@ -28,7 +31,11 @@ function BalloonsGame() {
     const location = useLocation();
     const updateQuiz = useUpdateQuiz();
     const { user, update } = useUser();
-
+    
+    // Sound effects
+    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    const [balloonPopSound] = useSound(BalloonPopSound);
+    
     // State variables
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -54,17 +61,25 @@ function BalloonsGame() {
     const handleBalloonClick = (value) => {
         if (!currentQuestion) return;
 
+        // Play balloon pop sound for any balloon click
+        balloonPopSound();
+
         const isCorrect = value === currentQuestion.answer.value;
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
             setShowCorrectFeedback(true);
+            correctQuestionSound(); // Play correct answer sound
             setTimeout(() => {
                 setShowCorrectFeedback(false);
                 proceedToNextQuestion();
             }, 1500);
         } else {
             setShowIncorrectFeedback(true);
+            // Delay wrong answer sound slightly to avoid conflict with balloon pop sound
+            setTimeout(() => {
+                wrongAnswerSound(); // Play wrong answer sound
+            }, 100);
             setTimeout(() => {
                 setShowIncorrectFeedback(false);
                 proceedToNextQuestion();
@@ -81,6 +96,14 @@ function BalloonsGame() {
             setCurrentQuestionIndex((prev) => prev + 1);
         } else {
             setGameOver(true);
+            
+            // Play win or lose sound based on score
+            if (score >= 3) {
+                winLevelSound(); // Play win sound for passing score
+            } else {
+                loseSound(); // Play lose sound for failing score
+            }
+            
             //update user progress based on success
             updateUserProgress({
                 isSuccess: score >= 3,

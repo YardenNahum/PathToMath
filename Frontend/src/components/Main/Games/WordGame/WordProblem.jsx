@@ -14,6 +14,7 @@ import StoriesBg from '../../../../assets/Images/wordGame/StoriesBg.png'
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+import useGameSounds from '../GamesUtils/Sounds.jsx'
 
 /**
  * WordProblem component - Interactive game where children solve fairy-tale themed word problems.
@@ -28,6 +29,9 @@ const WordProblem = () => {
   const navigate = useNavigate();
   const updateQuiz = useUpdateQuiz();
 
+  // Sound effects
+  const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    
   // State to handle return from pop quiz
   const location = useLocation();
   // Get the user from the UserContext
@@ -112,8 +116,10 @@ const WordProblem = () => {
     if (userNumericAnswer === correct) {
       setFeedback(<p className="text-green-600">Correct!</p>);
       setCorrectAnswers((prev) => prev + 1);
+      correctQuestionSound(); // Play correct answer sound
     } else {
       setFeedback(<p className="text-red-600">Wrong! The correct answer was {correct}</p>);
+      wrongAnswerSound(); // Play wrong answer sound
     }
   };
 
@@ -142,6 +148,14 @@ const WordProblem = () => {
    */
   const generateEnd = () => {
     const isSuccess = correctAnswers >= 2;
+    
+    // Play win or lose sound based on performance
+    if (isSuccess) {
+      winLevelSound(); // Play win sound for passing score (2+ correct)
+    } else {
+      loseSound(); // Play lose sound for failing score (<2 correct)
+    }
+    
     //update user progress based on success
     updateUserProgress({
       isSuccess: isSuccess,
