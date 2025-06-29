@@ -12,7 +12,7 @@ import avatar5 from '../../../assets/Images/Avatars/avatar5.png';
 import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
 import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
 import placeHolderAvatar from '../../../assets/Images/Avatars/avatar8.png';
-
+import GetSuggestions from './GetSuggestions';
 const avatarMap = {
   avatar1: avatar1,
   avatar2: avatar2,
@@ -42,9 +42,8 @@ function HomePage() {
                         className="object-contain max-h-92 w-auto translate-y-4 -mr-6"
                     />
                 </div>
-                <div className="absolute -top-8 right-10 bg-yellow-200 cursor-default rounded-xl p-4 shadow-lg border-4 border-yellow-400 text-yellow-700 font-bold text-lg whitespace-nowrap animate-bounce">
-                    Are you ready to learn math?
-                    <div className="absolute -bottom-4 left-4 w-6 h-6 bg-yellow-200 border-4 border-yellow-400 rounded-bl-xl rotate-45"></div>
+                <div>
+                    <GetSuggestions  />
                 </div>
             </div>
 

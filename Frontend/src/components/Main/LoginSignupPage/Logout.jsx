@@ -20,6 +20,8 @@ const LogoutPage = () => {
     const handleConfirmLogout = () => {
         logoutUser(); // Clear user context
         localStorage.removeItem("userType"); // Remove user type from localStorage
+        localStorage.removeItem("userEmail"); // Remove user email from localStorage
+        localStorage.removeItem("advice"); // Clear cached advice
         navigate("/login"); // Redirect to login page
     }
 

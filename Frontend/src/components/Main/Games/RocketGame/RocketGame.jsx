@@ -174,6 +174,7 @@ export default function RocketGame({ mode = 'single' }) {
         setSuccess(false);
         setGameEnded(true);
         setMessage('Opponent wins! Try Again?');
+
         return TRACK_STEPS - 1;
       }
       return next;
@@ -252,17 +253,8 @@ export default function RocketGame({ mode = 'single' }) {
         setGameEnded(true);
         setSuccess(true);
         setMessage('You Win! Continue To The Next Planet?');
-
-        updateUserProgress({
-          isSuccess: true,
-          location,
-          user,
-          update,
-          updateQuiz,
-          gameLevel,
-          gameSubject: subjectName,
-        });
       }
+
     }
   };
 
@@ -280,18 +272,6 @@ export default function RocketGame({ mode = 'single' }) {
       setMessage('You Lose! Continue To The Next Race?');
     }
     setGameStart(false);
-
-    if (!isMultiplayer && isWin) {
-      updateUserProgress({
-        isSuccess: true,
-        location,
-        user,
-        update,
-        updateQuiz,
-        gameLevel,
-        gameSubject: subjectName,
-      });
-    }
   };
 
 
@@ -325,6 +305,32 @@ export default function RocketGame({ mode = 'single' }) {
     setQuestions(newQuestions);
     setQuestionIndex(0);
   };
+
+  /**
+   * Updates user progress after game ends.
+   * if multiplyer dont update
+   * @param {boolean} success - Whether the user won the game.
+   * @param {string} location - The current location object.
+   * @param {Object} user - The current user object.
+   * @param {Function} update - Function to update user data.
+   * @param {Function} updateQuiz - Function to update quiz data.
+   * @param {number} gameLevel - The current game level.
+   * @param {string} subjectName - The subject name for the game.
+  
+   */
+  useEffect(() => {
+  if (!gameEnded || isMultiplayer) return;
+
+  updateUserProgress({
+    isSuccess: success,
+    location,
+    user,
+    update,
+    updateQuiz,
+    gameLevel,
+    gameSubject: subjectName,
+  });
+}, [gameEnded, isMultiplayer]);
 
   // Determines if question box should be visible
   const showQuestionBox = isMultiplayer ? gameStart && connection?.open : started;

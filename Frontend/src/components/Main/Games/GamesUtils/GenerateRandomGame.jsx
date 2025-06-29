@@ -10,7 +10,7 @@ export const generateRandomGame = (subjectGame) => {
         "OptionsGame",
         "RaceGame", 
         "WordGame",
-        'RocketGame',
+        'RocketGame/single',
         'BalloonsGame' 
     ];
     if (subjectGame === "Addition") {

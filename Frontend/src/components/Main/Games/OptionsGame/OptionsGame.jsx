@@ -123,16 +123,8 @@ export default function OptionsGame() {
             handleClick: () => {
                 if (isSuccess) {
                     if (location.state?.fromQuiz) {
-                        updateQuiz();
                         navigate("/");
                     } else {
-                        // Update user's grade level progress if this level is higher than recorded
-                        const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject];
-                        if (gameLevel > currentFinished) {
-                            let newUser = { ...user };
-                            newUser.gradeLevel[user.grade - 1][gameSubject] = gameLevel;
-                            update(user.email, newUser);
-                        }
                         navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
                     }
                 } else {

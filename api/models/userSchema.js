@@ -1,39 +1,52 @@
 const mongoose = require("mongoose");
-
+/**
+ * LevelData schema
+ * @typedef {Object} LevelData
+ * @property {Number} level - The current level of the user, default is 0
+ * @property {Number} totalTries - The total number of tries the user has made, default is 0
+ * @property {Number} currentLevelTries - The number of tries the user has made in the current level, default is 0
+ * * @description This schema is used to track the user's progress in different levels of games
+ */
+const levelDataSchema = new mongoose.Schema({
+  level: { type: Number, default: 0 },
+  totalTries: { type: Number, default: 0 },
+  currentLevelTries: { type: Number, default: 0 },
+}, { _id: false });
 // secheme  for grade level
 // This schema defines the structure of the grade level data for each user
 /**
  * GradeLevel schema
  * @typedef {Object} GradeLevel
- * @property {Number} Addition - Points for addition problems
- * @property {Number} Subtraction - Points for subtraction problems
- * @property {Number} Multiplication - Points for multiplication problems
- * @property {Number} Division - Points for division problems
- * @property {Number} Percentage - Points for percentage problems
- * @description This schema is used to track the progress of a user in different math operations across grade levels.
+ * @property {LevelData} Addition - The user's progress in addition for the grade level.
+ * @property {LevelData} Subtraction - The user's progress in subtraction for the grade level.
+ * @property {LevelData} Multiplication - The user's progress in multiplication for the grade level
+ * @property {LevelData} Division - The user's progress in division for the grade level.
+ * @property {LevelData} Percentage - The user's progress in percentage for the grade level.
+ * * @description This schema is used to track the user's progress in different math operations across grade levels.
  */
-const gradeLevelSchema = new mongoose.Schema(
-  {
-    Addition: { type: Number, default: 0 },
-    Subtraction: { type: Number, default: 0 },
-    Multiplication: { type: Number, default: 0 },
-    Division: { type: Number, default: 0 },
-    Percentage: { type: Number, default: 0 }
-  },
-  { _id: false }
-);
+const gradeLevelSchema = new mongoose.Schema({
+  Addition: { type: levelDataSchema, default: () => ({}) },
+  Subtraction: { type: levelDataSchema, default: () => ({}) },
+  Multiplication: { type: levelDataSchema, default: () => ({}) },
+  Division: { type: levelDataSchema, default: () => ({}) },
+  Percentage: { type: levelDataSchema, default: () => ({}) }
+}, { _id: false });
 
 /**
- * Generates default grade level data for a user.
- * @returns {Array<GradeLevel>} - An array of GradeLevel objects.
+ * defaultGradeLevels function
+ * @returns {Array<GradeLevel>} - An array of default grade levels with empty progress for each operation.
+ * @description This function generates the default grade levels for a new user, ensuring each grade level
+ * has an object for each math operation with default values.
  */
-const defaultGradeLevels = () => Array(6).fill({
-  Addition: 0,
-  Subtraction: 0,
-  Multiplication: 0,
-  Division: 0,
-  Percentage: 0
-});
+const defaultGradeLevels = () =>
+  Array.from({ length: 6 }, () => ({
+    Addition: { level: 0, totalTries: 0, currentLevelTries: 0 },
+    Subtraction: { level: 0, totalTries: 0,  currentLevelTries: 0 },
+    Multiplication: { level: 0, totalTries: 0,  currentLevelTries: 0 },
+    Division: { level: 0, totalTries: 0, currentLevelTries: 0 },
+    Percentage: { level: 0, totalTries: 0,  currentLevelTries: 0 }
+  }));
+
 
 /**
  * User schema

@@ -17,6 +17,23 @@ const generateQuestionsAI = async (prompt) => {
     throw error;
   }
 };
+/**
+ * generateAdviceFromAI
+ * generates learning advice using AI based on the provided prompt.
+ * This function sends a POST request to the server with the prompt and returns the AI-generated advice
+ * @param {*} prompt 
+ * @returns response.data - The AI-generated advice
+ * @throws {Error} - If there is an error during the request
+ */
+const generateAdviceFromAI= async (prompt) => {
+  try {
+    //send a POST request with the prompt
+    const response = await axios.post(`${URL}generate-advice`, { prompt });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Fetches YouTube videos related to the query.
@@ -36,5 +53,6 @@ const fetchYouTubeVideos = async (query) => {
 
 export default {
   generateQuestionsAI,
-  fetchYouTubeVideos
+  fetchYouTubeVideos,
+  generateAdviceFromAI
 };

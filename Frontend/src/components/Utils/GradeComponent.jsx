@@ -29,6 +29,7 @@ export const GradeProvider = ({ children }) => {
       try {
         // Update the user's grade in the database
         await update(user.email, { grade: newGrade }); 
+        localStorage.removeItem('advice'); // Clear cached advice when grade changes
         console.log(user.grade);
       } catch (err) {
         console.error('Failed to update user grade:', err);

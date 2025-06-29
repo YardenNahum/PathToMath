@@ -83,7 +83,7 @@ function BalloonsGame() {
             setGameOver(true);
             //update user progress based on success
             updateUserProgress({
-                isSuccess: score >= 4,
+                isSuccess: score >= 3,
                 location,
                 user,
                 update,
@@ -101,16 +101,9 @@ function BalloonsGame() {
      */
     const handleFinish = () => {
         if (location.state?.fromQuiz) {
-            updateQuiz();
             navigate("/");
         }
         else {
-            const currentFinished = user?.gradeLevel[user.grade - 1]?.[subjectName];
-            if (score >= 4 && gameLevel > currentFinished) {
-                let newUser = user;
-                newUser.gradeLevel[user.grade - 1][subjectName] = gameLevel;
-                updateUser(user.email, newUser);
-            }
             navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
         }
     };
