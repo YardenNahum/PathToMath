@@ -52,26 +52,28 @@ const PopQuiz = () => {
     // If user is not signed in, show prompt to sign in or return home
     if (!user) {
         return (
-            <div className="font-sans playful-font flex flex-col items-center justify-center h-screen bg-gradient-to-br from-pink-200 via-yellow-200 to-red-100 text-center px-4">
-                <div className="bg-white shadow-xl rounded-3xl max-w-full h-min-full py-25 px-30 animate-bounce-slow">
-                    <h1 className="text-5xl text-purple-600 mb-6">
+            <div className="playful-font flex items-center justify-center min-h-screen -mt-38 bg-gradient-to-br from-pink-200 via-yellow-200 to-red-100 text-center px-4 md:px-8">
+                <div className="bg-white shadow-xl rounded-3xl w-full max-w-2xl p-6 md:p-10 animate-bounce-slow">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl text-purple-600 mb-4 md:mb-6">
                         🎉 Ready for a Pop Quiz?
                     </h1>
-                    <p className="text-gray-700 text-2xl mb-6">
+                    <p className="text-gray-700 text-lg md:text-2xl mb-4 md:mb-6">
                         You need to <span className="text-blue-600">sign in</span> first to play and start your streak!
                     </p>
-                    <button
-                        onClick={() => navigate('/login')}
-                        className="bg-purple-500 hover:bg-purple-600 text-white py-4 px-7 rounded-full shadow-md transition-all duration-300"
-                    >
-                        🚀 Sign In to Play!
-                    </button>
-                    <button
-                        onClick={() => navigate('/')}
-                        className="bg-blue-300 mt-4 px-7 py-4 ml-4 text-gray-600  rounded-full shadow-md transition-all duration-300"
-                    >
-                        Back to Home
-                    </button>
+                    <div className="flex flex-col md:flex-row justify-center gap-4">
+                        <button
+                            onClick={() => navigate('/login')}
+                            className="bg-purple-500 hover:bg-purple-600 hover:scale-105 text-white py-3 px-6 rounded-full shadow-md transition-all duration-300 cursor-pointer"
+                        >
+                            🚀 Sign In to Play!
+                        </button>
+                        <button
+                            onClick={() => navigate('/')}
+                            className="bg-blue-300 hover:bg-blue-400 hover:text-white hover:scale-105 text-gray-700 py-3 px-6 rounded-full shadow-md transition-all duration-300 cursor-pointer"
+                        >
+                            Back to Home
+                        </button>
+                    </div>
                 </div>
             </div>
         );

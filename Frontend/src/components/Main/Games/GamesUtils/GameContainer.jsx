@@ -101,17 +101,18 @@ function GameContainer({ gameName, gameSubject, gameLevel: propGameLevel, childr
                 </div>
             </div>
 
-            <div className=" flex justify-center mb-10">
-                {!popQuiz && (
-                <ButtonComponent
-                    label="Return"
-                    onClick={handleReturn}
-                    bgColor="bg-blue-400 hover:bg-blue-700"
-                    textColor="text-white"
-                    size="md"
-                />
-                )}
-            </div>
+            {/* Return button is shown unless hidden explicitly */}
+            {(showReturnButton) && (
+                <div className=" flex justify-center mb-10">
+                    <ButtonComponent
+                        label="Return"
+                        onClick={handleReturn}
+                        bgColor="bg-blue-400 hover:bg-blue-700"
+                        textColor="text-white"
+                        size="md"
+                    />
+                </div>
+            )}
         </div>
     );
 }

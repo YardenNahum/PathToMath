@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { updateUser } from '../../../services/UserService';
 import { useGrade } from '../../Utils/GradeComponent';
+
 /**
  * Renders a container with circular subject icons.
  * @returns {JSX.Element} - The rendered circle container.
@@ -55,6 +56,7 @@ function CirclesContainer() {
       link: '/badges',
     },
   ];
+
   // Effect to reset user streak if last pop quiz was not today or yesterday
   // This effect checks the user's last pop quiz date and resets the streak if necessary
   useEffect(() => {
@@ -79,12 +81,13 @@ function CirclesContainer() {
 
       }
     }, [user]);
+
   return (
-    <div className="flex-wrap justify-center mb-8 md: flex w-3/4">
+    <div className="flex-wrap justify-center mb-8 md: flex w-full">
       {circleData.map(({ imageSrc, title, description, link }, index) => {
         const isPopQuiz = title === "Pop Quiz";
 
-        return (
+        return(
           <div key={index} className="relative">
             {isPopQuiz && user && (
               <div className="absolute right-5 z-2 top-3">
