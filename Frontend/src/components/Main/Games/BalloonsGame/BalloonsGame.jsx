@@ -83,7 +83,7 @@ function BalloonsGame() {
             setGameOver(true);
             //update user progress based on success
             updateUserProgress({
-                isSuccess: score >= 4,
+                isSuccess: score >= 3,
                 location,
                 user,
                 update,

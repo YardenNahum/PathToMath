@@ -13,17 +13,17 @@
  * @param {string} params.gameSubject - The subject being played
  */
 export default function updateUserProgress({ isSuccess, location, user, update, updateQuiz, gameLevel, gameSubject }) {
-    if(!user) {
+    if (!user) {
         return
     }
     // Exit early if the answer was incorrect
-    if (!isSuccess&& user&& !location?.state?.fromQuiz) {
-         const newUser = { ...user };
+    if (!isSuccess && user && !location?.state?.fromQuiz) {
+        const newUser = { ...user };
         newUser.gradeLevel[user.grade - 1][gameSubject].currentLevelTries += 1;
         // Update the user's record with the current level tries
         update(user.email, newUser);
         return;
-    } 
+    }
 
 
     // If the game was launched from a pop quiz, update quiz stats only
@@ -31,14 +31,19 @@ export default function updateUserProgress({ isSuccess, location, user, update, 
         updateQuiz();
     } else {
         // Retrieve the user's current highest completed level for the subject
-        const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject].level|| 0; // Default to 0 if not found
+        const currentFinished = user?.gradeLevel[user.grade - 1]?.[gameSubject].level || 0; // Default to 0 if not found
 
         // Only update progress if the new level is higher than previously completed
-        if (gameLevel > currentFinished&&user) {
+        if (gameLevel > currentFinished && user) {
             const newUser = { ...user };
             newUser.gradeLevel[user.grade - 1][gameSubject].level = gameLevel;
             newUser.gradeLevel[user.grade - 1][gameSubject].totalTries += newUser.gradeLevel[user.grade - 1][gameSubject].currentLevelTries;
             newUser.gradeLevel[user.grade - 1][gameSubject].currentLevelTries = 1; // Reset current level tries
+
+            // Only reset advice if level is a multiple of 5 (or whatever logic you like)
+            if (gameLevel % 5 === 0) {
+                localStorage.removeItem('advice');
+            }
             // Update the user's record
             update(user.email, newUser);
         }

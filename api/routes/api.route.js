@@ -21,7 +21,7 @@ apiRoute.post('/generate-question', async (req, res) => {
 
   try {
     // Initialize the Gemini model
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
     // Generate content using the model
     // Using the model to generate a question based on the provided prompt
     const result = await model.generateContent(prompt);
@@ -55,7 +55,7 @@ apiRoute.post('/generate-advice', async (req, res) => {
 
   try {
     // Initialize the Gemini model
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
     // Generate content using the model
     // Using the model to generate a question based on the provided prompt
     const result = await model.generateContent(prompt);

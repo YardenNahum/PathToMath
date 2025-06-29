@@ -27,12 +27,11 @@ const avatarMap = {
  * @returns {JSX.Element} - The rendered ChildProgressCard component.
  */
 function ChildProgressCard({ child }) {
-  const subjects = ['Addition', 'Subtraction', 'Multiply', 'Division', 'Percentage'];
+  const subjects = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Percentage'];
   //gets the grade level data based on the child's grade
   const gradeIndex = parseInt(child?.grade) - 1;
   //levelData is an array of objects, each object contains the progress for each subject
   const levelData = child?.gradeLevel?.[gradeIndex];
-
   return (
     <div style={{ backgroundImage: `url(${CardBckgr})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     className="pt-5 rounded-2xl border-4 border-purple-700 p-4 shadow-md flex flex-col items-center text-center mx-auto max-w-[750px]"
@@ -53,7 +52,7 @@ function ChildProgressCard({ child }) {
 
       <div className="w-full flex flex-wrap justify-center gap-4 mt-3 px-2">
         {subjects.map((subject, index) => {
-          const completed = levelData?.[subject] ?? 0;
+          const completed = levelData?.[subject]?.level ?? 0;
           const total = 30;
           const percentage = Math.round((completed / total) * 100);
           const isCompleted = completed >= total;

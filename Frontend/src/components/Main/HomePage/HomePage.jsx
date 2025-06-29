@@ -43,7 +43,7 @@ function HomePage() {
                     />
                 </div>
                 <div>
-                    <GetSuggestions user={user} />
+                    <GetSuggestions  />
                 </div>
             </div>
 

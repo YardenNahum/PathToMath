@@ -92,8 +92,9 @@ const RewardsPage = () => {
   }, 0);
 
   // Breakdown by subject for current grade
-  const subjectBreakdown = { ...currentGradeData };
-
+  const subjectBreakdown = Object.fromEntries(
+    Object.entries(currentGradeData).map(([subject, data]) => [subject, data.level || 0])
+  );
   const badgesForSubject = selectedSubject && subjectBadgesMap[selectedSubject]
     ? subjectBadgesMap[selectedSubject].map(badge => ({
       ...badge,
