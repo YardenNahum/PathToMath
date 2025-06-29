@@ -19,8 +19,12 @@ import useBotInterval from '../GamesUtils/useBotInterval';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import { useUser } from '../../../Utils/UserContext';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
+import useSound from 'use-sound';
+import SpaceshipStepSound from '../../../../assets/sounds/spaceship.mp3';
+import CountDownSound from '../../../../assets/sounds/robotic-countdown.mp3';
+import useGameSounds from '../GamesUtils/Sounds.jsx'
 
-const NUM_QUESTIONS = 10; // Total number of questions per game
+const NUM_QUESTIONS = 10; // Total number of questions per gamefrom '../../../../assets/sounds/spaceship.mp3';
 
 /**
  * RocketGame component - a math race game where the user competes against a bot or another player.
@@ -39,6 +43,12 @@ export default function RocketGame({ mode = 'single' }) {
   const location = useLocation();
   const { user, update } = useUser();
   const updateQuiz = useUpdateQuiz();
+
+  // Sound effects state
+  const [spaceshipStepSound] = useSound(SpaceshipStepSound, {interrupt: true});
+  const [countdownSound] = useSound(CountDownSound);
+  const {winLevelSound,loseSound,wrongAnswerSound,opponentStepSound} = useGameSounds();
+
 
   // Game state
   const [questions, setQuestions] = useState([]);
@@ -151,6 +161,10 @@ export default function RocketGame({ mode = 'single' }) {
         handleFinishedGame(false);
       }
       else {
+        // Only play sound if game has started
+        if (gameStart) {
+          opponentStepSound();
+        }
         handleData(data, setOpponentStarted, setOpponentProgress, handleFinishedGame);
       }
     });
@@ -161,7 +175,7 @@ export default function RocketGame({ mode = 'single' }) {
     connection.on('error', () => {
       setConnectionError('Connection lost. Please try again.');
     });
-  }, [connection]);
+  }, [connection, gameStart]);
 
   /**
    * Handles bot movement for single player.
@@ -169,17 +183,21 @@ export default function RocketGame({ mode = 'single' }) {
   const handleBotMove = useCallback(() => {
     setBotProgress((prev) => {
       const next = prev + 1;
+
+      opponentStepSound();
+
       if (next >= TRACK_STEPS - 1) {
         setStarted(false);
         setSuccess(false);
         setGameEnded(true);
         setMessage('Opponent wins! Try Again?');
+        loseSound();
 
         return TRACK_STEPS - 1;
       }
       return next;
     });
-  }, []);
+  }, [opponentStepSound]);
 
   // Move the bot at intervals based on grade and level
   const botTimer = useBotInterval({
@@ -199,12 +217,14 @@ export default function RocketGame({ mode = 'single' }) {
     setMessage('');
     setUserAnswer('');
     setCountdown(3);
+    countdownSound();
     if (!isMultiplayer) {
       setGameEnded(false);
       setSuccess(false);
     }
 
     const interval = setInterval(() => {
+      
       setCountdown((prev) => {
         if (prev === 1) {
           clearInterval(interval);
@@ -235,6 +255,11 @@ export default function RocketGame({ mode = 'single' }) {
     const correct = userAnswer.trim() === String(currentQuestion?.answer?.value);
     setUserAnswer('');
     setMessage(correct ? 'Correct!' : 'Incorrect, Try again!');
+    if (correct)
+      spaceshipStepSound();
+    else {
+      wrongAnswerSound();
+    }
     if (!correct) return;
 
     const newProgress = userProgress + 1;
@@ -253,6 +278,8 @@ export default function RocketGame({ mode = 'single' }) {
         setGameEnded(true);
         setSuccess(true);
         setMessage('You Win! Continue To The Next Planet?');
+        winLevelSound();
+        
       }
 
     }
@@ -267,9 +294,11 @@ export default function RocketGame({ mode = 'single' }) {
     if (isMultiplayer && isWin) {
       handleSend(connection, 'finished');
       setMessage('You Win! Continue To The Next Race?');
+      winLevelSound();
     }
     else {
       setMessage('You Lose! Continue To The Next Race?');
+      loseSound();
     }
     setGameStart(false);
   };

@@ -25,7 +25,8 @@
     "react-dom": "^19.1.0",
     "react-google-recaptcha": "^3.1.0",
     "react-router-dom": "^6.30.0",
-    "tailwindcss": "^4.1.8"
+    "tailwindcss": "^4.1.8",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

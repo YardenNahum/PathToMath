@@ -15,6 +15,11 @@ import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import useBotInterval from '../GamesUtils/useBotInterval.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+import useGameSounds from '../GamesUtils/Sounds.jsx'
+import useSound from 'use-sound';
+import CoundownSound from '../../../../assets/sounds/countdown.mp3';
+import BotStepSound from '../../../../assets/sounds/passingCar.mp3';
+import MyStepSound from '../../../../assets/sounds/myCar.mp3';
 
 const NUM_QUESTIONS = 10; // Total number of questions per race
 
@@ -22,6 +27,12 @@ function RaceGame() {
   const { subjectGame, grade, level } = useParams(); //subject, grade and level from URL Params
   const subjectName = subjectGame;
   const gameLevel = parseInt(level);
+
+  // Sound effects
+  const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+  const [countdownSound] = useSound(CoundownSound);
+  const [botStepSound] = useSound(BotStepSound);
+  const [myStepSound] = useSound(MyStepSound);
 
   const updateQuiz = useUpdateQuiz();
   const location = useLocation();
@@ -80,11 +91,17 @@ function RaceGame() {
         setSuccess(false); // Mark as lost
         setGameEnded(true); // Game has ended
         setMessage('Opponent wins! Try Again?');
+        loseSound(); // Play lose sound when bot wins
         return TRACK_LENGTH - 1;
       }
       return next;
     });
-  }, [TRACK_LENGTH]);
+    
+    // Play bot step sound for regular movement (outside state setter)
+    if (botPos < TRACK_LENGTH - 2) { // Only play if bot hasn't reached finish line
+      botStepSound();
+    }
+  }, [TRACK_LENGTH, botPos]);
 
   // Triggers bot movement at intervals
   const botTimer = useBotInterval({
@@ -113,6 +130,9 @@ function RaceGame() {
     setCountdown(3);
     setGameEnded(false);
     setSuccess(false);
+    
+    // Play countdown sound when countdown starts
+    countdownSound();
 
     // Countdown logic: 3 → 2 → 1 → "Race!" → start
     const interval = setInterval(() => {
@@ -142,6 +162,7 @@ function RaceGame() {
     if (userAnswer.trim() === String(currentQuestion.answer.value)) {
       const newPos = userPos + 1; // User moves one step forward
       setUserAnswer(''); // Clear the input field
+      myStepSound(); // Play correct answer sound
 
       // If user reaches finish line, declare user win and stop the game
       if (newPos === TRACK_LENGTH - 1) {
@@ -151,6 +172,7 @@ function RaceGame() {
         setGameEnded(true);
         setSuccess(true);
         setMessage('You Win! Continue To The Next Race?');
+        winLevelSound(); // Play win sound when user reaches finish line
       } else {
         // Move to next question and update position
         setUserPos(newPos);
@@ -161,6 +183,7 @@ function RaceGame() {
       // Wrong answer feedback
       setMessage('Incorrect, Try again!');
       setUserAnswer('');
+      wrongAnswerSound(); // Play wrong answer sound
     }
   };
 

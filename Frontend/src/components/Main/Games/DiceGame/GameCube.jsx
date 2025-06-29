@@ -1,4 +1,4 @@
-import { React } from 'react';
+import React from 'react';
 import Cubes from './Cubes.jsx';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
@@ -10,6 +10,8 @@ import TitleIcon from '../../../../assets/Images/cube_game/CubesIcon.png';
 import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
+import useGameSounds from '../GamesUtils/Sounds.jsx'
+
 
 /**
  * GameCube component - Interactive game where children solve sum-up Addition problems.
@@ -21,6 +23,9 @@ const GameCube = () => {
     const MAX_TRIES = 2;
     // Total number of questions in the game
     const MAX_QUESTIONS = 5;
+
+    // Sound effects
+    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
 
     // Extract subject, grade, and level from the URL parameters
     const { subjectGame, grade, level } = useParams();
@@ -52,7 +57,7 @@ const GameCube = () => {
         const minCubes = 4;
         const maxCubes = 6 + Math.floor(level / 3) + Math.floor(grade / 2); // scale cubes count
         const cubeCount = Math.min(maxCubes, 12); // limit to 12 max
-
+        
         let validCubes = false;
         let cubes = [];
         while (!validCubes) {
@@ -82,21 +87,21 @@ const GameCube = () => {
     const check_answer = (selected) => {
         if (selected.length === 0) {
             setFeedbackMessage("❌ Please select at least one cube.");
+            wrongAnswerSound();
             return;
         }
-
         let check_sum = 0;
         selected.forEach(index => {
             check_sum += cubes[index];
         });
-
         setIsDisabled(true);
-
         if (check_sum === sum) {
             setFeedbackMessage("✅ Correct! You found a valid combination.");
             setCorrect(prev => prev + 1);
+            correctQuestionSound();
         }
         else {
+            wrongAnswerSound();
             if (tries > 1) {
                 setFeedbackMessage(`❌ Incorrect! You have ${tries - 1} tries left.`);
                 setSelected([]);
@@ -169,6 +174,12 @@ const GameCube = () => {
         else {
             setGameFinished(true);
             setFeedbackMessage(`🎉 You answered ${correct}/${MAX_QUESTIONS} questions correct!`);
+            if (correct >= 3) {
+                winLevelSound();
+            }
+            else {
+                loseSound();
+            }
             // Update user progress based on success
             updateUserProgress({
                 isSuccess: correct >= 3,
@@ -220,6 +231,7 @@ const GameCube = () => {
 
     // Handles navigation after finishing the game
     const handleFinishedGame = () => {
+
         if (location.state?.fromQuiz) {
             navigate("/");
         }
@@ -229,12 +241,12 @@ const GameCube = () => {
     }
 
     return (
-        <GameContainer
-            gameName="Roll & Solve"
-            gameSubject={subjectGame}
-            gameLevel={gameLevel}
-            icon={TitleIcon}
-            backgroundImage={CubesBg}
+        <GameContainer 
+            gameName="Roll & Solve" 
+            gameSubject={subjectGame} 
+            gameLevel={gameLevel} 
+            icon={TitleIcon} 
+            backgroundImage={CubesBg} 
             howToPlay={"Select dice that add up to the target sum. You have 2 tries per question. Get 3 out of 5 correct to pass!"}
         >
             <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
@@ -247,13 +259,13 @@ const GameCube = () => {
                         <button className="bg-yellow-400 text-white mt-6 px-6 py-3 rounded-lg text-xl hover:cursor-pointer mb-4"
                             onClick={() => {
                                 if (success) {
-                                    handleFinishedGame();   // navigates to next level
+                                    handleFinishedGame();         // navigates to next level
                                 } else {
-                                    restartGame();  // replay same level
+                                    restartGame();         // replay same level
                                 }
                             }}
-                        >
-                            {success ? "Next level" : "Try again"}
+                        >  
+                            {success ? "Next level": "Try again"}
                         </button>
                     </div>
                 ) : (

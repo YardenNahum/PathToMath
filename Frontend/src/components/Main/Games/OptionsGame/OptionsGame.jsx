@@ -11,7 +11,7 @@ import OptionsBg from '../../../../assets/Images/Background/optionsBg.jpg';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import MultipleChoiceCard from './MultipleChoiceCard.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
-
+import useGameSounds from '../GamesUtils/Sounds.jsx'
 /**
  * OptionsGame component represents a multiple-choice quiz game with progression logic.
  * It loads questions based on subject, grade, and level, tracks correct answers,
@@ -27,6 +27,9 @@ export default function OptionsGame() {
     const gameSubject = subjectGame;
     const gameLevel = parseInt(level);
 
+    // Sound effects
+    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    
     // React Router navigation and location
     const navigate = useNavigate();
     const location = useLocation();
@@ -80,6 +83,9 @@ export default function OptionsGame() {
     const optionClicked = (option) => {
         if (option.isCorrect) {
             setCorrectAnswers(prev => prev + 1);
+            correctQuestionSound(); // Play correct answer sound
+        } else {
+            wrongAnswerSound(); // Play wrong answer sound
         }
         setSelectedOption(option);
         setDisableButtons(true);
@@ -105,6 +111,14 @@ export default function OptionsGame() {
      */
     const generateEnd = () => {
         const isSuccess = correctAnswers >= 4;
+        
+        // Play win or lose sound based on performance
+        if (isSuccess) {
+            winLevelSound(); // Play win sound for passing score (4+ correct)
+        } else {
+            loseSound(); // Play lose sound for failing score (<4 correct)
+        }
+        
         //update user progress based on success
         updateUserProgress({
             isSuccess: isSuccess,
