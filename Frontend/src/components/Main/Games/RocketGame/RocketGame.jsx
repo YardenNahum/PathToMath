@@ -161,8 +161,8 @@ export default function RocketGame({ mode = 'single' }) {
         handleFinishedGame(false);
       }
       else {
-        // Only play sound if game has started
-        if (gameStart) {
+        // Only play sound if game has started and data is a progress update (a number)
+        if (gameStart && typeof data === 'number') {
           opponentStepSound();
         }
         handleData(data, setOpponentStarted, setOpponentProgress, handleFinishedGame);
