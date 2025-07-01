@@ -1,7 +1,7 @@
 import axios from 'axios';
 import BASE_URL from '../components/Utils/Config_server';
 
-const URL = `${BASE_URL}/api/users`;
+const URL = `/api/users`;
 
 /**
  * Fetch all users from the API.
