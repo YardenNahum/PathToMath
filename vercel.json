@@ -17,8 +17,8 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/Frontend/(.*)",
-      "destination": "/index.html"
+      "source": "/(.*)",
+      "destination": "/Frontend/$1"
     }
   ],
   "env": {

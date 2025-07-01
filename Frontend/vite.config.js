@@ -14,7 +14,7 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
-   base: '/Frontend/'
+   base: '/'
 })
 // This Vite configuration file sets up a React project with SWC support.
 // It also configures the development server to open the browser automatically
