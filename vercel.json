@@ -17,8 +17,8 @@
       "dest": "/api/index.js"
     },
     {
-      "sou,rce": "/(.*)",
-      "destination": "/Frontend/index.html"
+      "src": "/(.*)",
+      "dest": "/Frontend/index.html"
     }
   ],
   "env": {
