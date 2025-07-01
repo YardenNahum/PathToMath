@@ -18,7 +18,7 @@
    },
    {
      "src": "/(.*)",
-    "dest": "/Frontend/dist/index.html"
+    "dest": "/Frontend/index.html"
    }
  ],
  "env": {
