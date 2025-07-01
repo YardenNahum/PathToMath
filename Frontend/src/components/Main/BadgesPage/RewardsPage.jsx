@@ -87,9 +87,9 @@ const RewardsPage = () => {
   const currentGradeData = user?.gradeLevel?.[grade - 1] || {};
 
   // Total levels completed in current grade
-  const totalLevelsCompleted = Object.values(currentGradeData).reduce((sum, lvl) => {
-    return sum + (typeof lvl === 'number' ? lvl : 0);
-  }, 0);
+ const totalLevelsCompleted = Object.values(currentGradeData).reduce((sum, subjectData) => {
+  return sum + (typeof subjectData.level === 'number' ? subjectData.level : 0);
+}, 0);
 
   // Breakdown by subject for current grade
   const subjectBreakdown = Object.fromEntries(
