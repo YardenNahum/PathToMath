@@ -17,10 +17,13 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/Frontend/index.html"
+      "destination": "/index.html"
     }
- 
   ],
   "env": {
     "NODE_ENV": "production"
