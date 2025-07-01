@@ -82,7 +82,7 @@ npm run dev
 
 * Guy Shargorodsky
 * Omri Spitzer
-* Satv Avraham
+* Stav Avraham
 * Yarden Nahum
 * Adan Ibrahim
 * Shereen Owida
