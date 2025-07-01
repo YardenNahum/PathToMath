@@ -6,5 +6,8 @@
     "peerjs": "^1.5.5",
     "react-google-recaptcha": "^3.1.0",
     "use-sound": "^5.0.0"
+  },
+    "scripts": {
+    "build": "cd Frontend && npm install && npm run build"
   }
 }
