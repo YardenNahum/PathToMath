@@ -17,8 +17,16 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
+      "source": "/Frontend/(.*)",
+      "destination": "/Frontend/dist/$1"
+    },
+    {
+      "source": "/Frontend",
+      "destination": "/Frontend/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/Frontend/index.html"
     },
     {
       "source": "/(.*)",
