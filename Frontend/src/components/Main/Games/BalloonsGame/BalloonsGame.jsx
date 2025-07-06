@@ -11,7 +11,7 @@ import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.p
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useSound from 'use-sound';
-import BalloonPopSound from '../../../../assets/sounds/balloonPop.mp3';
+import BalloonPopSound from '../../../../assets/sounds/BalloonsGame/balloonPop.mp3';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
 
 const NUM_QUESTIONS = 5;  // Total number of questions in the game
@@ -34,8 +34,8 @@ function BalloonsGame() {
     
     // Sound effects
     const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
-    const [balloonPopSound] = useSound(BalloonPopSound);
-    
+    const [balloonPopSound] = useSound(BalloonPopSound, { volume: 0.3 });
+
     // State variables
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -138,6 +138,7 @@ function BalloonsGame() {
             gameLevel={gameLevel}
             icon={TitleIcon3}
             backgroundImage={BalloonsBg}
+            howToPlay={"Pop the balloon with the correct answer to the question! Score at least 4 out of 5 to pass the level."}
         >
             <div className="bg-pink-100 rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto">
                 {!gameOver ? (
@@ -145,15 +146,15 @@ function BalloonsGame() {
                         {/* Progress Bar */}
                         <div className="mb-8 mt-5 w-full max-w-md mx-auto">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm font-semibold text-gray-600">Progress</span>
+                                <span className="text-sm font-semibold text-gray-600">You Answered:</span>
                                 <span className="text-sm font-semibold text-gray-600">
-                                    {currentQuestionIndex + 1}/{NUM_QUESTIONS}
+                                    {currentQuestionIndex}/{NUM_QUESTIONS} Questions
                                 </span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
                                 <div
                                     className="bg-gradient-to-r from-yellow-200 to-pink-500 h-3 rounded-full transition-all duration-500 ease-out"
-                                    style={{ width: `${((currentQuestionIndex + 1) / NUM_QUESTIONS) * 100}%` }}
+                                    style={{ width: `${((currentQuestionIndex) / NUM_QUESTIONS) * 100}%` }}
                                 />
                             </div>
                         </div>

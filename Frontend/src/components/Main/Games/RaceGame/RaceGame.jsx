@@ -17,8 +17,8 @@ import useBotInterval from '../GamesUtils/useBotInterval.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
 import useSound from 'use-sound';
-import CoundownSound from '../../../../assets/sounds/countdown.mp3';
-import BotStepSound from '../../../../assets/sounds/Car.mp3';
+import CoundownSound from '../../../../assets/sounds/RaceGame/countdown.mp3';
+import BotStepSound from '../../../../assets/sounds/RaceGame/Car.mp3';
 
 const NUM_QUESTIONS = 10; // Total number of questions per race
 
