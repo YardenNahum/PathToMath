@@ -12,6 +12,9 @@ import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import MultipleChoiceCard from './MultipleChoiceCard.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
+import TreasureChest from '../../../../assets/sounds/OptionsGame/TreasureChest.mp3';
+import useSound from 'use-sound';
+
 /**
  * OptionsGame component represents a multiple-choice quiz game with progression logic.
  * It loads questions based on subject, grade, and level, tracks correct answers,
@@ -28,7 +31,8 @@ export default function OptionsGame() {
     const gameLevel = parseInt(level);
 
     // Sound effects
-    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    const {loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    const [treasureChestSound] = useSound(TreasureChest, { volume: 0.6 });
     
     // React Router navigation and location
     const navigate = useNavigate();
@@ -114,7 +118,7 @@ export default function OptionsGame() {
         
         // Play win or lose sound based on performance
         if (isSuccess) {
-            winLevelSound(); // Play win sound for passing score (4+ correct)
+            treasureChestSound(); // Play win sound for passing score (4+ correct)
         } else {
             loseSound(); // Play lose sound for failing score (<4 correct)
         }

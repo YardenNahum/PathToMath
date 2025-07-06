@@ -18,8 +18,7 @@ import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
 import useSound from 'use-sound';
 import CoundownSound from '../../../../assets/sounds/countdown.mp3';
-import BotStepSound from '../../../../assets/sounds/passingCar.mp3';
-import MyStepSound from '../../../../assets/sounds/myCar.mp3';
+import BotStepSound from '../../../../assets/sounds/Car.mp3';
 
 const NUM_QUESTIONS = 10; // Total number of questions per race
 
@@ -30,9 +29,8 @@ function RaceGame() {
 
   // Sound effects
   const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
-  const [countdownSound] = useSound(CoundownSound);
-  const [botStepSound] = useSound(BotStepSound);
-  const [myStepSound] = useSound(MyStepSound);
+  const [countdownSound] = useSound(CoundownSound, {volume: 0.4});
+  const [botStepSound] = useSound(BotStepSound, { volume: 0.4 });
 
   const updateQuiz = useUpdateQuiz();
   const location = useLocation();
@@ -162,7 +160,7 @@ function RaceGame() {
     if (userAnswer.trim() === String(currentQuestion.answer.value)) {
       const newPos = userPos + 1; // User moves one step forward
       setUserAnswer(''); // Clear the input field
-      myStepSound(); // Play correct answer sound
+      correctQuestionSound(); // Play correct answer sound
 
       // If user reaches finish line, declare user win and stop the game
       if (newPos === TRACK_LENGTH - 1) {

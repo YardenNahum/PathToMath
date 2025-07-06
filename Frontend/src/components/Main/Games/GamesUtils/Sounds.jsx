@@ -29,11 +29,11 @@ import CorrectQuestionSound from '../../../../assets/sounds/correct-choice.mp3';
  */
 export default function useGameSounds() {
   // Sound effects state with configuration options
-  const [winLevelSound] = useSound(WinLevelSound, {interrupt: true}); // Interrupts other sounds when playing
-  const [loseSound] = useSound(LoseSound); // No interrupt - allows overlapping with other sounds
-  const [wrongAnswerSound] = useSound(WrongAnswerSound, {volume: 0.8}); // No interrupt, slightly lower volume
+  const [winLevelSound] = useSound(WinLevelSound, {interrupt: true, volume: 0.4}); // Interrupts other sounds when playing
+  const [loseSound] = useSound(LoseSound, {volume: 0.4}); // No interrupt - allows overlapping with other sounds
+  const [wrongAnswerSound] = useSound(WrongAnswerSound, {volume: 0.5}); // No interrupt, slightly lower volume
   const [opponentStepSound] = useSound(OpponentStepSound, {interrupt: true}); // Interrupts other sounds when playing
-  const [correctQuestionSound] = useSound(CorrectQuestionSound);
+  const [correctQuestionSound] = useSound(CorrectQuestionSound, {volume: 0.4});
 
   return {
     winLevelSound,
