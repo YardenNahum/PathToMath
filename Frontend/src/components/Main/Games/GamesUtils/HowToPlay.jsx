@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import help_icon from '../../../../assets/Images/cube_game/how_to_play.png';
 import React from 'react';
+import HelpPop from '../../../../assets/sounds/helpPop.mp3';
+import useSound from 'use-sound';
 
 /**
  * HowToPlay Component
@@ -12,9 +14,13 @@ import React from 'react';
  */
 function how_to_play({ howToPlay }) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const [playHelpPop] = useSound(HelpPop, { volume: 0.5 });
 
   // Toggles the visibility of the tooltip
-  const toggleTooltip = () => setShowTooltip(prev => !prev);
+  const toggleTooltip = () => {
+    playHelpPop(); // Play sound when toggling the tooltip
+    setShowTooltip(prev => !prev);
+  };
 
   return (
     // Displays a button that toggles a tooltip with instructions on how to play the game

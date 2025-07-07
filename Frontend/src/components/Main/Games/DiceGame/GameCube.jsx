@@ -11,7 +11,9 @@ import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
-
+import SelectDice from '../../../../assets/sounds/DiceGame/selectDice.mp3';
+import DeselectDice from '../../../../assets/sounds/DiceGame/deselectDice.mp3';
+import useSound from 'use-sound';
 
 /**
  * GameCube component - Interactive game where children solve sum-up Addition problems.
@@ -25,7 +27,9 @@ const GameCube = () => {
     const MAX_QUESTIONS = 5;
 
     // Sound effects
-    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    const { winLevelSound, loseSound, wrongAnswerSound, correctQuestionSound } = useGameSounds();
+    const [dicePickSound] = useSound(SelectDice, { volume: 0.2 });
+    const [diceDeselectSound] = useSound(DeselectDice, { volume: 0.2 });
 
     // Extract subject, grade, and level from the URL parameters
     const { subjectGame, grade, level } = useParams();
@@ -57,7 +61,7 @@ const GameCube = () => {
         const minCubes = 4;
         const maxCubes = 6 + Math.floor(level / 3) + Math.floor(grade / 2); // scale cubes count
         const cubeCount = Math.min(maxCubes, 12); // limit to 12 max
-        
+
         let validCubes = false;
         let cubes = [];
         while (!validCubes) {
@@ -209,11 +213,21 @@ const GameCube = () => {
     // Toggles the selection state of a cube when clicked
     const toggleCube = (index) => {
         if (isDisabled) return;
-        setSelected(prev =>
-            prev.includes(index)
+
+        setSelected(prev => {
+            const isAlreadySelected = prev.includes(index);
+
+            // Play the correct sound based on the action
+            if (isAlreadySelected) {
+                diceDeselectSound();
+            } else {
+                dicePickSound();
+            }
+
+            return isAlreadySelected
                 ? prev.filter(i => i !== index)
-                : [...prev, index]
-        );
+                : [...prev, index];
+        });
     };
 
     // State hooks for game control and UI
@@ -241,12 +255,12 @@ const GameCube = () => {
     }
 
     return (
-        <GameContainer 
-            gameName="Roll & Solve" 
-            gameSubject={subjectGame} 
-            gameLevel={gameLevel} 
-            icon={TitleIcon} 
-            backgroundImage={CubesBg} 
+        <GameContainer
+            gameName="Roll & Solve"
+            gameSubject={subjectGame}
+            gameLevel={gameLevel}
+            icon={TitleIcon}
+            backgroundImage={CubesBg}
             howToPlay={"Select dice that add up to the target sum. You have 2 tries per question. Get 3 out of 5 correct to pass!"}
         >
             <div className="border-8 border-white bg-yellow-100 rounded-lg p-4 shadow-lg relative max-w-2xl mx-auto mb-5">
@@ -264,8 +278,8 @@ const GameCube = () => {
                                     restartGame();         // replay same level
                                 }
                             }}
-                        >  
-                            {success ? "Next level": "Try again"}
+                        >
+                            {success ? "Next level" : "Try again"}
                         </button>
                     </div>
                 ) : (

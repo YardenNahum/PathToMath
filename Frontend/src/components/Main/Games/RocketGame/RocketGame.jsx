@@ -20,11 +20,12 @@ import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import { useUser } from '../../../Utils/UserContext';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import useSound from 'use-sound';
-import SpaceshipStepSound from '../../../../assets/sounds/spaceship.mp3';
-import CountDownSound from '../../../../assets/sounds/robotic-countdown.mp3';
+import SpaceshipStepSound from '../../../../assets/sounds/RocketGame/rocketStep.mp3';
+import CountDownSound from '../../../../assets/sounds/RocketGame/robotic-countdown.mp3';
+import WinSound from '../../../../assets/sounds/RocketGame/futuristicWin.mp3';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
 
-const NUM_QUESTIONS = 10; // Total number of questions per gamefrom '../../../../assets/sounds/spaceship.mp3';
+const NUM_QUESTIONS = 10; // Total number of questions per game;
 
 /**
  * RocketGame component - a math race game where the user competes against a bot or another player.
@@ -45,10 +46,10 @@ export default function RocketGame({ mode = 'single' }) {
   const updateQuiz = useUpdateQuiz();
 
   // Sound effects state
-  const [spaceshipStepSound] = useSound(SpaceshipStepSound, {interrupt: true});
-  const [countdownSound] = useSound(CountDownSound);
-  const {winLevelSound,loseSound,wrongAnswerSound,opponentStepSound} = useGameSounds();
-
+  const [spaceshipStepSound] = useSound(SpaceshipStepSound, {volume: 0.2});
+  const [countdownSound] = useSound(CountDownSound, {volume: 0.5});
+  const {loseSound,wrongAnswerSound,opponentStepSound} = useGameSounds();
+  const [playWinSound] = useSound(WinSound, { volume: 0.3 });
 
   // Game state
   const [questions, setQuestions] = useState([]);
@@ -75,7 +76,7 @@ export default function RocketGame({ mode = 'single' }) {
   const [opponentPeerId, setOpponentPeerId] = useState('');
   const [connectionError, setConnectionError] = useState('');
   const [opponentGrade, setOpponentGrade] = useState(null);
-  const [myGrade, _] = useState(grade);
+  const [myGrade] = useState(grade);
   const [gameGrade, setGameGrade] = useState(parseInt(grade));
 
   const colorMap = ['text-white', 'text-white', 'text-white', 'text-white'];  // All white for countdown
@@ -278,10 +279,8 @@ export default function RocketGame({ mode = 'single' }) {
         setGameEnded(true);
         setSuccess(true);
         setMessage('You Win! Continue To The Next Planet?');
-        winLevelSound();
-        
+        playWinSound();
       }
-
     }
   };
 
@@ -294,7 +293,7 @@ export default function RocketGame({ mode = 'single' }) {
     if (isMultiplayer && isWin) {
       handleSend(connection, 'finished');
       setMessage('You Win! Continue To The Next Race?');
-      winLevelSound();
+      playWinSound();
     }
     else {
       setMessage('You Lose! Continue To The Next Race?');
@@ -302,7 +301,6 @@ export default function RocketGame({ mode = 'single' }) {
     }
     setGameStart(false);
   };
-
 
   /**
    * Navigates to home page if from quiz, or to subject page if not.

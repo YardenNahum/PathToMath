@@ -15,6 +15,8 @@ import { useLocation } from 'react-router-dom';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
+import MagicWand from '../../../../assets/sounds/WordGame/magicWand.mp3';
+import useSound from "use-sound";
 
 /**
  * WordProblem component - Interactive game where children solve fairy-tale themed word problems.
@@ -30,8 +32,9 @@ const WordProblem = () => {
   const updateQuiz = useUpdateQuiz();
 
   // Sound effects
-  const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
-    
+  const {loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+  const [playMagicWand] = useSound(MagicWand, { volume: 0.5 });
+
   // State to handle return from pop quiz
   const location = useLocation();
   // Get the user from the UserContext
@@ -151,7 +154,7 @@ const WordProblem = () => {
     
     // Play win or lose sound based on performance
     if (isSuccess) {
-      winLevelSound(); // Play win sound for passing score (2+ correct)
+      playMagicWand(); // Play win sound for passing score (2+ correct)
     } else {
       loseSound(); // Play lose sound for failing score (<2 correct)
     }
