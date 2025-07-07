@@ -24,6 +24,9 @@ import SpaceshipStepSound from '../../../../assets/sounds/RocketGame/rocketStep.
 import CountDownSound from '../../../../assets/sounds/RocketGame/robotic-countdown.mp3';
 import WinSound from '../../../../assets/sounds/RocketGame/futuristicWin.mp3';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
+import EndGameComponent from "../GamesUtils/EndGameComponent.jsx";
+import successImage from '../../../../assets/Images/SpaceGame/astronautWin.png';
+import failureImage from '../../../../assets/Images/SpaceGame/planetLost.png';
 
 const NUM_QUESTIONS = 10; // Total number of questions per game;
 
@@ -46,9 +49,9 @@ export default function RocketGame({ mode = 'single' }) {
   const updateQuiz = useUpdateQuiz();
 
   // Sound effects state
-  const [spaceshipStepSound] = useSound(SpaceshipStepSound, {volume: 0.2});
-  const [countdownSound] = useSound(CountDownSound, {volume: 0.5});
-  const {loseSound,wrongAnswerSound,opponentStepSound} = useGameSounds();
+  const [spaceshipStepSound] = useSound(SpaceshipStepSound, { volume: 0.1 });
+  const [countdownSound] = useSound(CountDownSound, { volume: 0.4 });
+  const { loseSound, wrongAnswerSound, opponentStepSound } = useGameSounds();
   const [playWinSound] = useSound(WinSound, { volume: 0.3 });
 
   // Game state
@@ -64,6 +67,7 @@ export default function RocketGame({ mode = 'single' }) {
   const [userProgress, setUserProgress] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [endGameObject, setEndGameObject] = useState(null); // Object to hold end game details
 
   // Multiplayer
   const [opponentStarted, setOpponentStarted] = useState(false);
@@ -191,8 +195,19 @@ export default function RocketGame({ mode = 'single' }) {
         setStarted(false);
         setSuccess(false);
         setGameEnded(true);
-        setMessage('Opponent wins! Try Again?');
         loseSound();
+
+        setEndGameObject({
+          isSuccess: false,
+          text: "Oh no! The asteroid crashed into the planet before you could stop it!",
+          customImage: failureImage,
+          buttonText: "Try Again!",
+          bgColor: "bg-red-200",
+          containerColor: "bg-red-100",
+          handleClick: () => {
+            startCountdown(); // Resets and restarts the race
+          },
+        });
 
         return TRACK_STEPS - 1;
       }
@@ -225,7 +240,7 @@ export default function RocketGame({ mode = 'single' }) {
     }
 
     const interval = setInterval(() => {
-      
+
       setCountdown((prev) => {
         if (prev === 1) {
           clearInterval(interval);
@@ -278,8 +293,23 @@ export default function RocketGame({ mode = 'single' }) {
         setStarted(false);
         setGameEnded(true);
         setSuccess(true);
-        setMessage('You Win! Continue To The Next Planet?');
         playWinSound();
+
+        setEndGameObject({
+          isSuccess: true,
+          text: `Great! You beat your opponent to the finish line!`,
+          customImage: successImage,
+          buttonText: location.state?.fromQuiz ? "Finish quiz" : "Continue to next planet!",
+          bgColor: "bg-green-200",
+          containerColor: "bg-green-100",
+          handleClick: () => {
+            if (location.state?.fromQuiz) {
+              navigate("/");
+            } else {
+              navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
+            }
+          },
+        });
       }
     }
   };
@@ -346,18 +376,18 @@ export default function RocketGame({ mode = 'single' }) {
   
    */
   useEffect(() => {
-  if (!gameEnded || isMultiplayer) return;
+    if (!gameEnded || isMultiplayer) return;
 
-  updateUserProgress({
-    isSuccess: success,
-    location,
-    user,
-    update,
-    updateQuiz,
-    gameLevel,
-    gameSubject: subjectName,
-  });
-}, [gameEnded, isMultiplayer]);
+    updateUserProgress({
+      isSuccess: success,
+      location,
+      user,
+      update,
+      updateQuiz,
+      gameLevel,
+      gameSubject: subjectName,
+    });
+  }, [gameEnded, isMultiplayer]);
 
   // Determines if question box should be visible
   const showQuestionBox = isMultiplayer ? gameStart && connection?.open : started;
@@ -371,8 +401,8 @@ export default function RocketGame({ mode = 'single' }) {
       backgroundImage={spaceBg}
       howToPlay={
         isMultiplayer
-          ? "Enter your opponent's Peer ID or share yours to connect. When both are ready, answer questions to race — first to reach the planet wins!"
-          : "After takeoff, answer math questions correctly to fly your rocket. Reach the planet before your opponent does to win!"
+          ? "Enter your opponent's Peer ID or share yours to connect. When both are ready, answer questions to race — first to reach their planet wins!"
+          : "After takeoff, answer math questions correctly to fly your rocket. Reach the planet before the falling asteroid crashes into it!"
       }
     >
       {isMultiplayer && (
@@ -396,8 +426,8 @@ export default function RocketGame({ mode = 'single' }) {
         />
       )}
 
-
-      {((isMultiplayer && connection?.open) || !isMultiplayer) && (!started && !gameFinished && countdown === null) ? (
+      {((isMultiplayer && connection?.open) || !isMultiplayer) &&
+        (!started && !gameFinished && countdown === null && (!endGameObject || isMultiplayer)) ? (
         <div className="flex justify-center">
           <StartButton
             onClick={gameEnded && success ? handleFinished : isMultiplayer && !connection?.open ? handleFinished : isMultiplayer ? startGame : startCountdown}
@@ -414,48 +444,75 @@ export default function RocketGame({ mode = 'single' }) {
         </div>
       )}
 
-      <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🔥 Takeoff!'} />
-
-      <div className="flex flex-row items-center justify-center gap-8">
-        <Track
-          position={userProgress}
-          length={NUM_QUESTIONS}
-          startLabel="Your Rocket"
-          finishIcon={<img src={Planet} alt="Planet" className="h-15 w-15 rounded-full object-cover" />}
-          direction="vertical"
-          type="climb"
-        />
-        <div
-          className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-150 min-h-[200px]"
-          style={{ animation: 'glowPulse 2s infinite', boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.8)', color: 'white' }}
-        >
-          {showQuestionBox && (
-            <QuestionBox
-              question={currentQuestion?.question}
-              userAnswer={userAnswer}
-              setUserAnswer={setUserAnswer}
-              onSubmit={handleAnswerSubmit}
-              feedback={<FeedbackMessage message={message} />}
-            />
-          )}
-          {gameFinished && (
-            <div className="flex flex-col items-center justify-center text-white text-xl font-bold">
-              <h1>{message}</h1>
-              <button onClick={handleNextRace} className="mt-2 px-4 py-2 bg-purple-600 rounded hover:bg-purple-500 cursor-pointer">
-                Continue To Next Race
-              </button>
-            </div>
-          )}
+      {/* Show end game screen ONLY in single-player mode */}
+      {!isMultiplayer && gameEnded && endGameObject ? (
+        <div className={`rounded-xl p-4 mb-4 ${endGameObject.containerColor}`}>
+          <div className="text-center text-xl font-medium mt-4 mb-6 px-4">
+            {endGameObject.text}
+          </div>
+          <EndGameComponent
+            isSuccess={endGameObject.isSuccess}
+            customImage={endGameObject.customImage}
+            buttonText={endGameObject.buttonText}
+            handleClick={endGameObject.handleClick}
+            bgColor={endGameObject.bgColor}
+          />
         </div>
-        <Track
-          position={isMultiplayer ? opponentProgress : botProgress}
-          length={NUM_QUESTIONS}
-          startLabel="Opponent's Rocket"
-          finishIcon={<img src={Moon} alt="Moon" className="h-15 w-15 rounded-full object-cover" />}
-          direction="vertical"
-          type="climb"
-        />
-      </div>
+      ) : (
+        <>
+          <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🔥 Takeoff!'} />
+
+          <div className="flex flex-row items-center justify-center gap-8">
+            <Track
+              position={userProgress}
+              length={NUM_QUESTIONS}
+              startLabel="Your Rocket"
+              finishIcon={<img src={Planet} alt="Planet" className="h-15 w-15 rounded-full object-cover" />}
+              direction="vertical"
+              type="climb"
+              isUserTrack={true}
+            />
+            <div
+              className="flex items-center justify-center bg-purple-400 rounded-lg shadow-md w-150 min-h-[200px]"
+              style={{ animation: 'glowPulse 2s infinite', boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.8)', color: 'white' }}
+            >
+              {showQuestionBox && (
+                <QuestionBox
+                  question={currentQuestion?.question}
+                  userAnswer={userAnswer}
+                  setUserAnswer={setUserAnswer}
+                  onSubmit={handleAnswerSubmit}
+                  feedback={<FeedbackMessage message={message} />}
+                />
+              )}
+              {gameFinished && (
+                <div className="flex flex-col items-center justify-center text-white text-xl font-bold">
+                  <h1>{message}</h1>
+                  <button onClick={handleNextRace} className="mt-2 px-4 py-2 bg-purple-600 rounded hover:bg-purple-500 cursor-pointer">
+                    Continue To Next Race
+                  </button>
+                </div>
+              )}
+            </div>
+            <Track
+              position={isMultiplayer ? opponentProgress : botProgress}
+              length={NUM_QUESTIONS}
+              startLabel={isMultiplayer ? "Opponent's Rocket" : "Asteroid"}
+              finishIcon={
+                <img
+                  src={isMultiplayer ? Moon : Planet}
+                  alt="Opponent Finish"
+                  className="h-15 w-15 rounded-full object-cover"
+                />
+              }
+              direction="vertical"
+              type="climb"
+              isMultiplayer={isMultiplayer}
+              isUserTrack={false}
+            />
+          </div>
+        </>
+      )}
     </GameContainer>
   );
 }

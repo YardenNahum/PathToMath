@@ -7,8 +7,6 @@ import WordProblemsCreator from "./WordProblemsCreator";
 import QuestionBox from "../RaceGame/QuestionBox";
 import GameContainer from "../GamesUtils/GameContainer";
 import TitleIcon from "../../../../assets/Images/wordGame/StoriesIcon.png";
-import successImage from "../../../../assets/Images/Games/success.png";
-import failureImage from "../../../../assets/Images/Games/failure.png";
 import ButtonComponent from "../../../Utils/Button";
 import StoriesBg from '../../../../assets/Images/wordGame/StoriesBg.png'
 import { useLocation } from 'react-router-dom';
@@ -17,6 +15,9 @@ import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
 import MagicWand from '../../../../assets/sounds/WordGame/magicWand.mp3';
 import useSound from "use-sound";
+import EndGameComponent from "../GamesUtils/EndGameComponent.jsx";
+import successImage from '../../../../assets/Images/wordGame/successWitch.png';
+import failureImage from '../../../../assets/Images/wordGame/failureWitch.png';
 
 /**
  * WordProblem component - Interactive game where children solve fairy-tale themed word problems.
@@ -32,7 +33,7 @@ const WordProblem = () => {
   const updateQuiz = useUpdateQuiz();
 
   // Sound effects
-  const {loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+  const { loseSound, wrongAnswerSound, correctQuestionSound } = useGameSounds();
   const [playMagicWand] = useSound(MagicWand, { volume: 0.5 });
 
   // State to handle return from pop quiz
@@ -151,14 +152,14 @@ const WordProblem = () => {
    */
   const generateEnd = () => {
     const isSuccess = correctAnswers >= 2;
-    
+
     // Play win or lose sound based on performance
     if (isSuccess) {
       playMagicWand(); // Play win sound for passing score (2+ correct)
     } else {
       loseSound(); // Play lose sound for failing score (<2 correct)
     }
-    
+
     //update user progress based on success
     updateUserProgress({
       isSuccess: isSuccess,
@@ -173,52 +174,27 @@ const WordProblem = () => {
     // Set the end game object based on success or failure
     // If the user has answered at least 2 questions correctly, they win
     setEndGameObject({
-      bgColor: isSuccess ? "bg-green-200" : "bg-red-200",
+      isSuccess: isSuccess,
       text: `${isSuccess ? 'Great!' : 'Oh no!'} You answered ${correctAnswers} / ${numOfQuestions} Correct Answers.`,
-      color: isSuccess ? "green" : "red",
-      imgURL: isSuccess ? successImage : failureImage,
-      headerText: isSuccess ? "Continue to the next level!" : "Try Again?",
+      customImage: isSuccess ? successImage : failureImage,
+      buttonText: isSuccess ? (location.state?.fromQuiz ? "Finish quiz" : "Continue to the next level!") : "Try Again!",
+      bgColor: isSuccess ? "bg-green-200" : "bg-red-200",
+      containerColor: isSuccess ? "bg-green-100" : "bg-red-100",
       handleClick: () => {
         if (isSuccess) {
           if (location.state?.fromQuiz) {
             navigate("/");
-          }
-          else{
+          } else {
             navigate(`/subjects/${gameSubject}`, { state: { fromGame: true } });
           }
-
         } else {
-          // Retry current level
           resetGame();
           loadGameLevel();
         }
-      },
-      buttonText: isSuccess ? (location.state?.fromQuiz ? "Finish quiz" : "Next Level") : "Try Again!",
-      containerColor: isSuccess ? "bg-green-100" : "bg-red-100"
+      }
     });
-    setEndGame(true);
-  };
 
-  /**
-   * End Game Component
-   * @returns {JSX.Element} - The end game component with an image and button.
-   */
-  const endGameComponent = () => {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4">
-        <img
-          className="h-60 w-auto max-w-full object-contain"
-          src={endGameObject?.imgURL}
-          alt={endGameObject?.color === "green" ? "Success" : "Failure"}
-        />
-        <ButtonComponent
-          label={endGameObject?.buttonText}
-          onClick={endGameObject?.handleClick}
-          textColor="text-black"
-          bgColor={endGameObject?.bgColor}
-        />
-      </div>
-    )
+    setEndGame(true);
   };
 
   return (
@@ -258,10 +234,16 @@ const WordProblem = () => {
 
           {endGame && (
             <>
-              <div className="m-5">{endGameObject?.text}
-
-                {endGameComponent()}
+              <div className="text-center text-xl font-medium mt-4 mb-6 px-4">
+                {endGameObject?.text}
               </div>
+              <EndGameComponent
+                isSuccess={endGameObject?.isSuccess}
+                customImage={endGameObject?.customImage}
+                buttonText={endGameObject?.buttonText}
+                handleClick={endGameObject?.handleClick}
+                bgColor={endGameObject?.bgColor}
+              />
             </>
           )}
 

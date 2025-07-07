@@ -1,5 +1,6 @@
 import React from 'react';
 import Rocket from '../../../../assets/Images/SpaceGame/rocket.gif'
+import Asteroid from '../../../../assets/Images/SpaceGame/asteroid.gif';
 
 /**
  * Track component renders a visual progress track for a game.
@@ -19,7 +20,20 @@ import Rocket from '../../../../assets/Images/SpaceGame/rocket.gif'
  * @param {string} [props.type='cubes'] - Track style type ('cubes' or 'climb')
  * @returns {React.ReactNode|null} The rendered track component or null if type/direction unsupported
  */
-function Track({ position, length, color = '#0000000000', startLabel = '', endLabel = '', startIcon, finishIcon, direction = 'horizontal', type = 'cubes' }) {
+function Track({
+  position,
+  length,
+  color = '#0000000000',
+  startLabel = '',
+  endLabel = '',
+  startIcon,
+  finishIcon,
+  direction = 'horizontal',
+  type = 'cubes',
+  isMultiplayer = false,
+  isUserTrack = false
+}) {
+
   switch (type) {
     case 'cubes':
       if (direction === 'horizontal') {
@@ -70,6 +84,7 @@ function Track({ position, length, color = '#0000000000', startLabel = '', endLa
         // Calculate rocket vertical position in percent relative to track length
         const maxPercent = 70; // Maximum climb height percentage before finish icon
         const percent = (position / (length - 1)) * maxPercent;
+        const objectImage = isMultiplayer || isUserTrack ? Rocket : Asteroid;
 
         return (
           <div className="flex flex-col items-center">
@@ -90,11 +105,14 @@ function Track({ position, length, color = '#0000000000', startLabel = '', endLa
               >
                 <div className="flex justify-center items-center h-12">
                   <img
-                    src={Rocket}
-                    alt="rocket"
-                    className="h-12 w-auto -rotate-[45deg]
-                              filter contrast-150 brightness-85
-                              drop-shadow-[0_0_3px_rgba(255,255,255,0.8)]"
+                    src={objectImage}
+                    alt={isUserTrack ? "rocket" : isMultiplayer ? "rocket" : "asteroid"}
+                    className={`
+                      h-12 w-auto
+                      ${isMultiplayer || isUserTrack ? '-rotate-[45deg]' : 'rotate-135'}
+                      filter contrast-150 brightness-85
+                      drop-shadow-[0_0_3px_rgba(255,255,255,0.8)]
+                    `}
                   />
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback  } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import GameContainer from '../GamesUtils/GameContainer';
 import QuestionBox from './QuestionBox';
@@ -19,6 +19,9 @@ import useGameSounds from '../GamesUtils/Sounds.jsx'
 import useSound from 'use-sound';
 import CoundownSound from '../../../../assets/sounds/RaceGame/countdown.mp3';
 import BotStepSound from '../../../../assets/sounds/RaceGame/Car.mp3';
+import EndGameComponent from "../GamesUtils/EndGameComponent.jsx";
+import successImage from '../../../../assets/Images/RaceGame/finishFlag.png';
+import failureImage from '../../../../assets/Images/RaceGame/brokenCar.png';
 
 const NUM_QUESTIONS = 10; // Total number of questions per race
 
@@ -28,15 +31,15 @@ function RaceGame() {
   const gameLevel = parseInt(level);
 
   // Sound effects
-  const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
-  const [countdownSound] = useSound(CoundownSound, {volume: 0.4});
+  const { winLevelSound, loseSound, wrongAnswerSound, correctQuestionSound } = useGameSounds();
+  const [countdownSound] = useSound(CoundownSound, { volume: 0.4 });
   const [botStepSound] = useSound(BotStepSound, { volume: 0.4 });
 
   const updateQuiz = useUpdateQuiz();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user,update } = useUser();
-  
+  const { user, update } = useUser();
+
   // Game state management
   const [started, setStarted] = useState(false);  // Whether the race has started
   const [userPos, setUserPos] = useState(0);  // User's current position on the track
@@ -48,6 +51,7 @@ function RaceGame() {
   const [countdown, setCountdown] = useState(null); // Countdown timer before game start
   const [success, setSuccess] = useState(false);  // Whether the user won
   const [gameEnded, setGameEnded] = useState(false);  // Whether the game has ended
+  const [endGameObject, setEndGameObject] = useState(null); // Object to hold end game details
 
   // Countdown display colors
   const colorMap = [
@@ -65,18 +69,18 @@ function RaceGame() {
 
   // After game ends and user wins, update progress or quiz data
   useEffect(() => {
-  if (gameEnded) {
-    updateUserProgress({
-      isSuccess: success,
-      location,
-      user,
-      update,
-      updateQuiz,
-      gameLevel,
-      gameSubject: subjectName
-    });
-  }
-}, [gameEnded, success]);
+    if (gameEnded) {
+      updateUserProgress({
+        isSuccess: success,
+        location,
+        user,
+        update,
+        updateQuiz,
+        gameLevel,
+        gameSubject: subjectName
+      });
+    }
+  }, [gameEnded, success]);
 
   const TRACK_LENGTH = 11; // 10 questions + 1 finish line block
 
@@ -88,13 +92,25 @@ function RaceGame() {
         setStarted(false);  // Stop the game
         setSuccess(false); // Mark as lost
         setGameEnded(true); // Game has ended
-        setMessage('Opponent wins! Try Again?');
         loseSound(); // Play lose sound when bot wins
+
+        setEndGameObject({
+          isSuccess: false,
+          text: "Oh no! Your opponent reached the finish line first.",
+          customImage: failureImage,
+          buttonText: "Try Again!",
+          bgColor: "bg-red-200",
+          containerColor: "bg-red-100",
+          handleClick: () => {
+            startCountdown(); // Resets and restarts the race
+          },
+        });
+
         return TRACK_LENGTH - 1;
       }
       return next;
     });
-    
+
     // Play bot step sound for regular movement (outside state setter)
     if (botPos < TRACK_LENGTH - 2) { // Only play if bot hasn't reached finish line
       botStepSound();
@@ -128,7 +144,7 @@ function RaceGame() {
     setCountdown(3);
     setGameEnded(false);
     setSuccess(false);
-    
+
     // Play countdown sound when countdown starts
     countdownSound();
 
@@ -169,8 +185,24 @@ function RaceGame() {
         setStarted(false);
         setGameEnded(true);
         setSuccess(true);
-        setMessage('You Win! Continue To The Next Race?');
         winLevelSound(); // Play win sound when user reaches finish line
+
+        setEndGameObject({
+          isSuccess: true,
+          text: `Great! You beat your opponent to the finish line!`,
+          customImage: successImage,
+          buttonText: location.state?.fromQuiz ? "Finish quiz" : "Continue to next race!",
+          bgColor: "bg-green-200",
+          containerColor: "bg-green-100",
+          handleClick: () => {
+            if (location.state?.fromQuiz) {
+              navigate("/");
+            } else {
+              navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
+            }
+          },
+        });
+
       } else {
         // Move to next question and update position
         setUserPos(newPos);
@@ -186,49 +218,66 @@ function RaceGame() {
   };
 
   return (
-    <GameContainer 
-      gameName="Math Race" 
-      gameSubject={subjectName} 
-      gameLevel={gameLevel} 
-      icon={TitleIcon} 
+    <GameContainer
+      gameName="Math Race"
+      gameSubject={subjectName}
+      gameLevel={gameLevel}
+      icon={TitleIcon}
       backgroundImage={RaceBg}
       howToPlay={"Answer math questions quickly to move forward and beat your opponent to the finish line. One correct answer = one step forward!"}
     >
       <div className="bg-gray-100 rounded-lg p-4 shadow-lg mb-5 max-w-4xl mx-auto">
-
-        {/* Show start button or continue button depending on game state */}
-        {!started && countdown === null && (
-          <div className="flex justify-center">
-            <StartButton
-              onClick={gameEnded && success ? handleFinishedGame : startCountdown}
-              message={message}
-              startMessage={'🏁 Start Race'}
-              startGameColor={'bg-orange-400'} />
+        {gameEnded && endGameObject ? (
+          <div className={`rounded-xl p-4 mb-4 ${endGameObject.containerColor}`}>
+            <div className="text-center text-xl font-medium mt-4 mb-6 px-4">
+              {endGameObject.text}
+            </div>
+            <EndGameComponent
+              isSuccess={endGameObject.isSuccess}
+              customImage={endGameObject.customImage}
+              buttonText={endGameObject.buttonText}
+              handleClick={endGameObject.handleClick}
+              bgColor={endGameObject.bgColor}
+            />
           </div>
-        )}
+        ) : (
+          <>
+            {/* Show start button or continue button depending on game state */}
+            {!started && countdown === null && (
+              <div className="flex justify-center">
+                <StartButton
+                  onClick={gameEnded && success ? handleFinishedGame : startCountdown}
+                  message={message}
+                  startMessage={'🏁 Start Race'}
+                  startGameColor={'bg-orange-400'} />
+              </div>
+            )}
 
-        {/* Countdown display before game starts */}
-        <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🏁 Race!'} />
+            {/* Countdown display before game starts */}
+            <CountdownDisplay countdown={countdown} colorMap={colorMap} startWord={'🏁 Race!'} />
 
-        {/* Question box only appears during the game */}
-        {started && questionIndex < questions.length && (
-          <QuestionBox
-            question={currentQuestion?.question}
-            userAnswer={userAnswer}
-            setUserAnswer={setUserAnswer}
-            onSubmit={handleAnswerSubmit}
-            feedback={<FeedbackMessage message={message} />}
-          />
-        )}
-        {/* Display the race track with user/bot positions */}
-        {TRACK_LENGTH > 1 && (
-          <TrackSection
-            userPos={userPos}
-            botPos={botPos}
-            trackLength={TRACK_LENGTH}
-            startIcon="🚦"
-            finishIcon="🏁"
-          />
+            {/* Question box only appears during the game */}
+            {started && questionIndex < questions.length && (
+              <QuestionBox
+                question={currentQuestion?.question}
+                userAnswer={userAnswer}
+                setUserAnswer={setUserAnswer}
+                onSubmit={handleAnswerSubmit}
+                feedback={<FeedbackMessage message={message} />}
+              />
+            )}
+
+            {/* Display the race track with user/bot positions */}
+            {TRACK_LENGTH > 1 && (
+              <TrackSection
+                userPos={userPos}
+                botPos={botPos}
+                trackLength={TRACK_LENGTH}
+                startIcon="🚦"
+                finishIcon="🏁"
+              />
+            )}
+          </>
         )}
       </div>
     </GameContainer>

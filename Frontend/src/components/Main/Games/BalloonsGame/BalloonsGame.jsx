@@ -5,7 +5,6 @@ import generateQuestions from '../GamesUtils/GameLogic';
 import BalloonField from './BalloonField';
 import QuestionBox from './QuestionBox';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
-import EndGameScreen from './EndGameScreen';
 import { useUser } from '../../../Utils/UserContext';
 import TitleIcon3 from '../../../../assets/Images/BalloonGame/BalloonsGameIcon.png';
 import BalloonsBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg';
@@ -13,6 +12,9 @@ import updateUserProgress from '../GamesUtils/UpdateUserProgress.jsx';
 import useSound from 'use-sound';
 import BalloonPopSound from '../../../../assets/sounds/BalloonsGame/balloonPop.mp3';
 import useGameSounds from '../GamesUtils/Sounds.jsx'
+import EndGameComponent from '../GamesUtils/EndGameComponent.jsx';
+import PoppedBalloon from '../../../../assets/Images/BalloonGame/poppedBalloon.png';
+import HappyBalloon from '../../../../assets/Images/BalloonGame/happyBalloons.png';
 
 const NUM_QUESTIONS = 5;  // Total number of questions in the game
 
@@ -31,16 +33,17 @@ function BalloonsGame() {
     const location = useLocation();
     const updateQuiz = useUpdateQuiz();
     const { user, update } = useUser();
-    
+
     // Sound effects
-    const {winLevelSound,loseSound,wrongAnswerSound,correctQuestionSound} = useGameSounds();
+    const { winLevelSound, loseSound, wrongAnswerSound, correctQuestionSound } = useGameSounds();
     const [balloonPopSound] = useSound(BalloonPopSound, { volume: 0.3 });
 
     // State variables
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
-    const [gameOver, setGameOver] = useState(false);
+    const [endGame, setEndGame] = useState(false);
+    const [endGameObject, setEndGameObject] = useState(null);
     const [showCorrectFeedback, setShowCorrectFeedback] = useState(false);
     const [showIncorrectFeedback, setShowIncorrectFeedback] = useState(false);
 
@@ -88,46 +91,58 @@ function BalloonsGame() {
     };
 
     /**
-     * Proceed to the next question or end the game if all are completed.
-     * Triggers progress update if game is over.
+     * Proceed to next question or show endgame screen with setEndGameObject
      */
     const proceedToNextQuestion = () => {
         if (currentQuestionIndex + 1 < NUM_QUESTIONS) {
             setCurrentQuestionIndex((prev) => prev + 1);
         } else {
-            setGameOver(true);
-            
-            // Play win or lose sound based on score
-            if (score >= 3) {
-                winLevelSound(); // Play win sound for passing score
+            const isSuccess = score >= 3;
+
+            // Play appropriate sound
+            if (isSuccess) {
+                winLevelSound();
             } else {
-                loseSound(); // Play lose sound for failing score
+                loseSound();
             }
-            
-            //update user progress based on success
+
+            // Update user progress
             updateUserProgress({
-                isSuccess: score >= 3,
+                isSuccess,
                 location,
                 user,
                 update,
                 updateQuiz,
-                gameLevel: parseInt(level),
+                gameLevel,
                 gameSubject: subjectGame
             });
-        }
-    };
 
-    /**
-     * Handle final steps when the game ends.
-     * Navigates based on context (quiz or regular game mode),
-     * and updates user's level progress if necessary.
-     */
-    const handleFinish = () => {
-        if (location.state?.fromQuiz) {
-            navigate("/");
-        }
-        else {
-            navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
+            // Setup end game object with all display data and button action
+            setEndGameObject({
+                isSuccess,
+                text: `${isSuccess ? 'Great!' : 'Oh no!'} You answered ${score} / ${NUM_QUESTIONS} Correct Answers.`,
+                customImage: isSuccess ? HappyBalloon : PoppedBalloon,
+                buttonText: isSuccess ? (location.state?.fromQuiz ? "Finish quiz" : "Continue to next level!") : "Try Again!",
+                bgColor: isSuccess ? "bg-green-300" : "bg-red-300",
+                containerColor: isSuccess ? "bg-green-100" : "bg-red-100",
+                handleClick: () => {
+                    if (isSuccess) {
+                        if (location.state?.fromQuiz) {
+                            navigate("/");
+                        } else {
+                            navigate(`/subjects/${subjectName}`, { state: { fromGame: true } });
+                        }
+                    } else {
+                        // Reset game state to allow replay
+                        setScore(0);
+                        setCurrentQuestionIndex(0);
+                        setEndGame(false);
+                        setEndGameObject(null);
+                    }
+                }
+            });
+
+            setEndGame(true);
         }
     };
 
@@ -138,10 +153,10 @@ function BalloonsGame() {
             gameLevel={gameLevel}
             icon={TitleIcon3}
             backgroundImage={BalloonsBg}
-            howToPlay={"Pop the balloon with the correct answer to the question! Score at least 4 out of 5 to pass the level."}
+            howToPlay={"Pop the balloon with the correct answer! Score at least 4 out of 5 to pass."}
         >
-            <div className="bg-pink-100 rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto">
-                {!gameOver ? (
+            <div className={`rounded-3xl p-4 shadow-lg mb-5 max-w-3xl mx-auto ${endGame ? endGameObject?.containerColor : 'bg-pink-100'}`}>
+                {!endGame ? (
                     <div className="relative mb-10">
                         {/* Progress Bar */}
                         <div className="mb-8 mt-5 w-full max-w-md mx-auto">
@@ -154,18 +169,18 @@ function BalloonsGame() {
                             <div className="w-full bg-gray-200 rounded-full h-3 shadow-inner">
                                 <div
                                     className="bg-gradient-to-r from-yellow-200 to-pink-500 h-3 rounded-full transition-all duration-500 ease-out"
-                                    style={{ width: `${((currentQuestionIndex) / NUM_QUESTIONS) * 100}%` }}
+                                    style={{ width: `${(currentQuestionIndex / NUM_QUESTIONS) * 100}%` }}
                                 />
                             </div>
                         </div>
 
-                        {/* Main Game Area: Question + Balloons */}
+                        {/* Main Game Area */}
                         <div className="flex flex-col items-center">
                             <QuestionBox question={currentQuestion?.question} />
                             <BalloonField options={currentQuestion?.options} onBalloonClick={handleBalloonClick} />
                         </div>
 
-                        {/* Correct Feedback Overlay */}
+                        {/* Feedback overlays */}
                         {showCorrectFeedback && (
                             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                                 <div className="bg-green-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
@@ -173,8 +188,6 @@ function BalloonsGame() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Incorrect Feedback Overlay */}
                         {showIncorrectFeedback && (
                             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                                 <div className="bg-orange-500 text-white text-4xl font-black px-12 py-8 rounded-3xl shadow-2xl animate-bounce">
@@ -184,8 +197,18 @@ function BalloonsGame() {
                         )}
                     </div>
                 ) : (
-                    // End screen after all questions
-                    <EndGameScreen score={score} total={NUM_QUESTIONS} onFinish={handleFinish} />
+                    <>
+                        <div className="text-center text-xl font-medium mt-4 mb-6 px-4">
+                            {endGameObject?.text}
+                        </div>
+                        <EndGameComponent
+                            isSuccess={endGameObject.isSuccess}
+                            customImage={endGameObject.customImage}
+                            buttonText={endGameObject.buttonText}
+                            handleClick={endGameObject.handleClick}
+                            bgColor={endGameObject.bgColor}
+                        />
+                    </>
                 )}
             </div>
         </GameContainer>

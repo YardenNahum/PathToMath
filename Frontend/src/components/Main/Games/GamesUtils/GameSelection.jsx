@@ -6,7 +6,7 @@ import backgroundImage from '../../../../assets/Images/Background/GameSelectionB
 import RaceBtnBg from '../../../../assets/Images/RaceGame/RaceBg.jpg'
 import SpaceBtnBg from '../../../../assets/Images/SpaceGame/spaceBg.jpg'
 import TalesBtnBg from '../../../../assets/Images/wordGame/StoriesBg.png'
-import OptionsBtnBg from '../../../../assets/Images/Background/optionsBg.jpg'
+import OptionsBtnBg from '../../../../assets/Images/OptionsGame/optionsBg.jpg'
 import DiceBtnBg from '../../../../assets/Images/cube_game/cubesBg.jpg'
 import BalloonsBtnBg from '../../../../assets/Images/BalloonGame/BalloonsBg.jpg'
 import TitleIcon from '../../../../assets/Images/Games/GameSelectionIcon.png'
