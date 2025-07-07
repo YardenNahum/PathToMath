@@ -6,7 +6,7 @@ import successImage from '../../../../assets/Images/OptionsGame/successPirate.pn
 import failureImage from '../../../../assets/Images/OptionsGame/failureFlag.png';
 import generateQuestions from '../GamesUtils/GameLogic.jsx';
 import { useUser } from '../../../Utils/UserContext.jsx';
-import TitleIcon from '../../../../assets/Images/Games/OptionsIcon.png';
+import TitleIcon from '../../../../assets/Images/OptionsGame/OptionsIcon.png';
 import OptionsBg from '../../../../assets/Images/OptionsGame/optionsBg.jpg';
 import { useUpdateQuiz } from '../../PopQuizPage/UpdateQuiz.jsx';
 import MultipleChoiceCard from './MultipleChoiceCard.jsx';
