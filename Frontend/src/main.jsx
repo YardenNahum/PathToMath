@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createHashRouter, RouterProvider } from 'react-router-dom'
 
 /**
  * Page components used for routing
@@ -31,7 +31,7 @@ import GameSelection from './components/Main/Games/GamesUtils/GameSelection.jsx'
  * Each route maps a URL path to a specific page component.
  * Nested under the root App layout.
  */
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <App />,
