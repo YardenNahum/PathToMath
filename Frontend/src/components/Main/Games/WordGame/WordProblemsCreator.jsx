@@ -40,7 +40,9 @@ const WordProblemsCreator = ({ subject, var1, var2, answer }) => {
         It should still be about ${subject}, using the numbers ${var1} and ${var2}.
         Make sure the correct answer is ${Math.abs(answer)}.
         Do NOT include the answer — just the question sentence.
-        Match the tone and structure of the examples above, but use original content, magical settings, and whimsical names.`;
+        Match the tone and structure of the examples above, but use original content, magical settings, and whimsical names.
+        Write the problem directly without an introduction, additional text or explanation, and keep the problem short and to the point.
+        `;
 
       try {
         //using apiService to generate the Question from the prompt
