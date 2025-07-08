@@ -13,12 +13,12 @@
   ],
   "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/Frontend/index.html"
+      "src": "/(.*)",
+      "dest": "/Frontend/index.html"
     }
   ],
   "env": {
