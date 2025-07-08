@@ -1,4 +1,18 @@
-{
+
+  {
+  "homepage": "https://github.com/YardenNahum/PathToMath",
+  "name": "pathtomath",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "dotenv": "^16.5.0",
