@@ -11,16 +11,15 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [
-        {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    },
+  "routes": [
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-
   ],
   "env": {
     "NODE_ENV": "production"
