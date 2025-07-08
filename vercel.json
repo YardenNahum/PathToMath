@@ -11,24 +11,14 @@
       "use": "@vercel/node"
     }
   ],
-    "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/Frontend/$1"
-    }
-  ],
   "rewrites": [
-            {
+    {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/index.js"
     },
-        {
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/Frontend/$1"
     }
   ],
   "env": {
