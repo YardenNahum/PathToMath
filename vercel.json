@@ -17,7 +17,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/Frontend/index.html"
+      "destination": "/Frontend/dist/index.html"
     }
   ],
   "env": {
