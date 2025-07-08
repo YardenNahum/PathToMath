@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "Frontend/package.json",
+      "src": "pathtomath/package.json",
       "use": "@vercel/static-build"
     },
     {
@@ -17,7 +17,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/Frontend/$1"
+      "dest": "/pathtomath/$1"
     }
   ],
   "env": {
