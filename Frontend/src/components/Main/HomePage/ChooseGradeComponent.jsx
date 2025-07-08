@@ -8,7 +8,7 @@ import { getOrdinalSuffix } from '../../Utils/OrdinalGrade';
  * ChooseGradeBtn component
  * @returns {JSX.Element} - The rendered component.
  */
-function ChooseGradeBtn() {
+function ChooseGradeBtn({ isProgressCard = false }) {
     const { grade, setGrade } = useGrade();
     const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
     const popupRef = useRef(null);
@@ -23,7 +23,7 @@ function ChooseGradeBtn() {
         setIsCalculatorOpen(false);
     };
 
-     useEffect(() => {
+    useEffect(() => {
         // Detect outside of grade picker clicks
         function handleClickOutside(event) {
             // If the popup is open and click target is outside popupRef element
@@ -45,21 +45,30 @@ function ChooseGradeBtn() {
 
     return (
         <div className="relative flex flex-col items-center justify-center">
-            {/* Main Grade Button (Using ProfileCard) */}
-            <ProfileCard 
-                label={grade ? `${getOrdinalSuffix(grade)} Grade` : 'Select Grade'}
-                icon={BagIcon} 
-                buttonLabel="Select Grade" 
-                buttonColor="bg-yellow-500" 
-                buttonTextColor="text-white"
-                buttonAction={toggleCalculator}
-            />
+            {/* If isProgressCard is true, show only the grade selector button */}
+            {isProgressCard ? (
+                <button
+                    onClick={toggleCalculator}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer"
+                >
+                    Change <br /> Grade
+                </button>
+            ) : (
+                <ProfileCard
+                    label={grade ? `${getOrdinalSuffix(grade)} Grade` : 'Select Grade'}
+                    icon={BagIcon}
+                    buttonLabel="Select Grade"
+                    buttonColor="bg-yellow-500"
+                    buttonTextColor="text-white"
+                    buttonAction={toggleCalculator}
+                />
+            )}
 
             {/* Calculator Tooltip */}
             {isCalculatorOpen && (
-                <div ref={popupRef} className="absolute w-80 bg-yellow-200 rounded-2xl p-4 shadow-lg z-20 border-4 border-yellow-300">
+                <div ref={popupRef} className="absolute w-50 -right-7 bg-yellow-200 rounded-2xl p-8 shadow-lg z-20 border-4 border-yellow-300 md:w-80 md:p-4">
                     <h3 className="text-sm font-bold mb-2 text-center">Select a Grade</h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                         {[1, 2, 3, 4, 5, 6].map((g) => (
                             <ButtonComponent
                                 key={g}

@@ -8,6 +8,8 @@ import avatar5 from '../../../assets/Images/Avatars/avatar5.png';
 import avatar6 from '../../../assets/Images/Avatars/avatar6.png';
 import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
 import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
+import topicGrade from '../../Utils/GradeSubjects';
+import ChooseGradeBtn from '../HomePage/ChooseGradeComponent';
 
 // Avatar Map
 const avatarMap = {
@@ -30,28 +32,38 @@ function ChildProgressCard({ child }) {
   const subjects = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Percentage'];
   //gets the grade level data based on the child's grade
   const gradeIndex = parseInt(child?.grade) - 1;
+
+  // Filter subjects based on the child's grade level
+  const filteredSubjects = subjects.filter(subject => {
+    return (gradeIndex + 1) >= (topicGrade[subject] || 1);  // Default to 1 if not found in topicGrade
+  });
+
   //levelData is an array of objects, each object contains the progress for each subject
   const levelData = child?.gradeLevel?.[gradeIndex];
   return (
     <div style={{ backgroundImage: `url(${CardBckgr})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-    className="pt-5 rounded-2xl border-4 border-purple-700 p-4 shadow-md flex flex-col items-center text-center mx-auto max-w-[750px]"
+      className="pt-5 rounded-2xl border-4 border-purple-700 p-4 shadow-md flex flex-col items-center text-center mx-auto max-w-[750px]"
     >
       <div className="flex justify-center w-full mb-4">
-        <div className="flex items-center gap-4">
+        <div className="flex w-full items-center gap-4">
           <img
             src={avatarMap[child?.avatar] || avatar1} // use avatar map here
             alt={`${child?.name}'s avatar`}
             className="w-24 h-24 rounded-full object-cover outline-3 outline-purple-500"
           />
-          <div className="flex flex-col justify-start text-left">
-            <h2 className="text-3xl text-wrap font-semibold text-purple-700 leading-snug">{child?.name}</h2>
-            <p className="text-lg text-purple-600 mt-1">Grade {child?.grade}</p>
+          <div className="flex flex-row w-full items-center justify-between">
+            <div className="flex flex-col justify-start text-left mr-4">
+              <h2 className="text-3xl text-wrap font-semibold text-purple-700 leading-snug">{child?.name}</h2>
+              <p className="text-lg text-purple-600 mt-1">Grade {child?.grade}</p>
+            </div>
+            <ChooseGradeBtn isProgressCard={true} />
           </div>
         </div>
+
       </div>
 
       <div className="w-full flex flex-wrap justify-center gap-4 mt-3 px-2">
-        {subjects.map((subject, index) => {
+        {filteredSubjects.map((subject, index) => {
           const completed = levelData?.[subject]?.level ?? 0;
           const total = 30;
           const percentage = Math.round((completed / total) * 100);
