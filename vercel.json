@@ -14,11 +14,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/index.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/Frontend/$1"
     }
   ],
   "env": {
