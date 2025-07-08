@@ -17,7 +17,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/Frontend/$1"
+      "destination": "/index.html"
     }
   ],
   "env": {
