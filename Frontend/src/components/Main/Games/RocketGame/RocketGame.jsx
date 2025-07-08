@@ -217,7 +217,7 @@ export default function RocketGame({ mode = 'single' }) {
 
   // Move the bot at intervals based on grade and level
   const botTimer = useBotInterval({
-    started,
+    started: !isMultiplayer && started,
     onMove: handleBotMove,
     gameGrade,
     level: gameLevel,
