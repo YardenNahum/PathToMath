@@ -27,7 +27,11 @@ export const useUpdateQuiz = () => {
       ? new Date(user.pop_quiz_last_date)
       : null;
 
-    // Helper to normalize a date to local midnight (removes time part)
+    /**
+     * Normalize a date to remove time (i.e. set to local midnight)
+     * @param {Date} date
+     * @returns {Date} normalized date
+     */
     const normalizeLocalDate = (date) => {
       const d = new Date(date);
       d.setHours(0, 0, 0, 0);
@@ -37,7 +41,7 @@ export const useUpdateQuiz = () => {
     const todayLocal = normalizeLocalDate(today);
     const lastQuizLocal = quizLastDate ? normalizeLocalDate(quizLastDate) : null;
 
-    // Check if already updated today
+    // Check if already updated today — no update needed
     if (lastQuizLocal && lastQuizLocal.getTime() === todayLocal.getTime()) {
       return;
     }

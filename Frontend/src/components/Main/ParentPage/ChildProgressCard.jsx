@@ -47,7 +47,7 @@ function ChildProgressCard({ child }) {
       <div className="flex justify-center w-full mb-4">
         <div className="flex w-full items-center gap-4">
           <img
-            src={avatarMap[child?.avatar] || avatar1} // use avatar map here
+            src={avatarMap[child?.avatar] || avatar1}
             alt={`${child?.name}'s avatar`}
             className="w-24 h-24 rounded-full object-cover outline-3 outline-purple-500"
           />
