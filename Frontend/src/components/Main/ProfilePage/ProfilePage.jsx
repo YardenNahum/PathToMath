@@ -11,8 +11,10 @@ import avatar7 from '../../../assets/Images/Avatars/avatar7.png';
 import avatar8 from '../../../assets/Images/Avatars/avatar8.png';
 
 /**
- * ProfilePage component for user profile management.
- * @returns {JSX.Element} JSX for profile page.
+ * ProfilePage component for displaying and updating user profile.
+ * Handles avatar selection, input form for name/email/password/grade, and status alerts.
+ * 
+ * @returns {JSX.Element}
  */
 const ProfilePage = () => {
   const { user, update } = useUser();
@@ -21,7 +23,7 @@ const ProfilePage = () => {
   const [isAlert, setIsAlert] = useState(false);
   const [message, setMessage] = useState({ message: "", isSuccess: false });
 
-  // Avatar Section
+  // Avatar Management
   const [showAvatarSection, setShowAvatarSection] = useState(false);
   const [avatar, setAvatar] = useState(user?.avatar);
   const showPassword = useRef(false);
@@ -38,13 +40,20 @@ const ProfilePage = () => {
     avatar8: avatar8,
   };
 
-  // Show Alert
+  /**
+   * Display an alert box
+   * @param {string} message - Text to display
+   * @param {boolean} isSuccess - Whether the operation was successful
+   */
   const showAlert = (message, isSuccess) => {
     setMessage({ message, isSuccess });
     setIsAlert(true);
   };
 
-  // Update Profile
+  /**
+   * Handles form submission to update profile data
+   * @param {React.FormEvent} event
+   */
   const updateProfile = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -72,6 +81,7 @@ const ProfilePage = () => {
       !formData.get("name") ||
       !formData.get("email") ||
       !formData.get("password");
+
     // If no changes or empty fields, show alert and return
     if (isEmpty || isSame) {
       showAlert("No changes made", false);
@@ -88,7 +98,12 @@ const ProfilePage = () => {
     }
   };
 
-  // Alert
+  /**
+   * Alert component shown on profile update
+   * @param {Object} props
+   * @param {string} props.message - Message text
+   * @param {boolean} props.isSuccess - Alert style based on success/failure
+   */
   const Alert = ({ message, isSuccess }) => {
     const messageModel = {
       success: "bg-green-500",
@@ -119,7 +134,9 @@ const ProfilePage = () => {
     );
   };
 
-  // Avatar Options
+  /**
+   * Modal for choosing an avatar image
+   */
   const AvatarOptions = () => {
     const avatars = Object.keys(avatarMap);
     const modalRef = useRef();
@@ -137,7 +154,11 @@ const ProfilePage = () => {
       };
     }, []);
 
-    // Avatar
+    /**
+     * Render one avatar option
+     * @param {Object} props
+     * @param {string} props.av - Avatar key name
+     */
     const Avatar = ({ av }) => {
       const currentAvatar = user.avatar;
       const selectedAvatar = avatar;
@@ -187,7 +208,9 @@ const ProfilePage = () => {
     );
   };
 
-  // Avatar Section
+  /**
+   * Section displaying current avatar and change button
+   */
   const AvatarSection = () => {
     return (
       <div className="flex flex-col items-center justify-center md:w-1/3 w-full mr-5 md:p-6 p-2">
@@ -207,7 +230,9 @@ const ProfilePage = () => {
     );
   };
 
-  // Grade Picker
+  /**
+   * Dropdown for selecting user grade
+   */
   const GradePicker = () => {
     const gradeOptions = [
       { value: 1, label: "1st Grade" },
@@ -239,7 +264,14 @@ const ProfilePage = () => {
     );
   };
 
-  // Input Box
+  /**
+   * Generic input field for profile data
+   * 
+   * @param {Object} props
+   * @param {string} props.labelText - Label to display
+   * @param {string} props.type - Input type (e.g., text, password)
+   * @param {string} props.field - Field name (e.g., "email")
+   */
   const InputBox = ({ labelText, type, field }) => {
     const isPassword = type === "password";
 
@@ -277,7 +309,9 @@ const ProfilePage = () => {
     );
   };
 
-  // Profile Form
+  /**
+   * Form section with all editable fields
+   */
   const ProfileForm = () => (
     <div className="relative border-10 border-white flex flex-col md:flex-row bg-blue-200 rounded-xl py-2 md:py-10 md:h-auto xl:w-1/2 justify-center items-center shadow-md w-full gap-8">
       <AvatarSection />

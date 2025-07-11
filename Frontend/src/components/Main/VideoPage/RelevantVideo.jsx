@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import background from '../../../assets/Images/Background/HomeBg.png';
 import snail_icon from '../../../assets/Images/Loaders/snail_icon.png';
 import VideoGallery from './Gallery.jsx';
-import { Volume2, VolumeX, Maximize2, Minimize2, X, BookOpen, Star } from "lucide-react";
+import { Maximize2, Minimize2, X, BookOpen, Star } from "lucide-react";
 import { useGrade } from '../../Utils/GradeComponent.jsx';
 import { useParams } from 'react-router-dom';
 import ShadowedTitle from "../../Utils/ShadowedTitle.jsx";
@@ -11,33 +11,40 @@ import { subjectsData } from "../../Utils/SubjectData.jsx";
 import { getOrdinalSuffix } from "../../Utils/OrdinalGrade.jsx";
 import apiService from "../../../services/ApiService.jsx";
 
+/**
+ * RelevantVideo Component
+ * Displays a list of YouTube videos based on selected subject and grade.
+ * Includes loading animation, fullscreen viewing, keyword badges, and math tips.
+ */
 const RelevantVideo = () => {
-  const { subject } = useParams();
-  const { grade } = useGrade();
+  const { subject } = useParams();  // Get subject from URL parameters
+  const { grade } = useGrade(); // Get user's grade from context
 
-  const [progress, setProgress] = useState(0);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showTip, setShowTip] = useState(false);
-  const fullscreenRef = useRef(null);
+  // State hooks
+  const [progress, setProgress] = useState(0);  // Progress bar state
+  const [selectedVideo, setSelectedVideo] = useState(null); // Currently selected video ID
+  const [selectedVideoTitle, setSelectedVideoTitle] = useState(""); // Title of the selected video
+  const [videos, setVideos] = useState([]); // List of fetched videos
+  const [loading, setLoading] = useState(false);  // Loading state
+  const [error, setError] = useState(null); // Error state
+  const [isFullscreen, setIsFullscreen] = useState(false);  // Fullscreen state
+  const [showTip, setShowTip] = useState(false);  // Whether to show the math tip overlay
+  const fullscreenRef = useRef(null); // Reference for fullscreen element
 
   // Colors for badges
   const colors = ["bg-pink-500", "bg-purple-500", "bg-indigo-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-red-500"];
 
-  // Progress bar effect
+  /**
+   * Loading progress effect
+   * Simulates a progress bar increasing during fetch
+   */
   useEffect(() => {
     let intervalId;
 
     if (loading) {
       setProgress(0); // reset at start
-
       intervalId = setInterval(() => {
         setProgress((prev) => {
-          // Increase by 5 every 150ms but max 90%, leaving last 10% for finalizing
           if (prev < 90) {
             return prev + 5;
           } else {
@@ -58,7 +65,9 @@ const RelevantVideo = () => {
     };
   }, [loading]);
 
-  // Fetch YouTube videos based on subject and grade
+  /**
+   * Fetch YouTube videos based on selected subject and grade
+   */
   useEffect(() => {
     const fetchVideos = async () => {
       setLoading(true);
@@ -74,6 +83,7 @@ const RelevantVideo = () => {
           percentage: ["percentages", "ratios", "fractions", "proportions"],
         };
 
+        // Prepare query based on grade and subject
         const gradeLabel = `${getOrdinalSuffix(grade)} grade`;
         const keywords = subjectQueryMap[subject?.toLowerCase()] || [subject];
         const keywordPhrase = keywords.join(" OR ");
@@ -88,6 +98,7 @@ const RelevantVideo = () => {
           thumbnail: item.snippet.thumbnails.high.url,
         }));
 
+        // Simulate loading delay
         setTimeout(() => {
           setVideos(videoItems);
           setLoading(false);
@@ -102,7 +113,9 @@ const RelevantVideo = () => {
     fetchVideos();
   }, [grade, subject]);
 
-  // Sync fullscreen state
+  /**
+   * Sync fullscreen state when toggled
+   */
   useEffect(() => {
     const onFullscreenChange = () => {
       const fullscreenElement = document.fullscreenElement;
@@ -114,6 +127,11 @@ const RelevantVideo = () => {
     };
   }, []);
 
+  /**
+   * Handles video selection from gallery
+   * @param {string} id - YouTube video ID
+   * @param {string} title - Video title
+   */
   const handleVideoSelect = (id, title) => {
     setSelectedVideo(id);
     setSelectedVideoTitle(title);
@@ -121,15 +139,20 @@ const RelevantVideo = () => {
     setTimeout(() => setShowTip(false), 8000);
   }
 
+  /**
+   * Closes the selected video popup
+   */
   const handleCloseVideo = () => {
     setSelectedVideo(null);
     setSelectedVideoTitle("");
     setShowTip(false);
   }
 
+  /**
+   * Toggles fullscreen mode for video popup
+   */
   const toggleFullscreen = () => {
     const el = fullscreenRef.current;
-
     if (!document.fullscreenElement && el) {
       el.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable full-screen mode: ${err.message}`);
@@ -158,7 +181,9 @@ const RelevantVideo = () => {
   // Randomly chosen math tip for overlay popup
   const randomTip = mathTips[Math.floor(Math.random() * mathTips.length)];
 
-  // Related subject keywords displayed as badges
+  /**
+   * Generates related keyword badges based on subject
+   */
   const baseKeywords = useMemo(() => {
     switch (subject?.toLowerCase()) {
       case "addition":
@@ -186,6 +211,8 @@ const RelevantVideo = () => {
         backgroundPosition: 'center',
       }}
     >
+    
+      {/* Subject header */}
       <div className="flex items-center gap-4 mb-8 justify-center">
         <div className="flex items-center gap-6">
           <SubjectCircle
@@ -203,6 +230,7 @@ const RelevantVideo = () => {
         </div>
       </div>
 
+      {/* Loading animation */}
       {loading && (
         <div className="flex playful-font flex-col items-center justify-center h-[300px]">
           <img
@@ -211,6 +239,7 @@ const RelevantVideo = () => {
             className="w-16 h-16 animate-bounce"
           /> Loading videos...
           <div className="mt-4 text-gray-600">Please wait while we fetch the best videos for you!</div>
+          
           {/* Progress bar */}
           <div className="w-80 h-4 bg-gray-100 rounded-full overflow-hidden">
             <div
@@ -221,12 +250,15 @@ const RelevantVideo = () => {
         </div>
       )}
 
+      {/* Error state */}
       {error && <p className="text-lg text-red-500 font-extrabold text-center">{error}</p>}
 
+      {/* Display video gallery */}
       {!loading && !error && (
         <VideoGallery videos={videos} onVideoClick={handleVideoSelect} />
       )}
 
+      {/* Fullscreen video player */}
       {selectedVideo && (
         <div className="fixed top-20 inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-indigo-900/90 to-purple-900/90 backdrop-blur-sm">
           <div
@@ -234,7 +266,7 @@ const RelevantVideo = () => {
             className={`relative overflow-hidden transform transition-all duration-300
               ${isFullscreen ? 'w-screen h-screen rounded-none' : 'w-[90%] max-w-4xl rounded-3xl'}`}
           >
-            {/* Fun decorative elements */}
+            {/* Decorative elements */}
             {!isFullscreen && (
               <>
                 <div className="absolute -top-8 -left-8 w-16 h-16 bg-yellow-300 rounded-full opacity-30 animate-pulse"></div>
@@ -289,6 +321,7 @@ const RelevantVideo = () => {
                   allow="autoplay; fullscreen"
                   allowFullScreen
                 />
+
                 {/* Math Tip popup */}
                 {showTip && (
                   <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:max-w-xs bg-white rounded-xl p-4 shadow-lg border-l-8 border-green-500 animate-fade-in-up">

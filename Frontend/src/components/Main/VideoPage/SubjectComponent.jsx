@@ -3,10 +3,19 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 // Create a React context to manage subject data globally
 const SubjectContext = createContext();
 
-// Custom hook to access subject context more easily
+/**
+ * Custom hook for accessing subject context easily
+ * @returns {Object} - subject context value (subjects, gameSubject, etc.)
+ */
 export const useSubject = () => useContext(SubjectContext);
 
-// Context provider that wraps the app and manages subject-level state
+/**
+ * Context provider for managing subjects and game state
+ * This component should wrap your app to make subject data available globally.
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - The child components that consume the subject context
+ */
 export const SubjectProvider = ({ children }) => {
     // Default structure for each subject: current level and total levels
     const initialSubjects = {
@@ -40,8 +49,9 @@ export const SubjectProvider = ({ children }) => {
     }, [gameSubject]);
 
     /**
-     * Select a subject to start playing
-     * Sets the current gameSubject state with its current level and max levels
+     * Select a subject to play and store it in gameSubject
+     *
+     * @param {string} subjectName - Name of the subject to activate (e.g., "Addition")
      */
     const selectSubject = (subjectName) => {
         const selectedSubject = subjects[subjectName];
@@ -60,6 +70,7 @@ export const SubjectProvider = ({ children }) => {
     /**
      * Update the current level for the active game subject
      * Only allows forward progress (no going back)
+     * @param {number} newLevel - The new level to set for the current subject
      */
     const updateLevel = (newLevel) => {
         const { level } = gameSubject;

@@ -2,15 +2,22 @@ import React, { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
 /**
- * VideoGallery displays a horizontally scrollable list of video cards.
- * Each video can be clicked to trigger an action (e.g. play).
- * Navigation arrows allow horizontal scrolling through the video list.
+ * VideoGallery Component
+ * Displays a horizontally scrollable list of video cards with hover and click effects.
+ * Includes navigation arrows, thumbnail previews, and optional visual decorations.
+ *
+ * @param {Object[]} videos - Array of video objects containing `id`, `title`, and `thumbnail`.
+ * @param {Function} onVideoClick - Callback function triggered when a video is clicked.
  */
 const VideoGallery = ({ videos, onVideoClick }) => {
   const scrollRef = useRef(null); // Ref for the scrollable container
   const [hoveredVideo, setHoveredVideo] = useState(null); // Track which video is being hovered
 
-  // Scroll the video container left or right by half its visible width
+  /**
+   * Scrolls the video list horizontally in the specified direction.
+   *
+   * @param {"left"|"right"} direction - The direction to scroll
+   */
   const scroll = (direction) => {
     if (scrollRef.current) {
       const container = scrollRef.current;
@@ -22,7 +29,7 @@ const VideoGallery = ({ videos, onVideoClick }) => {
   return (
     <div className="w-full mt-10 mb-10">
       <div className="relative">
-        {/* Section Title */}
+        {/* Header title with play icon */}
         <div className="mb-6 flex items-center">
           <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center">
             <Play fill="white" className="text-white ml-1" size={24} />
@@ -50,7 +57,7 @@ const VideoGallery = ({ videos, onVideoClick }) => {
           </button>
         </div>
 
-        {/* Video Grid */}
+        {/* Scrollable Video Grid */}
         <div
           ref={scrollRef}
           className="grid grid-flow-col auto-`cols-max gap-6 overflow-x-auto pt-4 pb-8 px-2 scroll-smooth no-scrollbar snap-x snap-mandatory"
