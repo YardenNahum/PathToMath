@@ -138,7 +138,7 @@ const LevelsPage = () => {
                         clickable={false}
                     />
                     <ShadowedTitle
-                        text="In Each Level a Random Game Awaits You!"
+                        text="Step Into a New Math World Every Level!"
                         shadowColor={subjectsData[subjectGame]?.color}
                     />
                 </div>
