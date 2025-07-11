@@ -21,7 +21,6 @@ const RelevantVideo = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTip, setShowTip] = useState(false);
   const fullscreenRef = useRef(null);
@@ -126,10 +125,6 @@ const RelevantVideo = () => {
     setSelectedVideo(null);
     setSelectedVideoTitle("");
     setShowTip(false);
-  }
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
   }
 
   const toggleFullscreen = () => {
@@ -271,12 +266,6 @@ const RelevantVideo = () => {
 
                 <div className="flex gap-2">
                   <button
-                    onClick={toggleMute}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors cursor-pointer"
-                  >
-                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                  </button>
-                  <button
                     onClick={toggleFullscreen}
                     className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors cursor-pointer"
                   >
@@ -295,7 +284,7 @@ const RelevantVideo = () => {
               <div className={`relative ${isFullscreen ? 'h-full pt-16' : ''}`}>
                 <iframe
                   className={`w-full ${isFullscreen ? 'h-full' : 'h-[400px]'}`}
-                  src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1&mute=${isMuted ? 1 : 0}`}
+                  src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1`}
                   title="Math Video"
                   allow="autoplay; fullscreen"
                   allowFullScreen
